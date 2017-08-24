@@ -1,0 +1,971 @@
+<?php
+/**
+* returns a url-encoded base url. Handy everywhere.
+* @returns string
+* @author shaouy
+*/
+/*  JWK do we need this? 422015 */
+function sm_utilities_get_base_url() { 
+    global $base_url;
+    return urlencode($base_url);
+}
+
+/**
+* Implementation of hook_form_alter
+*/
+function sm_utilities_form_alter(&$form, &$form_state, $form_id) { 
+$form['actions']['delete']['#access'] = FALSE;
+  global $user;
+switch ($form_id)  {
+  	 
+  	 	case 'user_login':
+  	 	$form['name']['#attributes']['placeholder'] = t( 'Username' );
+    $form['pass']['#attributes']['placeholder'] = t( 'Password' );
+  	 	break;
+  	 
+  	 		case 'user_login_block':
+  	 	$form['name']['#attributes']['placeholder'] = t( 'Username' );
+    $form['pass']['#attributes']['placeholder'] = t( 'Password' );
+  	 	break;
+  	 
+  	 		case 'user_relationships_ui_request':
+  	 	 //  $form['rtid'] = array('visible' => array(FALSE)); // hide the rtid field
+    $str = $form['description']['#markup'];
+    $form['description']['#markup'] = str_replace('partner', 'mentee', $str); // change the description field
+    $form['actions']['submit']['#value'] = t('Confirm'); // change "submit" to "confirm"
+    $form['#after_build'][] = 'sm_utilities_request_form_after_build'; // to be executed as the last step of the form being built
+  	 	break;
+  	 	
+  	 	case 'flag_confirm':
+  	 	 $form['#after_build'][] = 'sm_utilities_flag_conf_form_after_build';
+    $form['description']['#markup']= '<h3 style="color:blue">' . drupal_get_title() . '</h3>'; // place title in description
+  	 	break;
+  	 	
+  	 	
+  	 	case 'views_exposed_form':
+  	 	if (arg(0)=='login-report') {
+$form['#after_build'][] = 'sm_utilities_exposed_date_after_build'; // to be executed as the last step of the form being built
+}
+  	 	break;
+  	 		
+  	 	case 'file_entity_add_upload':
+  	 	 //bacheller 6/8/13
+    $form['#prefix'] = t('Click Choose File to select your file, then click the Upload button.');
+
+  	 	break;
+  	 	
+case 'feeds_import_form':
+ // Instructions area for the mass user import page
+ $form['feeds']['feedsfilefetcher']['upload']['#suffix'] = t('<h3 style="color:blue">Step 5: Correcting Errors</h3>
+<p>If there are errors in your data, the row with the problem will be identified in the error message at the top of the screen. User data without errors will be imported.</p>
+<p>For user data with errors, you can either enter each user one at a time or correct the error in your CSV file and reimport only the user data that was rejected. Do not reimport user data that were successfully imported; the system will flag those items as duplicates.</p>
+
+<h3 style="color:blue">Step 6: Check Your Work</h3>
+<p>When your users are successfully imported, you can navigate to the Users section from the global navigation and filter to the location where you uploaded those users. You will see your imported users in the user list at that location. At this point, you can edit individual users if needed.</p>
+');  
+         unset($form['source_status']);
+  unset($form['feeds']['FeedsCSVParser']['no_headers']);
+  $form['feeds']['FeedsCSVParser']['delimiter']['#disabled'] = TRUE;
+break;
+
+  	 	case 'views_form_curriculum_assigned_assignedbylocation_test_page':
+  	 	  $form['#after_build'][] = 'sm_utilities_vbo_after_build';
+  	 	break;
+  	 	
+  	 	case 'views_form_curriculum_curriculabyme_page':
+  	 	  $form['#after_build'][] = 'sm_utilities_vbo_after_build';
+  	 	break;
+  	 	  	 	
+  	 	case 'views_form_curriculum_activity_chooseactivity_page':
+  	 	$form['bundle_activity']['_append::field_curriculum_reference']['#access'] = FALSE;
+    $form['bundle_activity']['_append::field_curriculum_reference']['#value'] = 1;
+    $form['bundle_activity']['field_curriculum_reference']['und']['#options'] = sm_utilities_get_owned_curricula();
+  	 	break;
+
+
+case 'views_form_curriculum_activity_admin_pic_activities_page':
+  $field_curriculum_reference = $_GET['field_curriculum_reference'];
+    if(is_numeric($field_curriculum_reference)){
+      variable_set($user->uid."_curric", $field_curriculum_reference);
+    }
+    $form['clone_context']['prefix_title']['#access'] = FALSE;
+    $form['clone_context']['prefix_title']['#value'] = 0;
+    $form['clone_context']['substitute_from']['#access'] = FALSE;
+    $form['clone_context']['substitute_to']['#access'] = FALSE;
+    $form['clone_context']['substitute_case_insensitive']['#access'] = FALSE;
+    $form['#prefix'] = t('Clone activities to your curriculum?');
+
+
+break;
+  	 	
+  	 	
+  	 	case 'views_form_curriculum_curriculum_new_page':
+  	 	//change cancel button link on master curriculum vbo
+  	 	 global $base_url;
+    $form['actions']['submit']['#suffix'] = '<a href="'.$base_url.'/curriculum/all">Cancel</a>'; 
+  	 	break;
+  	 	
+  	 	case 'views_form_curriculum_assigned_assignedbylocation_test_page':
+  	 	 global $base_url;
+    $form['actions']['submit']['#suffix'] = '<a href="'.$base_url.'/curriculum/activities-assigned-by-location">Cancel</a>';
+    break;
+  	 	
+  	 	
+  	 	case 'user_register_form':
+  	 	//disable notification checkbox on mentor reg by admin form 
+  	  $form['account']['notify']['#access'] = FALSE;
+  	 	break;
+  	 	
+case 'curriculum_node_form':
+ global $user;
+      if(!in_array('Staff Admin', $user->roles) && !in_array('administrator', $user->roles)){
+        unset($form['field_master_curriculum']['und']['value']['#theme_options']);
+        unset($form['field_master_curriculum']['und']['#theme_options']);
+      }
+break;
+
+
+
+case 'editableviews_entity_form_activity_assignment_response':
+  	$form['actions']['submit']['#value'] = t('Save as Draft');
+      $node_id = $form['#entity_ids']['node'][0];
+      $form['node'][$node_id]['status']['#title'] = t('Reply');
+  	 break;	
+  	 
+  	 case 'editableviews_entity_form_lets_chat_reply':
+  	$form['actions']['submit']['#value'] = t('Save as Draft');
+      $node_id = $form['#entity_ids']['node'][0];
+      $form['node'][$node_id]['status']['#title'] = t('Reply');
+  	 break;	
+  	 
+  	 
+  	 case 'activity_assignment_response_node_form':
+  	 $form['actions']['submit']['#value'] = t('Reply');
+      $form['actions']['submit']['#weight'] = 20;
+  	 break;
+  	 
+  	  case 'lets_chat_reply_node_form':
+  	 $form['actions']['submit']['#value'] = t('Reply');
+      $form['actions']['submit']['#weight'] = 20;
+  	 break;
+  	 
+  	 
+  	 case 'lets_chat_node_form':
+  	  $form['actions']['submit']['#value'] = t('Send');
+  	  break;
+
+      case 'contact_us_reply_node_form':
+      $form['actions']['submit']['#value'] = t('Send');
+      break;
+  	  
+  	   case 'editableviews_entity_form_dashboard_users':
+  	 $form['actions']['submit']['#value'] = t('Update');
+  	   	  break;
+
+  	 	}
+ 
+   /*
+ remove -None- from vacation field jwk 11-12-2014
+ */
+ unset($form['field_taxonomy_tag'][LANGUAGE_NONE]['#options']['_none']);
+unset($form['field_vacation'][LANGUAGE_NONE]['#options']['_none']);
+      
+           
+} /* end form alter */
+
+/*  JWK do we need this? 422015 */
+function sm_utilities_node_access($node, $op, $account) {
+ if ($account->uid == 0){ 	 
+	  $type = is_string($node) ? $node : $node->type;
+	 if (($type == "webform") || ($type=="custom_contact_us")) {
+    // We only need to consider the 'view' case as the rest is presumable handled by content type permissions in your site
+      return NODE_ACCESS_ALLOW; 
+    }else{
+      return NODE_ACCESS_DENY;
+    }
+ }
+}
+
+/**
+* Pull list of a user's curricula for selection
+*/
+function sm_utilities_get_owned_curricula(){
+  $view_curriculum = views_get_view('curriculum'); 
+  if (($view_curriculum==NULL) || (!is_object($view_curriculum))) {
+    return NULL; // do nothing
+  }
+  $view_curriculum->set_display('curricula_selection'); // set the display
+  $view_curriculum->execute();
+  $curriculum_array = $view_curriculum->result;
+  $all_curricula=array();
+  foreach($curriculum_array as $curriculum){
+    $all_curricula[$curriculum->nid] = $curriculum->node_title;
+  }
+  return $all_curricula;
+   
+}
+
+/**
+* Get list of started activities for a mentee or mentor
+**/
+function sm_utilities_get_started_activities($mentee = NULL){
+  if(!$mentee){
+    global $user;
+    $mentee = $user->uid;
+  }
+  $view_user_activities = views_get_view('mentee_activities'); 
+  if (($view_user_activities==NULL) || (!is_object($view_user_activities))) {
+    return NULL; // do nothing
+  }
+  $view_user_activities->set_display('user_activities_list_mentee'); // set the display
+  $args = array($mentee); 
+  $view_user_activities->set_arguments($args);
+  $view_user_activities->execute();
+  $activity_array = $view_user_activities->result;
+  return $activity_array;
+}
+
+/**
+* Get summary of response on last activity
+**/
+function sm_utilities_get_last_comment_summary($nid = NULL){
+  
+  $view_user_activities = views_get_view('activity_assignment_response'); 
+  if (($view_user_activities==NULL) || (!is_object($view_user_activities))) {
+    return NULL; // do nothing
+  }
+  $view_user_activities->set_display('actreply_mostrecent_page'); // set the display
+  $args = array($nid); 
+  $view_user_activities->set_arguments($args);
+  $view_user_activities->execute();
+  $activity_array = $view_user_activities->result;
+  return $activity_array;
+}
+/**
+ * Form after build
+ * 
+ * @param $form -- The form array
+ * @param $form_state -- The form state
+ * @author shaouy
+ */
+ function sm_utilities_exposed_date_after_build($form, &$form_state) { 
+    $timeInFuture = time() + (60 * 60 * 24); // current time plus one day
+    if (array_key_exists('start', $form_state['values'])) {
+      if (array_key_exists('min', $form_state['values']['start'])) {
+        $form_state['values']['start']['min'] = '01/01/2013'; // set minimum start date
+      }
+      if (array_key_exists('max', $form_state['values']['start'])) {
+        $form_state['values']['start']['max'] = date('m/d/Y', $timeInFuture); // set max start date to one day more than min start date
+      }
+    }
+    return $form;
+ }
+
+/**
+ * Form after build
+ * 
+ * @param $form -- The form array
+ * @param $form_state -- The form state
+ * @author shaouy
+ */
+ function sm_utilities_flag_conf_form_after_build($form, &$form_state) {
+    if ((arg(0)=='flag') && (arg(1)=='confirm')) { 
+      drupal_set_title(t('Please confirm')); // change title
+    } 
+    return $form;
+ }
+/**
+ * Form after build
+ * 
+ * @param $form -- The form array
+ * @param $form_state -- The form state
+ * @author shaouy
+ */
+ function sm_utilities_request_form_after_build($form, &$form_state) {
+    if ((arg(0)=='relationship') && (arg(2)=='request')) {
+      drupal_set_title(t('Request Mentor')); // change title
+    } 
+    return $form;
+ }
+
+/**
+ * Hides common node edit form elements
+ * 
+ * @param &$form
+ *   The form array
+ * @author shaouy
+ */
+ /*  JWK do we need this? 422015 */
+function _hide_common_fields(&$form) {
+//    $form['menu'] = array('visible' => array(FALSE)); // hide menu settings
+//    $form['revision_information'] = array('visible' => array(FALSE)); // hide rev. settings
+//    $form['author'] = array('visible' => array(FALSE)); // hide author settings
+//    $form['options'] = array('visible' => array(FALSE)); // hide options settings
+//    $form['path'] = array('visible' => array(FALSE)); // hide path settings
+//    $form['print'] = array('visible' => array(FALSE)); // hide print settings
+}
+
+function sm_utilties_get_group_admins($uid) {
+   global $user;
+
+   module_load_all(); // ensure views module is loaded so we can call its API
+   $view_group_admins = views_get_view('all_group_admins'); // get the view. THIS INCLUDES SUBSITE ADMINS TOO
+   if (($view_group_admins==NULL) || (!is_object($view_group_admins)) ) {
+      return; // do nothing
+   }
+
+   // first, get the official tids of user uid
+   $official_tids = _get_official_tids($uid);
+   
+   // next, get all group admins   
+   $view_group_admins->execute();
+   $all_group_admins = $view_group_admins->result;
+   
+   // get the group admins whose official tids match or are an ancestor of the user's official tids
+   $official_group_admins=_get_official_group_admins($all_group_admins, $official_tids);
+   //$x = print_r($official_group_admins, TRUE);
+   //drupal_set_message('grp admins: ' . $x);
+   return $official_group_admins;
+}
+
+/*
+*  Helper function for sm_utilties_get_group_admins
+*  @param $all_group_admins -- all group admins
+*  @param $official_tids -- tids to filter by
+*  @return array of group admins filtered by the tids
+*  @author shaouy
+*/
+function _get_official_group_admins($all_group_admins, $official_tids) {
+  $official_group_admins = array();
+
+  foreach($all_group_admins as $group_admin) { // for each group admin in the system...
+    $group_admin_tids = _get_official_tids($group_admin->uid); // get the group admin's tids  
+    foreach($official_tids as $official_tid) { // for each tid
+      $ancestor_tids = sm_users_get_parent_tid_chain($official_tid); // get the ancestor chain
+      foreach ($ancestor_tids as $ancestor_tid) { // for each ancestor
+        if (in_array($ancestor_tid, $group_admin_tids)) { // add to return array if it's a group admin tid
+          $official_group_admins[] = $group_admin->uid;
+        }
+      }
+    }     
+  }
+
+  return $official_group_admins;
+}
+
+
+
+/*
+*  Winnows out misleading tids for a user
+*  @param $uid -- the user's uid
+*  @return array of official tids
+*  @author shaouy
+*/
+function _get_official_tids($uid) {
+  $view_tids = views_get_view('user_tids'); 
+  if (($view_tids==NULL) || (!is_object($view_tids))) {
+    return NULL; // do nothing
+  }
+  $args=array($uid);
+  $view_tids->set_arguments($args);
+  $view_tids->execute();
+  $tids_array = $view_tids->result; // get the tid objects of user with passed-in uid
+  $all_tids=array();
+  $official_tids=array();
+  foreach($tids_array as $tidobject) { // for each tid object
+    $tid = $tidobject->taxonomy_term_data_field_data_field_taxonomy_tag_tid;
+    $all_tids[]=$tid; // add its tid to $all_tids
+  }
+  foreach($all_tids as $tid) {
+    if (!_has_children_in_array($tid, $all_tids)) {
+      $official_tids[] = $tid; // if it's a lowest level tid, add it to return array
+    }
+  }
+  return $official_tids;
+}
+
+/*
+*  Determines if a tid has children in an array of tids
+*  @param $tid -- the tid in question
+*  @param $all_tids -- the array
+*  @return boolean
+*  @author shaouy
+*/
+function _has_children_in_array($tid, $all_tids) {
+  $children = taxonomy_get_children($tid);
+  foreach($children as $child) { // for each child of $tid
+    if (in_array($child->tid, $all_tids)) {
+      return TRUE; // $all_tids has a child of $tid
+    }
+  }
+  return FALSE; // $all_tids does not have a child of $tid
+}
+
+/*
+*  Get a node by its title
+*  @param $title -- the title to search by
+*  @return object -- the node to return
+*  @author shaouy
+*/
+/*  JWK do we need this? 422015 */
+function sm_utilities_get_node_by_title($title) {
+  $result = db_query("SELECT n.nid FROM {node} n WHERE n.title = :title", array(":title"=> $title));  // set up the SQL query
+  $nid = $result->fetchField(); // execute the query. we get back a nid
+  $node = node_load($nid); // get the node
+  return $node;
+}
+
+/*
+*  Get the tid of a user's parent
+*  @param $user -- a user object
+*  @return integer -- the parent tid of the passed-in user, null if there is no parent
+*  @author shaouy
+*/
+function sm_utilities_get_parent_tid($user) {
+  $items = $user->field_taxonomy_tag['und'];
+  $count = count($items);
+  $i=0;
+  while ($i < $count) {
+    $data = $items[$i];
+    ++$i;
+  }
+  $tid = $data['tid']; // had to go through the loop to get the tid. Got it now.
+  $pterm=(taxonomy_get_parents($tid)); // get the parent array. Should be one item
+  //print($tid);
+  foreach ($pterm as $parent) {
+    //print($parent->tid);
+    return $parent->tid; // return the tid
+  }
+  return NULL;
+}
+
+function sm_utilities_get_matched_mentees($uid){
+  $matchesView = null;
+  $matchesView = views_get_view('user_relationships_view');
+  $args=array($uid); 
+  $matchesView->set_arguments($args); //pass in the location as an argument
+  $display_id = 'mentee_uid_relationship'; 
+  $matchesView->set_display($display_id); // set the display
+  $matchesView->execute(); //load the view
+  $results = $matchesView->result;
+  $resultOut = null;
+  foreach ($results as $result) {
+    $resultOut[] = $result->users_user_relationships_1_uid;
+  }
+  return $resultOut;
+}
+
+/** Block to show the % of Activities Complete by Mentee.
+* @author bacheller
+* @params $uid
+**/
+function sm_utilities_activitiesCompleteByUser($uid, $retstatus="Complete") {
+  if($retstatus == "Available"){ //to get "available" activities
+    $viewProgress=null;
+    $viewProgress = views_get_view('jwk_user_activities_views'); //load the activities view
+    $user_data = user_load($uid);//load the user's data
+    $location = sm_utilities_build_userlocation_filter_string($user_data); //get the user's location
+    $args=array($location); 
+    $viewProgress->set_arguments($args); //pass in the location as an argument
+    $display_id_Curr = 'activities_available_reports'; 
+    $viewProgress->set_display($display_id_Curr); // set the display
+    $viewProgress->execute(); //load the view
+    $resultsCurr = $viewProgress->result;
+
+    //Out of value
+    $outOff = count($resultsCurr); // get the value by counting the results that are returned (returns the total)
+    $output = $outOff;
+  }
+
+  //view ACTIVITIES in progress
+  if($retstatus == "Complete" || $retstatus == "In Progress"){
+  $viewProgress=views_get_view('jwk_user_activities_views'); // REPLACE 'name of view' with the machine name of the view that contains the mentor list.
+  if (is_object($viewProgress)) {
+    $args=array($uid);
+    $viewProgress->set_arguments($args);
+    $display_id_Progress = 'user_activity_entity_view'; // REPLACE 'name of display' with the real display name. 
+    $viewProgress->set_display($display_id_Progress);
+    $item = $viewProgress->get_item($display_id_Progress, 'filter', 'field_completion_status_value');
+    if($retstatus == "Available"){
+      $item['value'] = array('value'=>'In Progress','Complete');    
+    }else if($retstatus == "In Progress"){
+      $item['value'] = array('value'=>'In Progress');    
+    }else if($retstatus == "Complete"){
+      $item['value'] = array('value'=>'Complete');
+    }
+    $viewProgress->set_item($display_id_Progress, 'filter', 'field_completion_status_value', $item);
+    $viewProgress->execute();
+    $resultsProg = $viewProgress->result;
+    $ipc = count($resultsProg);//count all in progress and complete
+    $output = $ipc;
+  }
+ }
+  return $output;
+}
+
+/**
+*remove blocked users tab
+**/
+function sm_utilities_menu_alter(&$items){
+  unset($items['messages/blocked']);
+   if(isset($items['node/%node/clone/%clone_token'])) {
+    $items['node/%node/clone/%clone_token']['type'] = MENU_LOCAL_TASK;
+  } else {
+    $items['node/%node/clone']['type'] = MENU_LOCAL_TASK;
+  }
+}
+/**
+*  Trim function to limit length of all words in a string
+*  @param $text -- string to operate on
+*  @param $len -- length to trim each word to
+*  @author  bacheller
+*/
+/*  JWK do we need this? 422015 */
+function limit_text($text, $len) {
+    if (strlen($text) < $len) { // if length of $text is shorter than $len
+        return $text; // leave text alone
+    }
+    $text_words = explode(' ', $text);
+    $out = null;
+
+    foreach ($text_words as $word) { // for each word
+        if ((strlen($word) > $len) && $out == null) {
+
+            return substr($word, 0, $len) . "..."; // return the first $len characters, followed by ...
+        }
+        if ((strlen($out) + strlen($word)) > $len) {
+            return $out . "..."; // add ellipses to output string
+        }
+        $out.=" " . $word; // build output string
+    }
+    return $out;
+}
+
+/*  JWK do we need this? 422015 */
+/**
+Delete the user upload csv file after import
+
+function sm_utilities_feeds_after_import(FeedsSource $source) {
+  $config = $source->getConfig();
+  if (isset($config['FeedsFileFetcher']['source'])) {
+    $path = $config['FeedsFileFetcher']['source'];
+    if (file_exists($path)) file_unmanaged_delete($path);
+  }
+}
+**/
+/*function sm_utilities_feeds_after_import(FeedsSource $source) {
+  $config = $source->getConfig();
+  if (isset($config['FeedsFileFetcher']['source'])) {
+    $path = $config['FeedsFileFetcher']['source'];
+    if (file_exists($path)) file_unmanaged_delete($path);
+  }
+}*/
+
+/*
+*  Auto generated messages check
+*  @param $string -- the body text content of the message
+*  @param $match -- the string value to check for
+*  @author  Tilt
+*/
+/*  JWK do we need this? 422015 */
+function sm_utilities_auto_gen_check($string){
+  $match = 'automatically';
+  if (strpos($string,$match) !== false) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+* This gets the user's most relevant admin. It finds the admin that is closest to the user in the location hierarchy
+* @param $roleid is the id for which admin role you wish to retrieve. by default it is set to 4 which is group admin
+**/
+/*  JWK do we need this or look more on what this is doing? 422015 */
+function sm_utilities_get_closest_admins($roleid = "4"){
+  if(is_numeric($roleid)){
+    global $user;
+    $user_data = user_load($user->uid);
+    $tids = array();
+    $values = field_get_items('user', $user_data, 'field_taxonomy_tag');
+            foreach ($values as $value) {
+                $tids = $value['tid'];
+                }
+    $tidparent = taxonomy_get_parents_all($tids);
+    foreach($tidparent  as $presults){
+    $result = db_query("SELECT DISTINCT users.name AS users_name FROM  {users} users LEFT JOIN {field_data_field_taxonomy_tag} field_data_field_taxonomy_tag ON users.uid = field_data_field_taxonomy_tag.entity_id AND (field_data_field_taxonomy_tag.entity_type = 'user' AND field_data_field_taxonomy_tag.deleted = '0') INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid WHERE (( (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN($presults->tid) ) )AND(( (users.status <> '0') AND (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IS NOT NULL ) AND (users_roles.rid = '".$roleid."') )))")->fetchAll();
+    if (sizeof($result) > 0) {
+    foreach($result  as $results){
+    $admins[] = user_load_by_name($results->users_name);
+    }
+     break;
+    }
+    }
+    return $admins;
+  }
+}
+
+/**
+This is the contextual filter for all admins which gets all tids in admin location vocabulary tree jwk 9/4/2013
+global $user;
+$user_data = user_load($user->uid);
+//$user_data = user_load('1755');
+return sm_utilities_build_adminlocation_filter_string($user_data);
+**/
+
+function sm_utilities_build_adminlocation_filter_string($user_data){
+    if (function_exists('taxonomy_edge_get_tree')) {
+        $tids = array();
+
+        $values = field_get_items('user', $user_data, 'field_taxonomy_tag');
+        foreach ($values as $value) {
+            $tids[] = $value['tid'];
+
+            $result = db_select('taxonomy_term_edge', 'te')
+                      ->fields('te', array('tid'))
+                      ->condition('parent', $value['tid'], '=')
+                      //->condition('distance', 3, '<=')
+                      ->execute()
+                      ->fetchAllKeyed(0, 0);
+
+            if (sizeof($result) > 0) {
+                $tids = array_merge($tids, array_keys($result));
+            }
+        }
+
+        return implode('+', array_unique($tids));
+    }
+
+    $final_includes = '';
+    $items = $user_data->field_taxonomy_tag['und'];
+
+    //return sm_utilities_build_term_string($items);
+    $count = count($items);
+    $i=0;
+    while ($i < $count) {
+      $data = $items[$i];
+      ++$i;
+    }
+
+    $tid = $data['tid'];
+    $tree = taxonomy_get_tree(3, $tid);
+    $ttotal = count($tree);
+    $t=0;
+
+    $final_includes = $tid . '+';
+    foreach($tree as $term) { 
+        $t++;
+        if ($t != $ttotal) {
+           $final_includes .= $term->tid . '+';
+        }
+        else {
+            $final_includes .= $term->tid;
+        }
+    }
+
+    if ($ttotal == 0){
+      return $tid;
+    }
+    else {
+      return $final_includes;
+    }
+}
+
+/**
+*Get location parents by location id
+*/
+function sm_utilities_get_location_parent_by_id($tid){
+    $tidparent = taxonomy_get_parents($tid);
+    $parents = '';
+    foreach($tidparent as $presults){
+      $parents .= $presults->tid . ' ';
+    }
+    return $parents;
+}
+
+/** 
+* Get location tree by location id
+**/
+function sm_utilities_get_locationtree_by_id($tid){
+    $tidparent = taxonomy_get_parents_all($tid);
+    $parents = '';
+    foreach($tidparent as $presults){
+      $parents .= $presults->tid . '+';
+    }
+
+    $tree = taxonomy_get_tree(3, $tid);
+    $ttotal = count($tree);
+
+    $final_includes = $tid . '+';
+    foreach($tree as $term) { 
+        $t++;
+        if ($t != $ttotal) {
+           $final_includes .= $term->tid . '+';
+        }
+        else {
+            $final_includes .= $term->tid;
+        }
+    }
+
+    if ($ttotal == 0){
+      return $parents.$tid;
+    }
+    else {
+      return $parents.$final_includes;
+    }
+
+}
+
+/**
+* Validate curriculum assignment
+* @author Bacheller
+* Function to check to see if curriculum is already assigned to a location below the location that has been selected
+* @param location - location id selected in vbo
+* @param curriculum - id of the curriculum being assigned
+**/
+function sm_utilities_validate_curriculum_assignment($location, $curriculum){
+  $validationView = null;
+  $validationView = views_get_view('curriculum_assigned');
+  $location_filter = sm_utilities_get_locationtree_by_id($location);
+  $args=array($location_filter, $curriculum); 
+  $validationView->set_arguments($args); //pass in the location and curriculum as an argument
+  $display_id = 'curriculum_validation'; 
+  $validationView->set_display($display_id); // set the display
+  $validationView->execute(); //load the view
+  $results = $validationView->result;
+  $locations = array();
+  foreach($results as $location){
+    $locations[] = $location->_field_data['nid']['entity']->field_taxonomy_tag['und'][0]['tid'];
+  }
+  return array_unique($locations);
+}
+
+/**
+This is the contextual filter for all user views which gets all the tids from the location vocabulary tree  jwk 9/4/2013
+global $user;
+//$user_data = user_load($user->uid);
+$user_data = user_load('5540');
+return sm_utilities_build_userlocation_filter_string($user_data);
+**/
+function sm_utilities_build_userlocation_filter_string($user_data){
+$final_includes = '';
+$final_includes .= '0';
+$items = $user_data->field_taxonomy_tag['und'];
+$count = count($items);
+$i=0;
+while ($i < $count) {
+  $data = $items[$i];
+  ++$i;
+}
+$tid = $data['tid'];
+$tidparent = taxonomy_get_parents_all($tid);
+$ttotal = count($tidparent);
+$t=0;
+foreach($tidparent  as $presults){
+$t++;
+if ($t != $ttotal) {
+   $final_includes .= $presults->tid . '+';
+}
+else{ 
+  $final_includes .= $presults->tid;
+}
+}
+return $final_includes;
+}
+
+
+function sm_utilities_vbo_after_build($form, &$form_state){
+  // Set a submit handler in this spot in the form state.
+  $form_state['triggering_element']['#submit'][] = 'sm_utilities_vbo_redirect';
+  return $form;
+}
+function sm_utilities_vbo_redirect(&$form, &$form_state){
+  // Set your redirect logic here and set $form_state['redirect']['path'].
+  $id = $form['#form_id'];
+  if($id == 'views_form_curriculum_assigned_assignedbylocation_test_page'){
+    $redirect_path = 'curriculum/activities-assigned-by-location';
+  }else if($id == 'views_form_curriculum_curriculabyme_page'){
+    $redirect_path = 'curriculum/createdbyme';
+  }
+  $form_state['redirect']['path'] = $redirect_path;
+}
+
+/*  JWK do we need this? 422015 can put in rule */
+function sm_utilities_approve_attachment($entity) {
+ $entity->field_attachment_status['und'][0]['tid'] = 3927;
+  $entity->status = 1;
+  entity_save('node', $entity);
+} 
+
+
+function sm_utilities_build_adminlocation_filter_string_activities($user_data){
+$final_includes1 = '';
+$final_includes = '';
+ $items = $user_data->field_taxonomy_tag['und'];
+//return sm_utilities_build_term_string($items);
+$count = count($items);
+$i=0;
+while ($i < $count) {
+  $data = $items[$i];
+  ++$i;
+}
+$tid = $data['tid'];
+$tree = taxonomy_get_tree(3, $tid);
+$ttotal = count($tree);
+if ($ttotal == 0){
+	$final_includes1 .= $tid;
+}
+else{
+$t=0;
+$final_includes1 = $tid . '+';
+foreach($tree as $term) { 
+$t++;
+if ($t != $ttotal) {
+   $final_includes1 .= $term->tid . '+';
+}
+else{ 
+  $final_includes1 .= $term->tid;
+}
+}
+}
+
+$final_includes .= '0';
+$items = $user_data->field_taxonomy_tag['und'];
+$count = count($items);
+$i=0;
+while ($i < $count) {
+  $data = $items[$i];
+  ++$i;
+}
+$tid = $data['tid'];
+$tidparent = taxonomy_get_parents_all($tid);
+$ttotal = count($tidparent);
+$t=0;
+foreach($tidparent  as $presults){
+$t++;
+if ($t != $ttotal) {
+   $final_includes .= $presults->tid . '+';
+}
+else{ 
+  $final_includes .= $presults->tid;
+}
+}
+return $final_includes . '+' . $final_includes1;
+}
+
+/**
+ * Implementation of VBO Reset Password hook_action_info().
+ */
+function sm_utilities_action_info() {
+  $actions = array(
+    'sm_utilities_change_password_action' => array(
+      'type' => 'user',
+      'label' => t('Change user\'s password'),
+      'description' => t('Change user\'s password'),
+      'configurable' => TRUE,
+      'hooks' => array(),
+    ),
+  );
+  return $actions;
+}
+
+/**
+ * Action to change a user's password
+ */
+ 
+ /*  JWK do we need this? 422015 */
+function sm_utilities_change_password_action_form($context) {
+ // _user_password_dynamic_validation();
+  $form['pass'] = array(
+    //'#title' => t('New password'),
+    '#type' => 'password_confirm',
+    '#description' => t('Provide a password for the selected users in both fields.'),
+    '#required' => TRUE,
+    '#size' => 25,
+  );
+
+  return $form;
+}
+
+/*  JWK do we need this? 422015 */
+function sm_utilities_change_password_action_submit($form, $form_state) {
+  return array('pass' => $form_state['values']['pass']);
+}
+/*  JWK do we need this? 422015 */
+function sm_utilities_change_password_action(&$user, $context) {
+  user_save($user, array('pass' => $context['pass']));
+}
+/*  JWK do we need this? 422015 */
+function sm_utilities_node_view_alter(&$build) {
+  if (isset($build['links']['blog']['#links']['blog_usernames_blog'])) {
+    unset($build['links']['blog']['#links']['blog_usernames_blog']);
+  }
+}
+
+/**
+ *Hide operations section of users awaiting approval  jwk 10/10/2014
+ */
+
+function sm_utilities_views_bulk_operations_form_alter(&$form, $form_state, $vbo_handler) {
+  if ($vbo_handler->view->name == 'jwk_mentor_mentee_lookups' && empty($vbo_handler->view->result)) {
+    $form['#access'] = FALSE;
+  }
+}
+
+/*  JWK do we need this could put in rule? 422015 */
+function sm_utilities_user_login(&$edit, $account) {
+  // If this is user's first time log-in.
+  global $user;
+          if ($account->access == 0) {
+   drupal_set_message(t('Welcome! To better familiarize yourself with the application, navigate the tabs at the top to see the functionality available to you.'),'status');
+   
+   if ($has_role = array_intersect(array('Mentee','Mentor'), array_values($user->roles))) {
+	  drupal_set_message(t('Also, please edit your profile (the "Edit Profile" button below) and tell us more about yourself!'), 'status'); 
+   }
+   }
+}
+
+/*
+* Include custom utilities js file
+*/
+function sm_utilities_add_custom_js(){
+  drupal_add_js(drupal_get_path('module', 'sm_utilities') . '/js/scripts.js');
+}
+
+/** hide none on radio buttons */
+
+function sm_utilities_element_info_alter(&$type) {
+  $type['radios']['#process'][] = '_sm_utilities_remove_radio_na';
+}
+function _sm_utilities_remove_radio_na($element) {
+  unset($element['#options']['_none']);
+  unset($element['_none']);
+  return $element;
+}
+
+function sm_utilities_last_chat_reply($chat_nid){
+  $view_user_chats = views_get_view('dashboard_lets_chat'); 
+  if (($view_user_chats==NULL) || (!is_object($view_user_chats))) {
+    return NULL; // do nothing
+  }
+  $view_user_chats->set_display('letschat_reply_page'); // set the display
+  $args = array($chat_nid); 
+  $view_user_chats->set_arguments($args);
+  $view_user_chats->execute();
+  $chat_array = $view_user_chats->result;
+  if(count($chat_array) == 0){
+    $last_updated = node_load($chat_nid);
+    return $last_updated->name.": ".date("m/d/Y", $last_updated->created);
+  }
+  else {
+    foreach ($chat_array as $chatreply) {
+      return ($chatreply->users_node_name . ':  ' . date("m/d/Y",$chatreply->node_changed));
+    }
+  } 
+}
+/** jwk 8/04/2016  Fixing bug with token being blank */
+
+function sm_utilities_tokens_alter(&$replacements,  $context) {
+if(!isset($replacements['[current-page:url:args:value:2]'])){
+$replacements['[current-page:url:args:value:2]']  = '';
+}
+}

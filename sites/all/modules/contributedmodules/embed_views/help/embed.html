@@ -1,0 +1,102 @@
+<h3>Documentation</h3>
+<pre>/**
+ * Embed a view using a PHP snippet.
+ *
+ * This function is meant to be called from PHP snippets, should one wish to
+ * embed a view in a node or something. It's meant to provide the simplest
+ * solution and doesn't really offer a lot of options, but breaking the function
+ * apart is pretty easy, and this provides a worthwhile guide to doing so.
+ *
+ * @param $name
+ *   The name of the view to embed.
+ * @param $display_id
+ *   The display id to embed. This will be 'embed_ID'.
+ * @param ...
+ *   Any additional parameters will be passed as arguments.
+ */
+function views_embed_view($name, $display_id = 'default') {
+</pre>
+To figure out the id of a display, look under <strong>Other</strong>, in the
+view edit page for the particular view that will be embedded, for <strong>Machine Name:</strong>
+what ever this name is is what should be used for the $display_id variable.
+
+<h3>Usage</h3>
+
+<h4>Embedding a view</h4>
+<strong>The best way to use embedded views is to create your own module and integrate
+with which ever system you need to within Drupal, specifically
+<a href="http://api.drupal.org/api/drupal/modules--system--theme.api.php/function/hook_preprocess_HOOK/7" target="_blank">hook_preprocess_HOOK()</a></strong>
+<br />
+<br />
+You can easily embed the results of a view into other parts of your site;
+either, with code as a module, or in nodes or blocks as snippets. The
+easiest way is to use the function <strong>views_embed_view()</strong>:
+<pre>
+print views_embed_view('test', 'embed_1');
+</pre>
+
+This is the equivalent of views_embed_view without arguments.
+<pre>
+$view = views_get_view('test');
+$view->preview('embed_1');
+$view->destroy();
+</pre>
+
+<h4>Embedding a view with arguments</h4>
+<pre>
+print views_embed_view('test', 'embed_1', arg1, arg2, ...);
+</pre>
+
+This is the equivalent of views_embed_view with arguments.
+<pre>
+$view = views_get_view('test');
+$view->set_arguments(array(arg1, arg2, ...));
+print $view->preview('embed_1');
+$view->destroy();
+</pre>
+
+<h3>Advanced examples</h3>
+
+<h4>Embedding individual fields from a view</h4>
+To retrieve a specific field from an embeded view is to use
+<strong>$view->render_field($field, $row)</strong>
+<pre>
+$view = views_get_view('test');
+$view->set_display('embed_1');
+$view->pre_execute();
+$view->execute();
+
+if (!empty($view->result)) {
+  // Some fields may need to be pre_rendered before they are populated with
+  // their values. Try without and if it does not work try with pre_render.
+  //$view->field['field_example_field']->pre_render($view->result);
+  foreach ($view->result as $row => $values) {
+    $text = '';
+    $text .= '&lt;div class="name"&gt;' . $view->render_field('title', $row) . '&lt;/div&gt;';
+    $text .= '&lt;div class="location"&gt;' . $view->render_field('field_example_field', $row) . '&lt;/div&gt;';
+  }
+  return $text;
+}
+$view->destroy();
+</pre>
+
+<h4>Using fields from nodes as arguments for views</h4>
+<pre>
+$node = node_load($nid);
+
+// Create an array of taxonomy terms from node.
+$categories = array();
+$categories = field_get_items('node', $node, 'field_categories');
+$category_tids = array();
+foreach ($categories as $category) {
+  $category_tids[] = $category['tid'];
+}
+
+// Create arguments for view for "AND".
+$arguments = implode(',', $category_tids);
+
+$view = views_get_view('test');
+$view->set_arguments(array($arguments));
+print $view->preview('embed_1');
+$view->destroy();
+</pre>

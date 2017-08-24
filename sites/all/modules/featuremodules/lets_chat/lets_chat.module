@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Lets Chat feature.
+ */
+
+include_once 'lets_chat.features.inc';

@@ -1,0 +1,1149 @@
+/**
+ * @file
+ * Page Styling
+ *
+ * Style the markup found in page.tpl.php. Also includes some styling of
+ * miscellaneous Drupal elements that appear in the $content variable, such as
+ * ul.links, .pager, .more-link, etc.
+ */
+
+@import "base";
+
+/*
+ * HTML
+ */
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/*
+ * Body
+ */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  @include page-bg;
+  
+  color: $font-body;
+  
+  a:link,
+  a:visited {
+    color: $font-link;
+    text-decoration: none;
+  }
+  
+  a:hover,
+  a:focus {
+    text-decoration: underline;
+  }
+}
+
+@media only screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+  body {
+    
+  }
+}
+
+/*
+ * Over ride the background settings for the wysiwyg editors
+ */
+html.CSS1Compat {
+  body {
+    background: none;
+  }
+}
+
+html {
+  body.mceContentBody {
+    background: none;
+    filter: inherit !important;
+    font-size: 1em;
+  }
+}
+
+html {
+  body.cke_editable,
+  body.cke_panel_container,
+  body.cke_ltr {
+    background: none;
+    filter: inherit !important;
+    font-size: 1em;
+  }
+}
+
+#container {
+  min-height:100%;
+  position:relative;
+}
+#page {
+  padding-bottom: 90px;
+}
+
+.ui-widget {
+  font-size: inherit;
+}
+
+/*
+ * The skip-link link will be completely hidden until a user tabs to the link.
+ * See the element-focusable rule in system.base.css.
+ */
+
+#skip-link {
+  margin: 0;
+
+  a,
+  a:visited {
+    display: block;
+    width: 100%;
+    padding: 2px 0 3px 0;
+    text-align: center;
+    background-color: $skip-link-bg;
+    color: $skip-link;
+  }
+}
+
+/*
+ * Header
+ */
+
+#header-bar {
+  background-color: $header-bg;
+  padding-bottom: 5px;
+  border-bottom: solid 1px $header-border;
+}
+
+#header {
+
+}
+
+#header-content {
+  padding-top: 15px;
+}
+
+#logo { /* Wrapping link for logo */
+  float: left; /* LTR */
+  margin: 0;
+  padding: 0;
+
+  img {
+    vertical-align: bottom;
+  }
+}
+
+#name-and-slogan { /* Wrapper for website name and slogan */
+  float: left;
+}
+
+#site-name { /* The name of the website */
+  margin: 0 0 0 25px;
+  font-family: $rokkitt;
+  font-weight: 400;
+  font-size: 2.6em;
+  line-height: .7em;
+
+  a:link,
+  a:visited {
+    color: $font-site-name;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus {
+    text-decoration: underline;
+  }
+}
+
+.name-spacer {
+  height: 21px;
+}
+
+#site-slogan { /* The slogan (or tagline) of a website */
+  margin: 0 0 0 25px;
+  color: $font-site-name;
+  font-size: 1em;
+  line-height: 1.6em;
+  text-transform: uppercase;
+}
+
+.region-header { /* Wrapper for any blocks placed in the header region */
+  clear: both; /* Clear the logo */
+}
+
+#navigation-bar {
+  position: relative;
+  background-color: $nav-bg;
+  height: 46px;
+  border-bottom: solid 1px $nav-border;
+}
+
+/*
+ * Main (container for everything else)
+ */
+
+#main {
+  padding-top: 2em;
+}
+
+/*
+ * Content
+ */
+
+.region-highlighted {
+}
+
+.breadcrumb { /* The path to the current page in the form of a list of links */
+  margin-bottom: 5px;
+
+  ol {
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    color: $font-bread-crumb;
+    
+    a {
+      color: $font-bread-crumb-link;
+    }
+  }
+}
+
+.no-sidebars,
+.one-sidebar {
+  h1#page-title { /* Page title */
+    @include block-top;
+    font-size: 1.5em;
+  }
+  
+  #content-wrapper {
+    @include block-body;
+  }
+}
+
+h1.title, /* The title of the page */
+h2.node-title, /* Title of a piece of content when it is given in a list of content */
+h2.block-title, /* Block title */
+h2.title, /* Comment section heading */
+h2.comment-form, /* Comment form heading */
+h3.title { /* Comment title */
+  margin: 0;
+}
+
+table {
+  width: 100%;
+  margin: 0;
+}
+tr.even { /* Some tables have rows marked even or odd. */
+  border: none;
+  background-color: $table-row-even;
+}
+
+tr.odd {
+  border: none;
+}
+
+td.active {
+  background: none;
+}
+
+div.messages { /* Important messages (status, warning, and error) for the user. See also the declarations in messages.css. */
+  margin: -0.5em 0.8em 1.2em; /* Drupal core uses "6px 0" margin */
+  padding: 5px 10px 5px 50px;
+  background-position: 8px 4px;
+  font-weight: bold;
+    
+  ul {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+div.status { /* Normal priority messages */
+}
+
+div.warning,
+tr.warning { /* Medium priority messages */
+  /* border: 1px solid #f0c020; */ /* Drupal core uses: 1px solid #f0c020 */
+}
+
+div.error,
+tr.error { /* High priority messages. See also the .error declaration below. */
+}
+
+.error { /* Errors that are separate from div.messages status messages. */
+  /* color: #e55; */ /* Drupal core uses a #e55 background */
+}
+
+.warning { /* Warnings that are separate from div.messages status messages. */
+  /* color: #e09010; */ /* Drupal core uses a #e09010 background */
+}
+
+.tabs { /* See also the tabs.css file. */
+}
+
+.region-help { /* Help text on a page */
+}
+
+.more-help-link { /* Link to more help */
+}
+
+.region-content { /* Wrapper for the actual page content */
+}
+
+ul.inline { /* List of links generated by theme_links() */
+  display: inline;
+  padding: 0;
+
+  li {
+    display: inline;
+    list-style-type: none;
+    padding: 0 1em 0 0; /* LTR */
+  }
+}
+span.field-label { /* The inline field label used by the Fences module */
+  padding: 0 1em 0 0; /* LTR */
+}
+
+.item-list .pager { /* A list of page numbers when more than 1 page of content is available */
+  padding: 0;
+
+  li { /* Each page number in the pager list */
+    padding: 0 0.5em;
+  }
+}
+
+.feed-icon { /* The link to the RSS or Atom feed for the current list of content */
+}
+
+.more-link { /* Aggregator, blog, and forum more link */
+}
+.titlebar_link {
+  float: right;
+}
+.text-format-wrapper {
+  .form-item {
+    margin-bottom: 3em;
+  }
+}
+
+/*
+ * First sidebar (on left in LTR languages, on right in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-first
+ * (see the layout.css file.)
+ */
+
+.region-sidebar-first {
+}
+
+/*
+ * Second sidebar (on right in LTR languages, on left in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-second
+ * (see the layout.css file.)
+ */
+
+.region-sidebar-second {
+}
+
+/*
+ * Footer
+ */
+#footer-bar {
+  clear: both;
+  width: 100%;
+  background-color: $footer-bg;
+  -webkit-box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.3);
+}
+
+#footer {
+  padding-top: 10px;
+  
+  .logo {
+    float: left;
+    width: 20%;
+  }
+  
+  .logo2{
+    float: right;
+    width: 20%;
+    text-align: right;
+  }
+  
+  #block-block-1 {
+    @include no-block-body;
+    padding: 0;
+  }
+  
+  .clear {
+    clear: both;
+  }
+}
+
+#footer-links {
+  float: left;
+  font-size: .85em;
+  width: 60%;
+  margin-top: 20px;
+  
+  .links-wrapper {
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .links {
+    margin-left: 0;
+  }
+  
+  li {
+    line-height: 4.5em;
+  }
+}
+
+/*
+ * Page bottom
+ */
+
+.region-bottom { /* Wrapper for any blocks placed in the page bottom region */
+}
+
+/*
+ * Popup Windows
+ */
+#mediaBrowser {
+  width: 700px !important;
+  height: 600px !important;
+}
+body.section-file,
+body.page-media-browser {
+  background-image: none;
+  background-color: $pop-bg; 
+}
+.ui-dialog {
+  width: auto !important;
+  border: solid 1px $pop-border;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+}
+.ui-widget {
+  input {
+    font-family: inherit;
+    font-size: .85em;
+  }
+} 
+#media-browser-tabset {
+  #branding {
+    padding: 0;
+    h1 {
+      @include block-top;
+      width: 98%;
+      font-size: 1.5em;
+    }
+  }
+  #media-tabs-wrapper {
+    clear:both;
+  }
+}
+#media-browser-tabset.ui-widget-content {
+  border: none;
+  border-radius: inherit;
+}
+#edit-upload-upload-button,
+#edit-upload-remove-button {
+  @include button;
+  margin-left: 5px;
+}
+.media-item {
+  width: inherit;
+}
+#colorbox {
+  img {
+    height: inherit;
+  }
+}
+/*
+ * Custom over rides for modules 
+ */
+#drupalchat-wrapper {
+  bottom: 63px;
+  margin: 0;
+  
+  .options {
+    display: none;
+  }
+}
+
+/*
+ * Custom styles for specific pages
+ *
+ */
+
+/*
+ * User Profile View
+ */
+.page-user,
+.page-admin-people-create {
+  .tabs,
+  .breadcrumb {
+    display: none;
+  }
+  #edit-privatemsg {
+    legend {
+      display: none;
+    }
+    
+  }
+  .form-wrapper {
+    width: 650px;
+    margin: 0 auto;
+  }
+  h3 {
+    background-color: $text-header-bg;
+    padding: 5px;
+  }
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+  .form-item label {
+    font-weight: bold;
+  }
+  #edit-contact,
+  #edit-comment-notify-settings {
+    display: none;
+  }
+  #edit-picture {
+    legend {
+      color: $font-form-label;
+      font-weight: bold;
+      line-height: 1.75em; 
+      margin-right: 1em;
+    }
+  }
+  .user-picture {
+    float: none;
+    margin: 0;
+  }
+  .field-name-field-user-acct-type {
+    display: none;
+  }
+  .field-group-htabs-wrapper {
+    margin-top: 10px;
+  }
+  .horizontal-tabs {
+    border: none;
+  }
+  .filter-wrapper {
+    padding: 0;
+  }
+  .form-item-status {
+    display: none;
+  }
+  
+  .profile {
+    h3.field-label {
+      border: none;
+      font-size: 1em;
+    }
+  }
+  
+  .view-header {
+    margin-bottom: 15px;
+  }
+  
+  /* Profile display */
+  .profile-section {
+    clear: both;
+    padding-top: 10px;
+  }
+  .profile-group {
+    width: 90%;
+    margin: 0 auto;
+    
+    h3 {
+      background: none;
+      margin: 0;
+      padding: 0;
+      font-size: 1em;
+    }
+    
+    ul {
+      margin: 0;
+    }
+    
+    p{
+      margin: 0;
+    }
+    
+    .field{
+      margin-bottom: 20px;
+    }
+  }
+  .views-field-picture img {
+    float: left;
+    border: solid 3px $status-user-avatar-border;
+    -khtml-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border: 3px;
+    border-radius: 3px;
+  }
+  .views-field-field-user-status {
+    position: relative;
+    float: left;
+    width: 135px;
+    min-height: 70px;
+    background:-webkit-gradient(linear, 0 0, 0 100%, from($status-user-bg-gradient-start), to($status-user-bg-gradient-finish));
+    background:-moz-linear-gradient($status-user-bg-gradient-start, $status-user-bg-gradient-finish);
+    background:-o-linear-gradient($status-user-bg-gradient-start, $status-user-bg-gradient-finish);
+    background:linear-gradient($status-user-bg-gradient-start, $status-user-bg-gradient-finish);
+    background-color: $status-user-bg;
+    padding: 12px 15px;
+    border: solid 2px $status-user-border;
+    -khtml-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border: 4px;
+    border-radius: 4px;
+    line-height: normal;
+    margin-left:10px;
+    -webkit-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+    
+    p{
+      margin: 0;
+      font-size: 1em;
+    }
+  }
+  .views-field-field-user-status:before {
+    content:"";
+  	position:absolute;
+  	top:40px; /* controls vertical position */
+  	bottom:auto;
+  	left:-10px; /* value = - border-left-width - border-right-width */
+  	border-style:solid;
+  	border-width:5px 10px 5px 0;
+  	border-color:transparent $status-user-border;
+      /* reduce the damage in FF3.0 */
+      display:block; 
+      width:0;
+  }
+  .profile-edit-link {
+    float: left;
+    margin-left: 20px;
+  }
+  .profile_email_link {
+    margin-left: 20px;
+  }
+  
+  .view-user-relationships-view {
+    .views-field-picture {
+      float: left;
+      margin-right: 10px;
+    }
+  }
+  
+  fieldset {
+    width: 90%;
+    margin: 20px auto 0 auto;  
+  }
+  
+  .field-type-taxonomy-term-reference {
+    ul.links li {
+      float: none;
+    }
+    ul.shs-hierarchy li {
+      display: inline;
+    }
+  }
+  
+}
+.page-user.role-Mentor {
+
+  .group_administrative {
+    display: none;
+  }
+  
+}
+.page-user.role-Mentee {
+  
+  .group_mentee,
+  .group_mentor_mc,
+  .group_mentor_edu_bk,
+  .group_administrative {
+    display: none;
+  }
+}
+
+.page-node-add-mentor-request-explanation {
+  #edit-field-mentor-reference {
+    display: none;
+  }
+}
+
+.page-node-add-mentor-request-rejection {
+  #edit-field-referenced-mentor-request {
+    display: none;
+  }
+}
+
+/*
+ * Mentors
+ * Page when selecting the Mentors tab in main nav
+ */
+.page-apachesolruser {
+  
+  .form-submit {
+    margin-top: 1.7em;
+  }
+  
+}
+
+.page-menteementorselect,
+.page-gamentees,
+.page-gamentors {
+  .sidebar {
+    .block {
+      background-color: $block-bg;
+      -khtml-border-radius-topleft: 3px;
+      -khtml-border-radius-topright: 3px;
+      -moz-border-radius-topleft: 3px;
+      -moz-border-radius-topright: 3px;
+      -webkit-border-top-left-radius: 3px;
+      -webkit-border-top-right-radius: 3px;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+
+      h2.block-title {
+        font-size: 1em;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        line-height: 1em;
+        height: auto;
+      }
+      .item-list {
+        font-size: .95em;
+        padding-bottom: 10px;
+      }
+      
+    }
+    
+    .views-exposed-widget {
+      padding: 0;
+      label {
+        @include block-top;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        line-height: 1em;
+        height: auto;
+      }
+      .form-type-textfield {
+        padding: 10px;
+      }
+      #edit-search-api-views-fulltext {
+        width: 90%;
+      }
+      .description {
+        width: 90%;
+        font-size: .9em;
+        padding-left: 12px;
+        line-height: 1em; 
+        margin-bottom: 10px;
+      }
+      .form-submit {
+        margin: 0 0 10px 10px;
+        padding: 4px 8px;
+      }
+    }
+    
+    ul {
+      margin: 5px 5px 0 0;
+      padding-left: 25px;
+    }
+  }
+  
+  .view-header {
+    margin-bottom: 10px;
+  }
+  
+  table {
+    .views-field-name {
+      width: 15%;
+    }
+    .views-field-field-taxonomy-tag {
+      width: 11%;
+    }
+    .views-field-field-school-subjects {
+      width: 20%;
+    }
+    .views-field-field-job-field-specialty {
+      width: 30%;
+    }
+    .views-field-php {
+      width: 14%;
+    }
+    .views-field-edit-url {
+      width: 5%;
+    }
+  }
+
+}
+
+/*
+ * Forums & Blogs
+ * 
+ */
+.page-forum,
+.node-type-forum,
+.page-node-add-forum,
+.page-blog,
+.node-type-blog,
+.page-node-add-blog,
+.page-my-forums {
+  
+  .tabs {
+    display: none;
+  }
+  
+  .forum-tools {
+    display: none;
+  }
+  
+  .forum-topic-legend {
+    div {
+      display: none;
+    }
+  }
+
+  .views-field-topic-icon,
+  .feed-icon {
+    display: none;
+  }
+  
+  #forum-sort {
+    margin-top: 10px;
+  }
+  
+  .views-field-title {
+    padding-left: 5px;
+  }
+  
+  .forum-node-create-links-top {
+    margin-bottom: 15px;
+  }
+  
+  p {
+    margin: .8em 0;
+  }
+  
+  .forum-post-panel-sub {
+    width: 175px;
+  }
+  .forum-post-panel-main {
+    margin-left: 175px;
+  }
+  
+  .forum-table {
+    tr.sticky {
+      background-color: inherit;
+    }
+    tr.even,
+    tr.odd {
+      background: inherit;
+    }
+    tr.odd {
+      background-color: $table-row-odd;
+    }
+  }
+  
+  .field-name-field-helpful-forum {
+    float: right;
+    margin-right: 15px;
+  }
+  .field-name-body {
+    clear: right;
+  }
+  
+  .block-custom-search-blocks {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+  
+}
+
+.page-blog {
+  article {
+    border-bottom: solid 1px $content-box;
+    padding-bottom: 10px;
+  }
+  
+  .action-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    
+    a {
+      @include button;
+    }
+    a:hover,
+    a:focus {
+      text-decoration: none;
+    }
+  }
+}
+
+.page-node-add-forum,
+.node-type-forum.page-node-edit,
+.page-node-add-blog {
+  .node-form {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  
+  #edit-taxonomy-forums {
+    display: none;
+  }
+  
+  #edit-field-blog-body-und-0-format {
+    display: none;
+  }
+
+}
+
+.page-forum.role-Mentee {
+  .forum-node-create-links {
+    display: none;
+  }
+}
+
+.node-type-blog {
+  .comment-wrapper {
+    background-color: $content-highlight;
+    padding: 5px 15px;
+    
+    h2.title {
+      font-size: 1.2em;
+    }
+  }
+  .field-name-field-blog-location-class {
+    display: none;
+  }
+}
+
+.view-blog-posts {
+  .views-field-title {
+    font-size: 1.3em;
+  }
+}
+
+/*
+ * Calendars
+ * 
+ */
+.page-node-add-calendar-event {
+  .node-form {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  #edit-field-event-detail-und-0-format {
+    display: none;
+  }
+}
+.page-calendar {
+  .view-header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+}
+.page-cm-calendar {
+  .fc-event-title {
+    color: $font-button;
+  }
+}
+.view-event-calendar {
+  .view-header {
+    margin-top: 10px;
+  }
+}
+/*
+ * Award pages
+ */
+.page-node-add-endorsement {
+  form {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  .form-item-field-endorsement-badge-und {
+    clear: both;
+    width: 65%;
+    line-height: 64px;
+  }
+  .views-field-field-term-icon {
+    float: right;
+  }
+  input.form-radio {
+    vertical-align: baseline;
+  }
+}
+
+/*
+ * Search
+ */
+.page-search-node {
+  .tabs {
+    display: none;
+  }
+}
+
+/*
+ * Administration pages
+ */
+.page-groupadmin-activities,
+.page-mentee-subtree,
+.page-mentor-subtree,
+.page-match-approval-confirm,
+.page-activity-attachments,
+.node-type-act-assignment-resource,
+.page-import,
+.page-batch,
+.page-admin-content-avatars {
+  
+  .view-header {
+    margin-bottom: 15px;
+  }
+  
+}
+
+.page-match-approval-confirm {
+  form {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+}
+
+.page-activity-attachments-for-review {
+  .views-row-odd {
+    .node-unpublished {
+      background-color: $table-row-odd;
+    }
+  }
+  .views-row-even {
+    .node-unpublished {
+      background-color: $table-row-even;
+    }
+  }
+  .node-unpublished {    
+    h2 {
+      font-size: 1.2em;
+      font-weight: normal;
+      line-height: normal;
+    }
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.page-admin-content-avatars {
+  .tabs {
+    display: none;
+  }
+  .form-submit {
+    padding: 3px 6px;
+  }
+}
+
+.node-type-act-assignment-resource {
+  .node-unpublished { 
+    background-color: $block-bg;
+  }
+}
+
+.page-import { 
+  #edit-submit {
+    margin-top: 15px;
+  }
+}
+
+.page-reports {
+  #content-wrapper {
+    overflow-x: scroll;
+  }
+  .view-content {
+    clear: both;
+    width: 300%;
+  }
+  table {
+    width: auto;
+    th, td {
+      padding: 0 5px;
+    }
+  }
+  
+  .views-field-field-uncensored-body,
+  .views-field-field-mentee-career-uncensored {
+    width: 400px;
+    display: block;
+    word-wrap: break-word;
+  }
+  
+  .state {
+    display: block;
+  }
+  
+}
+
+.page-curriculum-activity {
+  background: white;
+
+  #admin-menu {
+    display: none;
+  }
+}
+
+.views-label.curricula-vbo{
+  display: inline;
+  margin-left: 5px;
+}
+
+.field-content.curricula-vbo{
+  display: inline;
+  float: left;
+}
+
+.field-content.curricula-vbo .form-type-radio{
+  margin: 0;
+}
+
+.all-curricula-desc{
+  margin: 15px 0;
+  display: inline-block;
+}     
+
+.add-activity-button-curriculum{
+  margin-bottom:10px;
+  display: inline-block;
+}
+
+.curriculum-post-date{
+  margin-top: 15px;
+  display: inline-block;
+}
+
+.hidden{
+  display:none;
+}
+
+.comment-content .field-name-comment-body{
+  margin-bottom: 20px;
+}

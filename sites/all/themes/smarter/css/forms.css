@@ -1,0 +1,839 @@
+/**
+ * @file
+ * Form Styling
+ */
+/* line 9, ../sass/forms.scss */
+.form-item {
+  /* Wrapper for a form element (or group of form elements) and its label */
+  margin: 1.5em 0;
+}
+/* line 14, ../sass/forms.scss */
+.form-item input.error,
+.form-item textarea.error,
+.form-item select.error {
+  /* Highlight the form elements that caused a form submission error */
+  border: 1px solid red;
+}
+/* line 18, ../sass/forms.scss */
+.form-item label {
+  /* The label for a form element */
+  color: #333333;
+  font-weight: bold;
+  line-height: 1.75em;
+  margin-right: 1em;
+}
+/* line 25, ../sass/forms.scss */
+.form-item label.option {
+  /* The label for a radio button or checkbox */
+  display: inline;
+  font-weight: normal;
+}
+/* line 30, ../sass/forms.scss */
+.form-item .form-required {
+  /* The part of the label that indicates a required field */
+  color: red;
+}
+/* line 34, ../sass/forms.scss */
+.form-item .description {
+  /* The descriptive help text (separate from the label) */
+  clear: both;
+  font-size: 0.85em;
+}
+/* line 40, ../sass/forms.scss */
+.form-checkboxes .form-item, .form-radios .form-item {
+  /* Pack groups of checkboxes and radio buttons closer together */
+  margin: 0;
+  /* Drupal core uses "0.4em 0" */
+}
+/* line 44, ../sass/forms.scss */
+.form-item input {
+  border: 2px solid #a7c7dd;
+  background: #f0f0f0;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #f0f0f0 0%, white 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f0f0f0), color-stop(100%, white));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #f0f0f0 0%, white 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #f0f0f0 0%, white 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #f0f0f0 0%, white 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #f0f0f0 0%, #ffffff 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding-left: 3px;
+}
+/* line 63, ../sass/forms.scss */
+.form-item input.form-checkboxe,
+.form-item input.form-radio {
+  background: none;
+  border: none;
+}
+
+/* line 71, ../sass/forms.scss */
+.form-type-checkbox label,
+.form-type-radios label {
+  float: none;
+  text-align: left;
+  width: inherit;
+}
+
+/* line 81, ../sass/forms.scss */
+.form-field-type-taxonomy-term-reference .tabledrag-toggle-weight-wrapper,
+.form-field-type-taxonomy-term-reference .field-multiple-drag,
+.field-type-taxonomy-term-reference .tabledrag-toggle-weight-wrapper,
+.field-type-taxonomy-term-reference .field-multiple-drag {
+  display: none;
+}
+/* line 84, ../sass/forms.scss */
+.form-field-type-taxonomy-term-reference th,
+.field-type-taxonomy-term-reference th {
+  padding: 0;
+  border: none;
+}
+/* line 88, ../sass/forms.scss */
+.form-field-type-taxonomy-term-reference tbody,
+.field-type-taxonomy-term-reference tbody {
+  border: none;
+}
+/* line 94, ../sass/forms.scss */
+.form-field-type-taxonomy-term-reference td,
+.field-type-taxonomy-term-reference td {
+  padding: 10px;
+}
+/* line 96, ../sass/forms.scss */
+.form-field-type-taxonomy-term-reference td label,
+.field-type-taxonomy-term-reference td label {
+  display: none;
+}
+/* line 100, ../sass/forms.scss */
+.form-field-type-taxonomy-term-reference .form-submit,
+.field-type-taxonomy-term-reference .form-submit {
+  background: #007dc4;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+
+/* Text field input resize (out of box are too long) */
+/* line 111, ../sass/forms.scss */
+#user-register-form #edit-mail,
+#user-register-form #edit-field-first-name-und-0-value,
+#user-register-form #edit-field-last-name-und-0-value {
+  width: 50%;
+}
+/* line 114, ../sass/forms.scss */
+#user-register-form #edit-name {
+  width: 30%;
+}
+
+/* line 120, ../sass/forms.scss */
+.form-submit,
+input.add-to-dropbox {
+  /* The submit button */
+  background: #007dc4;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+
+/* line 126, ../sass/forms.scss */
+.container-inline div,
+.container-inline label {
+  /* Inline labels and form divs */
+  display: inline;
+}
+
+/* line 131, ../sass/forms.scss */
+.tips {
+  /* Tips for Drupal's input formats */
+}
+
+/* line 134, ../sass/forms.scss */
+a.button {
+  /* Buttons used by contrib modules like Media */
+  background: #007dc4;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+
+/* line 138, ../sass/forms.scss */
+a:link.button,
+a:visited.button {
+  color: white;
+}
+
+/* line 142, ../sass/forms.scss */
+a:hover.button,
+a:focus.button {
+  text-decoration: none;
+}
+
+/* line 146, ../sass/forms.scss */
+a.go-button {
+  /* Buttons used by contrib modules like Media */
+  background: #699d00;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #99cc00 0%, #3c7100 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #99cc00), color-stop(100%, #3c7100));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #99cc00 0%, #3c7100 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #99cc00 0%, #3c7100 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #99cc00 0%, #3c7100 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #99cc00 0%, #3c7100 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#99cc00', endColorstr='#3c7100',GradientType=0 );
+  /* IE6-9 */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+
+/* line 150, ../sass/forms.scss */
+a:link.go-button,
+a:visited.go-button {
+  color: white;
+}
+
+/* line 154, ../sass/forms.scss */
+a:hover.go-button,
+a:focus.go-button {
+  text-decoration: none;
+}
+
+/*
+ * Password confirmation
+ */
+/* line 163, ../sass/forms.scss */
+.password-parent,
+.confirm-parent {
+  margin: 0;
+}
+
+/*
+ * Search (search-block-form.tpl.php)
+ */
+/* line 171, ../sass/forms.scss */
+#block-search-form {
+  /* Wrapper for the search form */
+}
+
+/*
+ * Drupal's default login form block
+ */
+/* line 180, ../sass/forms.scss */
+.front #content-wrapper {
+  /*background: none; jwk rem out 1302015 */
+  border: none;
+  margin: inherit;
+ /* padding: inherit; jwk rem out 2022015 */
+  -webkit-box-shadow: inherit;
+  -moz-box-shadow: inherit;
+  box-shadow: inherit;
+}
+
+/* line 188, ../sass/forms.scss */
+.page-user-login #content,
+.anonymous-form #content {
+  width: 718px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* line 194, ../sass/forms.scss */
+.page-user-login .form-item,
+.anonymous-form .form-item {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* line 200, ../sass/forms.scss */
+.page-user-login input.form-text,
+.anonymous-form input.form-text {
+  height: 24px;
+  font-size: 1.25em;
+  width: 40%;
+}
+/* line 206, ../sass/forms.scss */
+.page-user-login .description,
+.anonymous-form .description {
+  display: none;
+}
+/* line 210, ../sass/forms.scss */
+.page-user-login input.form-submit,
+.anonymous-form input.form-submit {
+  font-size: 1em;
+}
+/* line 214, ../sass/forms.scss */
+.page-user-login .item-list,
+.anonymous-form .item-list {
+  display: none;
+}
+/* line 218, ../sass/forms.scss */
+.page-user-login ul.menu,
+.anonymous-form ul.menu {
+  /* Menu block links */
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  /* LTR */
+  border: none;
+}
+/* line 224, ../sass/forms.scss */
+.page-user-login ul.menu li,
+.anonymous-form ul.menu li {
+  /* A simple method to get navigation links to appear in one line. */
+  list-style-type: none;
+  list-style-image: none;
+}
+
+/* line 230, ../sass/forms.scss */
+#user-login {
+  text-align: left;
+  /* LTR */
+  /*
+   * OpenID
+   *
+   * The default styling for the OpenID login link seems to assume Garland's
+   * styling of list items.
+   */
+}
+/* line 233, ../sass/forms.scss */
+#user-login label {
+  /* The label for a form element */
+  float: left;
+  width: 10em;
+  text-align: right;
+  font-size: 1.25em;
+  font-weight: 500;
+}
+/* line 248, ../sass/forms.scss */
+#user-login ul {
+  /* OpenID creates a new ul above the login form's links. */
+  margin-bottom: 0;
+  /* Position OpenID's ul next to the rest of the links. */
+}
+/* line 253, ../sass/forms.scss */
+html.js #user-login li.openid-link,
+#user-login li.openid-link {
+  /* The "Log in using OpenID" link. */
+  margin-top: 1.5em;
+  margin-left: -20px;
+  /* LTR */
+  /* Un-do some of the padding on the ul list. */
+}
+/* line 258, ../sass/forms.scss */
+#user-login li.user-link {
+  /* The "Cancel OpenID login" link. */
+  margin-top: 1.5em;
+}
+/* line 263, ../sass/forms.scss */
+#user-login .form-actions .form-wrapper {
+  width: auto;
+}
+/* line 269, ../sass/forms.scss */
+#user-login #edit-actions,
+#user-login .links {
+  padding-left: 275px;
+}
+/* line 273, ../sass/forms.scss */
+#user-login .form-submit {
+  padding: 12px 24px;
+}
+
+/* line 279, ../sass/forms.scss */
+#user-login ul {
+  margin: 1.5em 0;
+}
+
+/*
+ * Drupal admin tables
+ *
+ * We overrode these styles in normalize.css, but restore them for the admin
+ * section of the site.
+ */
+/* line 291, ../sass/forms.scss */
+form th {
+  text-align: left;
+  /* LTR */
+  padding-right: 1em;
+  /* LTR */
+  border-bottom: 3px solid #ccc;
+}
+/* line 297, ../sass/forms.scss */
+form tbody {
+  border-top: 1px solid #ccc;
+}
+/* line 301, ../sass/forms.scss */
+form table .item-list ul {
+  margin: 0;
+}
+
+/*
+ * Drupal core wrongly puts this in system.menus.css. Since we override that, add it back.
+ */
+/* line 320, ../sass/forms.scss */
+td.menu-disabled {
+  background: #ccc;
+}
+
+/*
+ * Register and Forgot Password
+ */
+/* line 328, ../sass/forms.scss */
+.page-user-register,
+.page-user-password {
+  /* Fix for tabbed interface on profile pages */
+  /* end fix */
+}
+/* line 331, ../sass/forms.scss */
+.page-user-register ul.horizontal-tabs-list,
+.page-user-password ul.horizontal-tabs-list {
+  display: none;
+}
+/* line 334, ../sass/forms.scss */
+.page-user-register .horizontal-tabs .horizontal-tab-hidden,
+.page-user-password .horizontal-tabs .horizontal-tab-hidden {
+  display: block;
+  position: relative;
+  top: inherit;
+}
+/* line 341, ../sass/forms.scss */
+.page-user-register .tabs,
+.page-user-password .tabs {
+  display: none;
+}
+/* line 346, ../sass/forms.scss */
+.page-user-register form .grippie,
+.page-user-password form .grippie {
+  display: none;
+}
+/* line 351, ../sass/forms.scss */
+.page-user-register .form-wrapper,
+.page-user-password .form-wrapper {
+  width: 650px;
+  margin: 1.5em auto;
+}
+/* line 356, ../sass/forms.scss */
+.page-user-register fieldset,
+.page-user-password fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+/* line 361, ../sass/forms.scss */
+/*.page-user-register fieldset legend,*/
+.page-user-password fieldset legend {
+  display: none;
+}
+
+.page-user-register fieldset legend{
+  font-weight:bold;
+}
+
+/* line 366, ../sass/forms.scss */
+.page-user-register h3,
+.page-user-password h3 {
+  display: none;
+}
+/* line 370, ../sass/forms.scss */
+.page-user-register label,
+.page-user-password label {
+  /* The label for a form element */
+  float: left;
+  width: 10em;
+  text-align: right;
+}
+/* line 380, ../sass/forms.scss */
+.page-user-register .form-item-field-address-und-0-administrative-area,
+.page-user-register .form-item-field-address-und-0-locality,
+.page-user-register .form-item-field-address-und-0-postal-code,
+.page-user-register .field-widget-phone-textfield,
+.page-user-register .form-item-field-phone-und-0-value,
+.page-user-password .form-item-field-address-und-0-administrative-area,
+.page-user-password .form-item-field-address-und-0-locality,
+.page-user-password .form-item-field-address-und-0-postal-code,
+.page-user-password .field-widget-phone-textfield,
+.page-user-password .form-item-field-phone-und-0-value {
+  margin-top: 0;
+}
+/* line 384, ../sass/forms.scss */
+.page-user-register .password-confirm,
+.page-user-password .password-confirm {
+  margin: 0;
+}
+/* line 389, ../sass/forms.scss */
+.page-user-register #edit-field-address-und-0 legend,
+.page-user-password #edit-field-address-und-0 legend {
+  display: none;
+}
+/* line 394, ../sass/forms.scss */
+.page-user-register .form-item-field-address-und-0-administrative-area:before,
+.page-user-password .form-item-field-address-und-0-administrative-area:before {
+  clear: both;
+}
+/* line 399, ../sass/forms.scss */
+.page-user-register .field-type-addressfield,
+.page-user-register .form-item-field-address-und-0-postal-code,
+.page-user-password .field-type-addressfield,
+.page-user-password .form-item-field-address-und-0-postal-code {
+  margin-bottom: 0;
+}
+/* line 403, ../sass/forms.scss */
+.page-user-register .addressfield-container-inline > div.form-item,
+.page-user-password .addressfield-container-inline > div.form-item {
+  float: inherit;
+}
+/* line 407, ../sass/forms.scss */
+.page-user-register .form-item-terms-of-use,
+.page-user-password .form-item-terms-of-use {
+  padding-left: 5em;
+}
+/* line 409, ../sass/forms.scss */
+.page-user-register .form-item-terms-of-use label,
+.page-user-password .form-item-terms-of-use label {
+  width: auto;
+}
+/* line 415, ../sass/forms.scss */
+.page-user-register #edit-field-taxonomy-tag input.form-submit,
+.page-user-password #edit-field-taxonomy-tag input.form-submit {
+  background: #007dc4;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+/* line 420, ../sass/forms.scss */
+.page-user-register #edit-field-taxonomy-tag .form-item .description,
+.page-user-password #edit-field-taxonomy-tag .form-item .description {
+  clear: none;
+}
+/* line 425, ../sass/forms.scss */
+.page-user-register .dropbox,
+.page-user-password .dropbox {
+  margin-left: 5em;
+}
+/* line 428, ../sass/forms.scss */
+.page-user-register #edit-field-user-acct-type,
+.page-user-password #edit-field-user-acct-type {
+  display: none;
+}
+/* line 432, ../sass/forms.scss */
+.page-user-register .confirm-parent,
+.page-user-register .password-parent,
+.page-user-password .confirm-parent,
+.page-user-password .password-parent {
+  width: 100%;
+}
+/* line 435, ../sass/forms.scss */
+.page-user-register .password-strength,
+.page-user-password .password-strength {
+  margin: 0;
+}
+/* line 439, ../sass/forms.scss */
+.page-user-register #edit-actions,
+.page-user-password #edit-actions {
+  text-align: center;
+}
+/* line 443, ../sass/forms.scss */
+.page-user-register .form-item-mollom-captcha,
+.page-user-password .form-item-mollom-captcha {
+  width: 650px;
+  margin: 0 auto;
+}
+/* line 447, ../sass/forms.scss */
+.page-user-register .form-item-mollom-captcha #edit-mollom-captcha,
+.page-user-password .form-item-mollom-captcha #edit-mollom-captcha {
+  margin-left: 11em;
+}
+/* line 453, ../sass/forms.scss */
+.page-user-register #edit_field_taxonomy_tag_und_0_tid_select_1_chzn .chzn-single,
+.page-user-password #edit_field_taxonomy_tag_und_0_tid_select_1_chzn .chzn-single {
+  margin-left: inherit;
+}
+/* line 460, ../sass/forms.scss */
+.page-user-register .field-type-taxonomy-term-reference .tabledrag-toggle-weight-wrapper,
+.page-user-register .field-type-taxonomy-term-reference .field-multiple-drag,
+.page-user-password .field-type-taxonomy-term-reference .tabledrag-toggle-weight-wrapper,
+.page-user-password .field-type-taxonomy-term-reference .field-multiple-drag {
+  display: none;
+}
+/* line 463, ../sass/forms.scss */
+.page-user-register .field-type-taxonomy-term-reference thead,
+.page-user-password .field-type-taxonomy-term-reference thead {
+  float: left;
+  width: 10em;
+  text-align: right;
+  margin-right: 1em;
+}
+/* line 469, ../sass/forms.scss */
+.page-user-register .field-type-taxonomy-term-reference th,
+.page-user-password .field-type-taxonomy-term-reference th {
+  padding: 0;
+  border: none;
+}
+/* line 473, ../sass/forms.scss */
+.page-user-register .field-type-taxonomy-term-reference tbody,
+.page-user-password .field-type-taxonomy-term-reference tbody {
+  float: left;
+  width: 400px;
+  border: none;
+}
+/* line 481, ../sass/forms.scss */
+.page-user-register .field-type-taxonomy-term-reference td,
+.page-user-password .field-type-taxonomy-term-reference td {
+  padding: 10px;
+}
+/* line 483, ../sass/forms.scss */
+.page-user-register .field-type-taxonomy-term-reference td label,
+.page-user-password .field-type-taxonomy-term-reference td label {
+  display: none;
+}
+/* line 487, ../sass/forms.scss */
+.page-user-register .field-type-taxonomy-term-reference .field-add-more-submit,
+.page-user-password .field-type-taxonomy-term-reference .field-add-more-submit {
+  margin-left: 12em;
+}
+
+/* line 495, ../sass/forms.scss */
+.page-user-password #content {
+  width: 718px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* line 501, ../sass/forms.scss */
+.page-user-password form {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+/* line 506, ../sass/forms.scss */
+.page-user-password label {
+  width: 15em;
+}
+/* line 510, ../sass/forms.scss */
+.page-user-password .form-item {
+  width: 650px;
+  margin: 0 auto;
+}
+
+/*
+ * Edit Profile
+ */
+/* line 523, ../sass/forms.scss */
+.page-user-edit form,
+.page-admin-people-create form {
+  width: 750px;
+  margin: 1.5em auto;
+}
+/* line 528, ../sass/forms.scss */
+.page-user-edit .selects,
+.page-admin-people-create .selects {
+  margin-right: 1em;
+}
+/* line 533, ../sass/forms.scss */
+.page-user-edit .confirm-parent,
+.page-user-edit .password-parent,
+.page-admin-people-create .confirm-parent,
+.page-admin-people-create .password-parent {
+  width: 100%;
+}
+/* line 536, ../sass/forms.scss */
+.page-user-edit .password-strength,
+.page-admin-people-create .password-strength {
+  margin: 0;
+}
+/* line 540, ../sass/forms.scss */
+.page-user-edit .addressfield-container-inline > div.form-item,
+.page-admin-people-create .addressfield-container-inline > div.form-item {
+  float: inherit;
+}
+/* line 547, ../sass/forms.scss */
+.page-user-edit .form-item-field-address-und-0-administrative-area,
+.page-user-edit .form-item-field-address-und-0-locality,
+.page-user-edit .form-item-field-address-und-0-postal-code,
+.page-user-edit .field-widget-phone-textfield,
+.page-admin-people-create .form-item-field-address-und-0-administrative-area,
+.page-admin-people-create .form-item-field-address-und-0-locality,
+.page-admin-people-create .form-item-field-address-und-0-postal-code,
+.page-admin-people-create .field-widget-phone-textfield {
+  margin-top: 0;
+}
+/* line 551, ../sass/forms.scss */
+.page-user-edit .form-item-pass-pass2,
+.page-admin-people-create .form-item-pass-pass2 {
+  margin-bottom: 0;
+}
+/* line 556, ../sass/forms.scss */
+.page-user-edit .field-type-addressfield,
+.page-user-edit .form-item-field-address-und-0-postal-code,
+.page-admin-people-create .field-type-addressfield,
+.page-admin-people-create .form-item-field-address-und-0-postal-code {
+  margin-bottom: 0;
+}
+/* line 561, ../sass/forms.scss */
+.page-user-edit .user-avatar-select .form-item,
+.page-admin-people-create .user-avatar-select .form-item {
+  text-align: center;
+  float: none;
+  display: inline;
+  width: 85px;
+}
+/* line 568, ../sass/forms.scss */
+.page-user-edit .user-avatar-select .form-radio,
+.page-admin-people-create .user-avatar-select .form-radio {
+  display: none;
+}
+/* line 572, ../sass/forms.scss */
+.page-user-edit .user-avatar-select img,
+.page-admin-people-create .user-avatar-select img {
+  padding: 5px;
+}
+/* line 578, ../sass/forms.scss */
+.page-user-edit .form-item-picture-delete,
+.page-user-edit #edit-field-preregistered,
+.page-admin-people-create .form-item-picture-delete,
+.page-admin-people-create #edit-field-preregistered {
+  display: none;
+}
+/* line 582, ../sass/forms.scss */
+.page-user-edit #edit-field-check-in-und-0-value,
+.page-admin-people-create #edit-field-check-in-und-0-value {
+  width: 560px;
+}
+
+/* line 591, ../sass/forms.scss */
+.page-user-edit.role-Mentee #edit-field-user-acct-type,
+.page-user-edit.role-Mentee .form-item-name,
+.page-user-edit.role-Mentor #edit-field-user-acct-type,
+.page-user-edit.role-Mentor .form-item-name {
+  display: none;
+}
+
+/*
+ * Relationship Request
+ */
+/* line 601, ../sass/forms.scss */
+.page-relationship-request form {
+  width: 650px;
+  margin: 1.5em auto;
+}
+/* line 606, ../sass/forms.scss */
+.page-relationship-request .form-item-rtid {
+  display: none;
+}
+
+/*
+ * Contact
+ */
+/* line 618, ../sass/forms.scss */
+.page-contact form,
+.page-node-add-custom-contact-us form {
+  width: 650px;
+  margin: 1.5em auto;
+}
+
+.form-field-name-field-menteeauth,
+.form-field-name-field-menteename {
+	display: none;
+}

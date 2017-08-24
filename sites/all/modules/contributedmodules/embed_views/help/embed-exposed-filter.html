@@ -1,0 +1,48 @@
+<h3>Documentation</h3>
+<pre>/**
+ * Returns the exposed filter widgets for a view.
+ *
+ * @param mixed $view
+ *  Either a string with the name of the view or an object of the view
+ * @param string $display_id
+ *  An optional string with the name of the display for the view.
+ *
+ * @return string
+ *  The themed exposed filter form.
+ */
+function embed_views_exposed_form($view, $display_id = '') {
+</pre>
+To figure out the id of a display, look under <strong>Other</strong>, in the
+view edit page for the particular view that will be embedded, for
+<strong>Machine Name</strong> what ever this name is is what should be used
+for the $display_id variable.
+
+<h3>Usage</h3>
+Simple version of code to embed an exposed filter.
+<pre>
+  print embed_views_exposed_form('test', 'embed_1');
+</pre>
+
+Embedding a view's exposed form for an alrady created view using the
+embed_views_exposed_form() helper function.
+<pre>
+  $view = views_get_view('test');
+  $view->set_display('embed_1');
+  print embed_views_exposed_form($view);
+
+  ... some other code ...
+
+  $view->destroy();
+</pre>
+
+Embedding a view's exposed form for an already created view using the
+display's embed_views_exposed_form() helper method.
+<pre>
+  $view = views_get_view('test');
+  $view->set_display('embed_1');
+  print $view->display_handler->embed_views_exposed_form();
+
+  ... some other code ...
+
+  $view->destroy();
+</pre>

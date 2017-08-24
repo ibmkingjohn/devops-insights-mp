@@ -1,0 +1,126 @@
+<?php
+
+/**
+* Implementation of hook_form_alter 
+* 
+* @param mixed $form
+* @param mixed $form_state
+* @param mixed $form_id
+* @author shaouy
+*/
+function sm_awards_form_alter(&$form, &$form_state, $form_id) { 
+  //print '<br/><br/><br/>form id: '. $form_id . '<br/><br/><br/>';
+  if ($form_id=='endorsement_node_form') {
+     $form['field_endorsee'] = array('visible' => array(FALSE)); // hide endorsee field
+     $form['field_endorser'] = array('visible' => array(FALSE)); // hide endorser field
+     $form['#validate'][] = 'sm_awards_connect_to_users';
+     unset($form['field_endorsement_badge']['und']['#options']['_none']);
+     $form['#after_build'][] = 'sm_awards_endorsement_form_after_build';
+  }
+}
+
+/**
+ * Form after build
+ * 
+ * @param $form -- The form array
+ * @param $form_state -- The form state
+ * @author shaouy
+ */
+ 
+ function sm_awards_endorsement_form_after_build($form, &$form_state) {
+    if (arg(2)=='endorsement') {
+      if (arg(1)=='add') { // modify title on new node form
+        drupal_set_title(t('Create reward'));
+      } else if (arg(1)=='edit') { // modify title on node edit form
+        drupal_set_title(t('Edit reward'));
+      }
+    } 
+    return $form;
+ }
+ 
+/**
+ * Connect award to user
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_awards_connect_to_users($form, &$form_state) {
+  if ((module_exists('sm_awards')) && (is_numeric(arg(3)))) {
+    global $user; // the logged in user
+    $form_state['values']['field_endorser'][LANGUAGE_NONE][0]['uid'] = $user->uid; // endorser is logged in user
+    $form_state['values']['field_endorsee'][LANGUAGE_NONE][0]['uid'] = arg(3); // endorsee uid is passed in
+  }  
+}
+
+/**
+ * Implementation of hook_menu
+ */
+function sm_awards_menu() {
+  $items = array();
+
+  $items['activity-award'] = array(
+    'title' => t('Activity Award Confirmation'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sm_awards_confirmation_form'),
+    'access callback' => TRUE,
+    'description' => 'Activity Award Confirmation form',
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * The confirmation form
+ * @param $form -- the form object
+ * @param $form_state -- the (as of yet filled in) form values
+ * @author shaouy
+ */
+function sm_awards_confirmation_form($form, &$form_state) {
+  $form['description'] = array( // instructional text that appears on screen
+    '#type' => 'item',
+    '#title' => t('Press Submit to confirm the Activity feedback.'),
+  );
+  $form['submit'] = array( // submit button
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  return $form;
+}
+
+/**
+ * The confirmation form
+ * @param $form -- the form object
+ * @param $form_state -- the form values
+ * @author shaouy
+ */
+function sm_awards_confirmation_form_submit($form, &$form_state) {
+  if ( (!is_numeric(arg(1))) || (!is_numeric(arg(2))) ) {
+    return; // Malformed arguments. Abort!
+  }
+  
+  // load the activity assignment node
+  global $user;
+  $nid=arg(1);
+  $tid=arg(2);
+  $node = node_load($nid);
+  
+  // set its achievement award term reference
+  $a = array('tid'=>$tid);
+  $b = array($a);
+  $c = array(LANGUAGE_NONE=>$b);
+  
+  // set its awarder user reference
+  $node->field_achievement_award = $c;
+  $a = array('uid'=>$user->uid);
+  $b = array($a);
+  $c = array(LANGUAGE_NONE=>$b);
+  $node->field_awarder = $c;
+  
+  // save the node
+  node_save($node);
+  
+  // redirect back to the activity assignment page
+  drupal_set_message('Your activity badge has successfully been assigned to this activity.');
+  $form_state['redirect'] = 'node/' . $nid;
+}
+

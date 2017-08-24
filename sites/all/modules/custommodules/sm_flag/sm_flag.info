@@ -1,0 +1,12 @@
+name = Smarter Mentoring Flag module
+description = Performs flag functions
+package = Smarter Mentoring custom modules
+core = 7.x
+files[] = sm_flag.test
+
+; Information added by drupal.org packaging script on 2013-03-11
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "sm_flag"
+datestamp = "1362963586"
+

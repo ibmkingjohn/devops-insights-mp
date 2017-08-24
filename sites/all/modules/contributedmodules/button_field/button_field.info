@@ -1,0 +1,10 @@
+name = Button Field
+description = Adds a button field type
+package = Fields
+core = 7.x
+dependencies[] = field
+dependencies[] = rules
+scripts[] = js/button_field.ajax.js
+
+; Views handlers
+files[] = includes/views/handlers/button_field_handler_field.inc

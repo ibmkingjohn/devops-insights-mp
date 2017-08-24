@@ -1,0 +1,152 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ *
+ * Here we set up the URLs (menu entries) for the
+ * form examples. Note that most of the menu items
+ * have page callbacks and page arguments set, with
+ * page arguments set to be functions in external files.
+ * @return: list of menu entries 
+ */
+function sm_flag_menu() {
+  $items = array();
+
+  $items['unflag'] = array(
+    'title' => t('Unflag Confirmation'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sm_flag_unflag_confirm_form'),
+//    'access callback' => TRUE,
+    'access arguments' => array('access unflag confirmation'),
+    'description' => 'Unflag a node, comment, or message',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+
+/**
+* sets up the form to remove a flag
+* @param $form, $form_state
+* @return $form
+**/
+function sm_flag_unflag_confirm_form($form, &$form_state) {
+    $id = arg(1);
+    $flaggerid = arg(2);
+    $type = arg(3);
+    $title = t('Unflag Confirmation');
+    $typename='';
+    if ((is_numeric($id))&&(is_numeric($flaggerid))&&(is_numeric($type))) {
+      switch ($type) {
+      case 1: // type 1 is node
+        $typename='content item';
+        break;
+      case 2: // type 2 is comment
+        $typename='comment';
+        break;
+      /*case 3: // type 3 is private message
+        $typename='private message';
+        break;*/
+      default:
+        $typename=NULL;
+      } 
+      $title = t('Are you sure you want to unflag this') . ' ' . $typename . '?';
+    }
+    
+    $form['description'] = array(
+      '#type' => 'item',
+      '#title' => $title,
+    );
+  
+    // Adds a simple submit button that refreshes the form and clears its contents -- this is the default behavior for forms.
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Submit'),
+    );
+    
+    $form['actions']['cancel'] = array(
+      '#markup' => l(t('Cancel'), 'reports/flagged-comments', array('attributes' => array('class' => array('button')))),
+      '#weight' => 20,
+    ); 
+  
+    $form['#after_build'][] = 'sm_flag_unflag_confirm_form_after_build';
+    return $form;
+
+}
+
+/**
+ * Form after build
+ * 
+ * @param $form -- The form array
+ * @param $form_state -- The form state
+ * @author shaouy
+ */
+function sm_flag_unflag_confirm_form_after_build($form, &$form_state) {
+  if (arg(0)=='unflag')  {
+    drupal_set_title(t('Unflag Confirmation'));
+  } 
+  return $form;
+}
+
+function sm_flag_unflag_confirm_form_submit($form, &$form_state) {
+  //module_invoke_all();
+  drupal_set_message('Flag removed');
+  $id = arg(1);
+  $flaggerid = arg(2);
+  $type = arg(3);
+  $redirect = 'index.php';
+  if ((is_numeric($id))&&(is_numeric($flaggerid))&&(is_numeric($type))) {
+    switch ($type) {
+    case 1: // type 1 is node
+      $node=node_load($id);
+      if (is_object($node)) {
+        $flagger = user_load($flaggerid);
+        $flag = flag_get_flag('inappropriate_content_flag'); // Get the flag
+        $flag->flag('unflag', $node->nid, $flagger, $skip_permission_check = TRUE);
+        $node->status = NODE_PUBLISHED;
+        node_save($node);
+      }
+      $redirect = 'reports/flagged-forum';
+      break;
+    case 2: // type 2 is comment
+      $comment = comment_load($id);
+      if (is_object($comment)) {
+        $flagger = user_load($flaggerid);
+        $flag = flag_get_flag('inappropriate_comment_flag'); // Get the flag
+        $flag->flag('unflag', $comment->cid, $flagger, $skip_permission_check = TRUE);
+        $comment->status = COMMENT_PUBLISHED;
+        comment_save($comment);
+      }
+      $redirect = 'reports/flagged-comments';
+      break;
+    /*case 3: // type 3 is private message
+      $privatemsg = privatemsg_message_load($id);
+      if (is_object($privatemsg)) {
+        $flagger = user_load($flaggerid);
+        $flag = flag_get_flag('inappropriate_message_flag'); // Get the flag
+        $flag->flag('unflag', $privatemsg->mid, $flagger, $skip_permission_check = TRUE);
+      }
+      $redirect = 'reports/flagged-messages';
+      break;*/
+    default:
+      
+    } 
+
+  }
+
+  $form_state['redirect'] = $redirect;
+}
+
+/**
+* Implementation of hook_permission()
+*/
+function sm_flag_permission() {
+  return array(
+    'access unflag confirmation' => array(
+      'title' => t('Access unflag confirmation'),
+      'description' => t('Allow users to unflag nodes and comments'),
+    ),
+  );
+}
+

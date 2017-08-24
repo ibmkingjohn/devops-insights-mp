@@ -1,0 +1,10 @@
+; $Id: phonetic.info,v 1.1 2009/01/26 23:01:17 deegree Exp $
+name = Smarter Mentoring Phonetic Wordfilter
+description = A custom Smarter Mentoring module, modified from the Phonetic module. It filters profanity words and similiar sounding synomyms out of user generated content.
+; Information added by drupal.org packaging script on January 1, 1970 - 00:00
+version = "7.x"
+core = "7.x"
+package = Smarter Mentoring custom modules
+project = "sm_phonetic"
+datestamp = "1297275162"
+

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Taxonomy Vocabularies Feature feature.
+ */
+
+include_once 'taxonomy_vocabularies_feature.features.inc';

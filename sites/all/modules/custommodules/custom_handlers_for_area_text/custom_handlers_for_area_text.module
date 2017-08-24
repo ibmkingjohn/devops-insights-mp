@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * Implements hook_views_api().
+ */
+function custom_handlers_for_area_text_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'custom_handlers_for_area_text') . '/views',
+  );
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function custom_handlers_for_area_text_views_data_alter(array &$data) {
+  $data['views']['area']['area']['override handler'] = 'custom_handler_area_text';
+  $data['views']['area_text_custom']['area']['override handler'] = 'custom_handler_area_text_custom';
+  $data['views']['nothing']['field']['override handler'] = 'custom_handler_field_custom';
+}
+
+
+function _check_permission($allow_roles) {
+  global $user;
+
+  if (empty($allow_roles)) {
+    return true;
+  }
+
+  if (empty($allow_roles) && empty($user->roles)) {
+    return true;
+  }
+
+  if ($user->uid != 1) {
+    return true;
+  }
+
+
+  if (sizeof(array_intersect_key($user->roles, $allow_roles)) == 0) {
+      return false;
+  }
+
+  return true;
+}

@@ -1,0 +1,15 @@
+diff --git a/prepopulate.module b/prepopulate.module
+index d024385..f981ebd 100644
+--- a/prepopulate.module
++++ b/prepopulate.module
+@@ -56,7 +56,9 @@ function _prepopulate_request_walk(&$form, &$request_slice) {
+   $limited_types = array(
+     'actions',
+     'button',
+-    'container',
++    // Fix for fields inside containers not populating after 7.x-2.1 upgrade.
++    // @see https://www.drupal.org/node/2679839
++    //'container',
+     'token',
+     'value',
+     'hidden',

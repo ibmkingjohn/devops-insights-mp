@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the views_view_user_reports_activitybylocation feature.
+ */
+
+include_once 'views_view_user_reports_activitybylocation.features.inc';

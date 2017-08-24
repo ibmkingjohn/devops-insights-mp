@@ -1,0 +1,834 @@
+<?php
+
+/**
+* Valid permissions for this module
+* @return array An array of valid permissions for the sm_phonetic module
+*/
+function sm_phonetic_perm() {
+  return array('administer sm_phonetic filter');
+}
+
+/**
+*Implementation of hook_menu
+*/
+
+function sm_phonetic_menu(){
+  $items = array();
+  $items['admin/settings/sm_phoneticfilter'] = array(
+    'title' => 'Phonetic Filter Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sm_phonetic_list_add'),
+    'access arguments' => array('access profanity lists'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+*The Word Filter Admin Settings Form
+*/
+
+function sm_phonetic_list_add(){
+  $blacklist = sm_phonetic_get_blacklist();
+  $whitelist = sm_phonetic_get_whitelist();
+
+  $words='';	
+  if(is_array($blacklist)){
+    foreach($blacklist as $word => $meta){
+      $words .= "$word\n";
+    }
+  }
+	//$words = $words(string);
+	$form = array();
+	$form['words']  = array(
+		'#type'=>'fieldset',
+		'#title'=> 'Wordlists', 
+	);
+	$form['filtersettings'] = array(
+		'#type'=>'fieldset',
+		'#title'=> 'Filter Settings', 
+	);
+	$form['words']['sm_phonetic_blacklist'] = array(
+		'#title'=>t('blacklist'),
+		'#type'=>'textarea',
+		'#default_value'=>check_plain($words),
+		'#rows'=>20,
+		'#description'=> t('Enter all unwanted words. User one Word per line.'),
+	);
+	$form['filtersettings']['sm_phonetic_replacement_char'] = array(
+		'#title'=>t('Replacement Character'),
+		'#type'=>'textfield',
+		'#default_value'=>variable_get('sm_phonetic_replacement_char','*'),
+		'#size'=>1,
+		'#description'=> t('Masks all letters of the unwanted word with this Character.'),
+	);
+	
+	$form['filtersettings']['sm_phonetic_node_title'] = array(
+		'#title'=>t('Filter Node Titles'),
+		'#type'=>'checkbox',
+		'#default_value'=>variable_get('sm_phonetic_node_title',FALSE),
+		'#description'=> t('Check this if you like to have filtered Node Titles as well.'),
+	);
+	
+  $words='';	
+  if(is_array($whitelist)){
+    foreach($whitelist as $word => $meta){
+      $words .= "$word\n";
+    }
+  }
+	
+	$form['words']['sm_phonetic_whitelist'] = array(
+		'#title'=>t('Whitelist'),
+		'#type'=>'textarea',
+		'#default_value'=>check_plain($words),
+		'#rows'=>20,
+		'#description'=> t('Enter all words which got accidentely filtered by this module. One word per line.'),
+	);
+	
+	$form['sm_phonetic_submit'] = array(
+		'#type'=>'submit',
+		'#value'=>'save settings',
+	);
+	
+	$form['#submit'] = array('sm_phonetic_list_save');
+
+	
+	return $form;
+	
+}
+
+/**
+* Saves the word filter settings, i.e. the blacklist and whitelist
+* @param &form_state -- the filled out word filter settings form
+* @author shaouy
+*/
+
+function sm_phonetic_list_save(&$form_state){
+  // place each word in the blacklist textarea field into an array element
+  $words = explode("\n", $form_state['words']['sm_phonetic_blacklist']['#value']);
+  $words = array_map('trim', $words);
+  $words = array_filter($words, 'strlen');	
+  
+  // we now have an array of words. Run the PHP metaphone function on each and place the result in the $blacklist array
+  $blacklist=array();
+  foreach ($words as $word) {
+    $metaphone = metaphone($word);
+    $blacklist[$word] = $metaphone;
+  }
+
+  // place the letter replacement character (usually '*') in the variables table
+  variable_set('sm_phonetic_replacement_char',$form_state['filtersettings']['sm_phonetic_replacement_char']['#value']);
+
+  // save the blacklist elements in the variables table as strings
+  $blacklist_elements = _arraytostrings ($blacklist); // returns array($length,$keystring,$valuestring);
+  variable_set('sm_phonetic_blacklist_length',$blacklist_elements[0]);
+  variable_set('sm_phonetic_blacklist_keystring',$blacklist_elements[1]);
+  variable_set('sm_phonetic_blacklist_valuestring',$blacklist_elements[2]);
+  variable_set('sm_phonetic_node_title',$form_state['filtersettings']['sm_phonetic_node_title']['#value']);
+  
+  // create the whitelist array the same way the blacklist array was created
+  $words = explode("\n", $form_state['words']['sm_phonetic_whitelist']['#value']);
+  $words = array_map('trim', $words);
+  $words = array_filter($words, 'strlen');    
+  $whitelist=array();
+  foreach ($words as $word) {
+    $metaphone = metaphone($word);
+    $whitelist[$word] = $metaphone;
+  }
+
+  // save whitelist elements
+  $whitelist_elements = _arraytostrings ($whitelist); // returns array($length,$keystring,$valuestring);
+  variable_set('sm_phonetic_whitelist_length',$whitelist_elements[0]);
+  variable_set('sm_phonetic_whitelist_keystring',$whitelist_elements[1]);
+  variable_set('sm_phonetic_whitelist_valuestring',$whitelist_elements[2]);
+  
+}
+
+function sm_phonetic_admin_list(){
+}
+
+/**
+* Returns whether a  word in the whitelist
+* @param word -- the word in question
+* @param whitelist -- the whitelist array
+* @return boolean 
+* @author shaouy
+*/
+function sm_phonetic_in_whitelist($word, $whitelist) {
+  foreach($whitelist as $key=>$whiteword) { // for each word in the whitelist
+    if (strcasecmp($word, $key)==0) { // if the whitelist word matches the word in question
+      return TRUE; // return true
+    }
+  }
+  return FALSE;
+}
+
+/**
+* This is the heart of the module. This is the function that filters a block of text for profanities, and, optionally, 
+* email addresses, url, and last names.
+* @param $text -- the block of text to analyze and filter
+* @param $check_phone_email_url_lastname -- boolean value for whether to filter email addresses, url, and last names
+* @param $profane -- boolean variable that this function sets to true if anything was filtered out
+* @return string -- the filtered text
+* @author shaouy
+*/
+
+function sm_phonetic_filter_process($text, $check_phone_email_url_lastname=FALSE, &$profane, $skip_last_name=FALSE) {
+  // initialize local variables
+  global $user;
+  $full_user = user_load($user->uid);  
+  $notify=FALSE;
+  $replace='';
+
+  // our WYSIWYG editor inserts <br> and <p> tags that get construed as words unless separated by spaces. Insert spaces here
+  $p_tags = array("<br />", "<BR />");
+  $text = str_replace($p_tags, " <br/>", $text);  
+  $p_tags = array("<p>", "<P>");
+  $text = str_replace($p_tags, " <p>", $text);
+  $p_tags = array("</p>", "</P>");
+  $text = str_replace($p_tags, " </p>", $text);
+
+  //take any phone string with spaces in it, and put in dashes instead
+  $valid = "/(\d{3})\s(\d{3})\s(\d{4})/"; 
+  $text = preg_replace( $valid, "\\1-\\2-\\3", $text ); // replace 123 123 1234 with 123-123-1234
+  
+  // break up $text into an array of words. Allow the characters "1234567890@.()-_:/" 
+  $arr = str_word_count(strip_tags($text),2, "1234567890@.()-_:/");
+  $blacklist = sm_phonetic_get_blacklist(); // get blacklist array
+  $whitelist = sm_phonetic_get_whitelist(); // get whitelist array
+  
+  foreach($arr as $word){
+  
+
+  
+  
+    if ($check_phone_email_url_lastname==TRUE) { // are we checking phone/email/url/lastname
+     
+      if ((sm_phonetic_phone_check($word)) || 
+          (sm_phonetic_email_check($word)) // ||  jwk to not needed anymore
+       //    (sm_phonetic_url_check($word))  jwk not needed anymore
+         ) { // if so, replace all phone/email/url/lastnames with asterisks
+        for($i=0;$i<strlen($word);$i++){
+          $replace .= '*';
+        }		
+        $text = str_replace($word, $replace, $text);
+      }
+
+      if ($skip_last_name==FALSE) {
+        if (sm_phonetic_last_name_check($word, $full_user)) { 
+          for($i=0;$i<strlen($word);$i++){
+            $replace .= '*';
+          }		
+          $text = str_replace($word, $replace, $text);
+        }
+     } 
+      
+    
+    }
+    
+    
+	
+    // Store the original content for email. --Solomon
+    if (empty($original_text)) {
+      $original_text=$text;
+    }
+    if (isset($original_text)) {
+    }
+    // Store the original content for email --- END
+	
+    //Store the url of the content --Solomon
+    $content_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+    //Store the url of the content --END
+
+    if(!sm_phonetic_in_whitelist($word,$whitelist)){ // if the word is not in the whitelist, analyze it
+      $lword = strtolower($word); // convert the word to lower case
+      if (_is_in_special_blacklist($lword)) { // check our special blacklist for exact matches
+	$notify=TRUE;
+        for($i=0;$i<strlen($word);$i++){ // replace if a match
+          $replace .= '*';
+        }	
+  	$text = str_replace($word, $replace, $text);
+      } else { // blacklist for substring matches
+        foreach($blacklist as $key => $value){ // for every word in the blacklist
+          $lkey = strtolower($key); // key is the actual word
+          $substr='';
+          if ((strlen($lword)>0) && (strlen($lkey)>0)) {
+            $substr = strstr($lword, $lkey);
+          }
+          // if the blacklist word matches or is a substring of the word to analyze, filter it out 
+          if (($lkey == $lword) ||  (strlen($substr)>0)){ 
+	    $notify=TRUE;
+            for($i=0;$i<strlen($word);$i++){
+              $replace .= '*';
+            }	
+  	    $text = str_replace($word, $replace, $text);
+          }
+        }
+      }
+    }
+    $replace = '';
+  }
+  if ($notify==TRUE) { // if anything was filtered above, notify the group admin(s)
+    $profane = 'yes';
+    global $user; // the logged-in user
+    /* we don't need this stuff anymore since we can PM the admins all at once. Rem'd by bacheller 3/18/14 */
+    //$group_admins_uids = sm_utilties_get_group_admins($user->uid);
+    //foreach($group_admins_uids as $group_admin_uid) {
+      sm_phonetic_notify_group_admin($text, $original_text, $content_url, $user);   
+    //}
+  }
+  return $text; // return the processed text
+
+}
+
+/**
+*Implementation of hook_filter
+*/
+function sm_phonetic_filter($op, $delta = 0, $format = -1, $text = '') {
+  switch ($op) {
+    case 'list':
+      return array(0 => t('Phonetic Word filter'));
+    case 'description':
+      return sm_phonetic_help('admin/modules#sm_phonetic');
+    case 'settings':
+      $form['sm_phonetic_word_filter'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Phonetic Word filter'),
+        '#description' => t('You can define a global list of words to be filtered on the <a href="!url">sm_phonetic wordfilter settings page</a>.', array('!url' => url('admin/settings/sm_phoneticfilter'))),
+      );
+      return $form;
+    case 'process':
+      return sm_phonetic_filter_process($text);
+    default:
+      return $text;
+  }
+}
+
+
+/**
+*Implementation of hook_node_insert
+*/
+function sm_phonetic_node_insert($node){
+//  if (variable_get('sm_phonetic_node_title', FALSE)) {
+//    $node->title = sm_phonetic_filter_process($node->title);
+//  }
+}
+
+/**
+*Implementation of hook_node_update
+*/
+
+function sm_phonetic_node_update($node){
+//  if (variable_get('sm_phonetic_node_title', FALSE)) {
+//    $node->title = sm_phonetic_filter_process($node->title);
+//  }
+}
+
+/**
+*Implementation of hook_node_load
+*/
+function sm_phonetic_node_load($node){
+//  if (variable_get('sm_phonetic_node_title', FALSE)) {
+//    $node->title = sm_phonetic_filter_process($node->title);
+//  }
+}
+
+/**
+*Implementation of hook_node_search_result
+*/
+function sm_phonetic_node_search_result($node){
+//  if (variable_get('sm_phonetic_node_title', FALSE)) {
+//    $node->title = sm_phonetic_filter_process($node->title);
+//  }
+}
+
+/**
+*Convert an array to strings, for storage in the variables table
+* @param $array -- the array to convert
+* @return array -- element 0 is the array length, 
+*                  element 1 are the keys converted to a string, and 
+*                  element 2 are the values converted to a string
+* @author shaouy
+*/
+function _arraytostrings ($array=array()) {
+  $length = 0;
+  $keystring ='';
+  $valuestring ='';
+  $length++;
+  foreach ($array as $key => $value) { // for each array element
+    $keystring .= "$key ";  // add to keystring
+    $valuestring .= "$value "; // add to valuestring
+    $length++;  // increment length
+  }
+  return array($length,$keystring,$valuestring); // return all three in an array
+}
+
+/**
+*Convert a pair of strings (keystring and valuestring) to an array. This is the reverse of _arraytostrings
+* @param $length -- the array length
+* @param $keystring -- array keys, concatenated in a single string, separated by spaces
+* @param $valuestring -- array values, concatenated in a single string, separated by spaces
+* @return array -- simple array of keys and values
+* @author shaouy
+*/
+function _stringstoarray ($length="",$keystring="",$valuestring="") {
+  $newarray = array();
+  $keys = explode(" ",$keystring); // explode the keystring to an array
+  $values = explode(" ",$valuestring); // explode the valuestring to an array
+  for ($i=0; $i < $length; $i++) { // for each element
+	$key = $keys[$i];
+	$newarray[$key] = $values[$i]; // pair up keys and values
+  }
+  return $newarray;
+}
+
+/**
+* Get the blacklist stored in the variables table
+* @return array -- the blacklist
+* @author shaouy
+*/
+function sm_phonetic_get_blacklist() {
+  $length = variable_get('sm_phonetic_blacklist_length',0); // array length
+  $keystring = variable_get('sm_phonetic_blacklist_keystring',''); // blacklist keys
+  $valuestring = variable_get('sm_phonetic_blacklist_valuestring',''); // blacklist values
+  $blacklist = _stringstoarray ($length, $keystring, $valuestring); // convert the strings to an array
+  return $blacklist;
+}
+
+/**
+* Get the whitelist stored in the variables table
+* @return array -- the whitelist
+* @author shaouy
+*/
+function sm_phonetic_get_whitelist() {
+  $length = variable_get('sm_phonetic_whitelist_length',0); // array length
+  $keystring = variable_get('sm_phonetic_whitelist_keystring',''); // whitelist keys
+  $valuestring = variable_get('sm_phonetic_whitelist_valuestring',''); // whitelist values
+  $whitelist = _stringstoarray ($length, $keystring, $valuestring); // convert the strings to an array
+  return $whitelist;
+}
+
+/**
+* Implementation of hook_form_alter
+* 
+* @param mixed $form
+* @param mixed $form_state
+* @param mixed $form_id
+* @author shaouy
+*/
+function sm_phonetic_form_alter(&$form, &$form_state, $form_id) { 
+  //print '<br/><br/><br/>form id: '. $form_id . '<br/><br/><br/>';
+  switch ($form_id) {
+    case 'activity_assignment_node_form':
+      $form['#validate'][] = 'sm_phonetic_act_assgn_form_validate';    
+      break;
+    case 'page_node_form':
+      $form['#validate'][] = 'sm_phonetic_basicpage_form_validate';    
+      break;
+    case 'user_profile_form':
+      $form['#validate'][] = 'sm_phonetic_profile_form_validate';    
+      break;
+    case 'forum_node_form':
+      $form['#validate'][] = 'sm_phonetic_forum_form_validate';    
+      break;      
+    case 'blog_node_form':
+      $form['#validate'][] = 'sm_phonetic_blog_form_validate';    
+      break;      
+    case 'user_register_form':
+      $form['#validate'][] = 'sm_phonetic_user_register_form_validate';    
+      break; 
+        case 'endorsement_node_form':
+      $form['#validate'][] = 'sm_phonetic_endorsement_form_validate';    
+      break;
+      case 'activity_assignment_response_node_form':
+      $form['#validate'][] = 'sm_phonetic_activity_assignment_response_form_validate';
+      break;
+      case 'lets_chat_reply_node_form':
+      $form['#validate'][] = 'sm_phonetic_lets_chat_reply_form_validate';
+      break;
+      case 'lets_chat_node_form':
+      $form['#validate'][] = 'sm_phonetic_lets_chat_form_validate';
+      break;
+    default:
+      {} // do nothing
+  }
+}
+
+/**
+ * Filter out profanities from the forum form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_phonetic_forum_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $form_state['values']['field_uncensored_subject'][LANGUAGE_NONE][0]['value'] = $form_state['values']['title'];
+    $form_state['values']['field_uncensored_body'] = $form_state['values']['body'];
+    $form_state['values']['title'] = sm_phonetic_filter_process($form_state['values']['title'], TRUE, $profane); // filter out profanities from title
+    $current_body = $form_state['values']['body'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['body'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($current_body, TRUE, $profane); // filter out profanities from body
+    $form_state['values']['field_filtered'][LANGUAGE_NONE][0]['value'] = $profane;
+  }  
+}
+
+/**
+ * Filter out profanities from the blog form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_phonetic_blog_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $form_state['values']['field_uncensored_subject'][LANGUAGE_NONE][0]['value'] = $form_state['values']['title'];
+    $form_state['values']['field_uncensored_body'] = $form_state['values']['field_blog_body'];
+    $form_state['values']['title'] = sm_phonetic_filter_process($form_state['values']['title'], TRUE, $profane); // filter out profanities from title
+    $current_body = $form_state['values']['field_blog_body'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_blog_body'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($current_body, TRUE, $profane); // filter out profanities from body
+    $form_state['values']['field_filtered'][LANGUAGE_NONE][0]['value'] = $profane;
+  }  
+}
+
+/**
+ * Filter out profanities from the private message form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_phonetic_privatemessage_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $form_state['values']['field_uncensored_subject'][LANGUAGE_NONE][0]['value'] = $form_state['validate_built_message']->subject;
+    $form_state['values']['field_uncensored_body'][LANGUAGE_NONE][0]['value'] = $form_state['validate_built_message']->body;
+    $form_state['validate_built_message']->body = sm_phonetic_filter_process($form_state['validate_built_message']->body, TRUE, $profane);
+    $form_state['validate_built_message']->subject = sm_phonetic_filter_process($form_state['validate_built_message']->subject, TRUE, $profane);
+    $form_state['values']['field_filtered'][LANGUAGE_NONE][0]['value'] = $profane;
+  }  
+}
+
+/**
+ * Filter out profanities from the activity assignment form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_phonetic_act_assgn_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $form_state['values']['title'] = sm_phonetic_filter_process($form_state['values']['title'], TRUE, $profane);
+  }  
+}
+
+/**
+ * Filter out profanities from the basic page form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_phonetic_basicpage_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $form_state['values']['title'] = sm_phonetic_filter_process($form_state['values']['title'], TRUE, $profane);
+    $desc = $form_state['values']['body'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['body'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($desc, TRUE, $profane);      
+  }  
+}
+
+/**
+ * Filter out profanities from the user registration form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_phonetic_user_register_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    if ($form_state['values']['field_first_name'][LANGUAGE_NONE][0]['value'] != sm_phonetic_filter_process($form_state['values']['field_first_name'][LANGUAGE_NONE][0]['value'], TRUE, $profane)) {
+      form_set_error('username', t('The first name you entered does not pass the system profanity filter.'));    
+    }    
+    if ($form_state['values']['field_last_name'][LANGUAGE_NONE][0]['value'] != sm_phonetic_filter_process($form_state['values']['field_last_name'][LANGUAGE_NONE][0]['value'], TRUE, $profane)) {
+      form_set_error('username', t('The last name you entered does not pass the system profanity filter.'));    
+    }    
+    if ($form_state['values']['name'] != sm_phonetic_filter_process($form_state['values']['name'], TRUE, $profane)) {
+      form_set_error('username', t('The User ID you entered does not pass the system profanity filter.'));    
+    }    
+    /* // shaouy: I don't think we'll need to screen email here, but I'm leaving it in just in case
+    if ($form_state['values']['mail'] != sm_phonetic_filter_process($form_state['values']['mail'], TRUE, $profane)) {
+      form_set_error('username', t('The email address you entered does not pass the system profanity filter.'));    
+    }    
+    */
+  }  
+}
+
+/**
+ * Filter out profanities from the user profile form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+function sm_phonetic_profile_form_validate($form, &$form_state) { 
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+
+    $form_state['values']['field_first_name_uncensored'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_first_name'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_last_name_uncensored'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_last_name'][LANGUAGE_NONE][0]['value']; 
+    $form_state['values']['field_mentee_career_uncensored'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_mentee_career'][LANGUAGE_NONE][0]['value']; 
+    $form_state['values']['field_mentee_see_yourself_18_unc'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_mentee_see_yourself_18'][LANGUAGE_NONE][0]['value']; 
+    $form_state['values']['field_user_status_uncensored'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_check_in'][LANGUAGE_NONE][0]['value'];
+    
+    $form_state['values']['field_first_name'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_first_name'][LANGUAGE_NONE][0]['value'], FALSE, $profane);
+   $form_state['values']['field_last_name'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_last_name'][LANGUAGE_NONE][0]['value'], FALSE, $profane, TRUE);  
+    $form_state['values']['field_mentee_career'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_mentee_career'][LANGUAGE_NONE][0]['value'], TRUE, $profane);   
+    $form_state['values']['field_mentee_see_yourself_18'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_mentee_see_yourself_18'][LANGUAGE_NONE][0]['value'], TRUE, $profane);
+  //  $form_state['values']['field_address'][LANGUAGE_NONE][0]['thoroughfare'] = sm_phonetic_filter_process($form_state['values']['field_address'][LANGUAGE_NONE][0]['thoroughfare'], TRUE, $profane);
+ //   $form_state['values']['field_address'][LANGUAGE_NONE][0]['premise'] = sm_phonetic_filter_process($form_state['values']['field_address'][LANGUAGE_NONE][0]['premise'], TRUE, $profane);
+ //   $form_state['values']['field_address'][LANGUAGE_NONE][0]['locality'] = sm_phonetic_filter_process($form_state['values']['field_address'][LANGUAGE_NONE][0]['locality'], TRUE, $profane);
+ //   $form_state['values']['field_address'][LANGUAGE_NONE][0]['postal_code'] = sm_phonetic_filter_process($form_state['values']['field_address'][LANGUAGE_NONE][0]['postal_code'], TRUE, $profane);
+    $form_state['values']['field_check_in'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_check_in'][LANGUAGE_NONE][0]['value'], TRUE, $profane);
+    $form_state['values']['name'] = sm_phonetic_filter_process($form_state['values']['name'], TRUE, $profane);
+    //$form_state['values']['mail'] = sm_phonetic_filter_process($form_state['values']['mail'], TRUE, $profane);
+
+    // added by shaouy 10/29/13
+    $form_state['values']['field_biography_uncensored'][LANGUAGE_NONE][0]['value']     = $form_state['values']['field_biography'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_career_advice_uncensored'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_general_career_advice'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_job_title_uncensored'][LANGUAGE_NONE][0]['value']     = $form_state['values']['field_my_job_title'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_company_does_uncensored'][LANGUAGE_NONE][0]['value']  = $form_state['values']['field_what_my_company_does'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_typical_day_uncensored'][LANGUAGE_NONE][0]['value']   = $form_state['values']['field_what_i_do_in_a_typical_day'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_biography'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_biography'][LANGUAGE_NONE][0]['value'], TRUE, $profane);                 
+    $form_state['values']['field_general_career_advice'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_general_career_advice'][LANGUAGE_NONE][0]['value'], TRUE, $profane);	
+    $form_state['values']['field_my_job_title'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_my_job_title'][LANGUAGE_NONE][0]['value'], TRUE, $profane);		
+    $form_state['values']['field_what_my_company_does'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_what_my_company_does'][LANGUAGE_NONE][0]['value'], TRUE, $profane);	
+    $form_state['values']['field_what_i_do_in_a_typical_day'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($form_state['values']['field_what_i_do_in_a_typical_day'][LANGUAGE_NONE][0]['value'], TRUE, $profane);
+    
+    
+    
+
+
+    $form_state['values']['field_filtered'][LANGUAGE_NONE][0]['value'] = $profane;
+  }  
+}
+
+/**
+ * Filter out profanities from the endorsement form
+ * @param $form
+ * @param $form_state
+ * @author shaouy
+ */
+
+function sm_phonetic_endorsement_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $desc = $form_state['values']['field_endorsement_message'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_endorsement_message'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($desc, TRUE, $profane);  
+  }  
+}
+
+/**
+ * Send email to group admin if profanity occurs
+ * @param $text -- the text containing the profanities, *'d out
+ * @param $original_text -- the text containing the profanities.
+ * @param $content_url -- the content url
+ * @param $group_admin_id -- the uid of the user's group admin
+ * @author shaouy
+ */
+function sm_phonetic_notify_group_admin($text, $original_text, $content_url, $user) {
+  global $user;
+  $user_data = user_load($user->uid);
+  // build the message to the group admin
+  $msg1 = t('Alert: Content entered by user ') . $user->name . ' ' . t('has been flagged by the');
+  $msg1 .=  ' ' . variable_get('site_name') . ' ' . t('system') . '. ';
+  $msg2 = t('There are three types of content that may be flagged: ') . "<p/>". PHP_EOL;
+  $msg3 = t('1) profanity or words contained in the system black list ') . "<p/>". PHP_EOL;
+  $msg4 = t('2) URLs or web addresses ') . "<p/>". PHP_EOL;
+  $msg5 = t('3) personal identifying information (i.e., name, address, etc) ') . "<p/>". PHP_EOL . "<p/>". PHP_EOL;  
+  $msg6 = t('The flagged content will be replaced with asteriks while we examine the reasons for the content flag. These filters are put in place to protect both mentors and mentees. We will review this flagged content, make system corrections if needed and inform you of any next steps from you. Here is the content: ') . "<p/>". PHP_EOL;
+  $msg7 = $original_text . "<p/>". PHP_EOL; // send the original content to email.
+  $msg8 = t('The URL of the content: ');
+  $msg9 = $content_url . "<p/>". PHP_EOL . "<p/>". PHP_EOL; // send the content url to email.
+  $msg10 = t('Thank you!') . "<p/>". PHP_EOL . "<p/>". PHP_EOL . variable_get('site_name') . t('Program');
+
+  $message_subject = t('Alert: Content entered by user ') . $user->name . ' ' . t('has been flagged by the');
+  $message_subject .= ' ' . variable_get('site_name') . ' ' . t('system');
+  $message_body = $msg1 . $msg2 . $msg3 . $msg4 . $msg5 . $msg6 . $msg7 . $msg8 . $msg9 . $msg10;
+
+  // get the group admin's email address
+  //rem by bacheller 3/18/14
+  //$recipient = user_load($group_admin_id); // get group admin here
+  //$my_email = $recipient->mail;
+  
+  // These value can remain empty.
+  $my_module = 'sm_phonetic';
+  $my_mail_token = microtime();
+
+  /* changing this to send private messages to all admins involved
+  * bacheller 3/18/14
+  */
+  $from = 'admin@bigbluementoring.org';
+
+  /** use this to send to all admins in user's tree **/
+  //$filter_string = sm_utilities_build_adminlocation_filter_string($user_data);
+  //$pm_recipients =  sm_users_get_subsite_admins($filter_string); 
+
+  /** use this to get the closest admin to the user */
+  $pm_recipients = sm_utilities_get_closest_admins();
+    
+  // build the message  hard coded email address  jwk 10/08/2013
+  //rem by bacheller 3/18/14
+  /*$from = 'mentoring@mentorplace.net'; 
+  $message = array(
+    'id' => $my_module . '_' . $my_mail_token,
+    'to' => $my_email,
+    'subject' => $message_subject,
+    'body' => array($message_body),
+    'headers' => array(
+      'From' => $from,
+      'Sender' => $from,
+      'Return-Path' => $from,
+    ),
+  );*/
+
+  // send the message  
+  //$system = drupal_mail_system($my_module, $my_mail_token); //rem by bacheller 3/18/14
+  //$message = $system->format($message); 
+  //if ($system->mail($message)) {
+//  if(privatemsg_new_thread($pm_recipients, $message_subject, $message_body, array())){ //switched from sending a mail to sending a pm, bacheller 3/18/14
+    drupal_set_message(t('Part of your content has been replaced by asterisks (*), and your group administrator has been notified.'), 'warning', FALSE); 
+
+  //} 
+}
+
+
+/**
+ * Determines whether a string is a phone number. Accepts phone numbers of 7, 10, or 11 digits, with any variety of dashes and parentheses
+ * For example, this function returns TRUE for the following inputs: 123-4567, 770-123-4567, (770)123-4567, and 1-770-123-4567
+ * @param - $text, the text string to examine
+ * @return - TRUE if @param is a phone number, else FALSE
+ * @author - shaouy
+ */
+function sm_phonetic_phone_check($text) {
+  $phone = preg_replace('/\D/', '', $text); // strip out non-numeric text
+  // validate a phone number
+  if( (preg_match("/^\d{10}$/", $phone)==1) || (preg_match('/^\d{7}$/', $phone)==1) || (preg_match("/^\d{11}$/", $phone)==1)    ) {
+    drupal_set_message(t('A phone number was detected, and replaced with asterisks (*) for security purposes.'), 'warning', FALSE); 
+    return TRUE;
+  } 
+
+  return FALSE;
+}
+
+/**
+ * Determines whether a string is an email address, of the format aaa@aaa.aaa
+ * @param - $text, the text string to examine
+ * @return - TRUE if @param is an email address, else FALSE
+ * @author - shaouy
+ */
+function sm_phonetic_email_check($text) {
+  $is_email = filter_var( $text, FILTER_VALIDATE_EMAIL );
+  if( $is_email ) {
+    drupal_set_message(t('An email address was detected, and replaced with asterisks (*) for security purposes.'), 'warning', FALSE); 
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Determines whether a string is url
+ * @param - $text, the text string to examine
+ * @return - TRUE if @param is an email address, else FALSE
+ * @author - shaouy
+ */
+function sm_phonetic_url_check($text) {
+  if (substr_count($text,'www.')>0) {
+    drupal_set_message(t('A url was detected, and replaced with asterisks (*) for security purposes.'), 'warning', FALSE); 
+    return TRUE;    
+  }
+  $is_url = filter_var($text, FILTER_VALIDATE_URL);
+  if( $is_url ) {
+    drupal_set_message(t('A url was detected, and replaced with asterisks (*) for security purposes.'), 'warning', FALSE); 
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+* Implementation of hook_permission()
+*/
+function sm_phonetic_permission() {
+  return array(
+    'access profanity lists' => array(
+      'title' => t('Access profanity lists'),
+      'description' => t('Allow users to edit profanity blacklist and whitelist'),
+    ),
+  );
+}
+
+/**
+ * Determines if a word is in a special blacklist. This special blacklist, contained inside the function here,
+ * is a set of small, profane words that are common substrings of larger words. Our intent is to let the larger
+ * words pass through, e.g. "assignment", but to catch the smaller words, e.g. "ass"
+ * @param $lword -- the word to examine
+*/
+function _is_in_special_blacklist($lword) {
+  return in_array($lword, 
+    array('ass', 'asses', 'tit', 'tits', 'arse', 'coon', 'homo', 'kraut', 'muff',
+           'muffs', 'nig', 'niga', 'nigga', 'perv', 'poofs', 'rimming', 'tosser', 
+           'tossers', 'turd', 'wank', 'yid', 'spic'
+    )
+  );
+}
+
+/**
+ * Determines whether a string is the logged-in user's last name
+ * @param $word -- the word to examine
+ * @param $full_user -- the user object ofthe logged-in user
+ * @return - TRUE if $word is the user's last name, else FALSE
+ * @author - shaouy
+ */
+function sm_phonetic_last_name_check($word, $full_user) {
+  if ((strstr($_SERVER["REQUEST_URI"], 'admin/people/create')) || arg(1) == 'reset') {
+    return FALSE; // ignore on user profile form
+  } 
+  if ((is_object($full_user)) && (property_exists ($full_user , 'field_last_name' ))) {
+   $last_name = '';
+    $last_name = $full_user->field_last_name[LANGUAGE_NONE][0]['value'];
+    if (strcasecmp($word,$last_name)==0 && strtolower($last_name) !="long") {
+      drupal_set_message(t('Your last name was detected in the text you entered, and replaced with asterisks (*) for security purposes.'), 'warning', FALSE); 
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+function sm_phonetic_activity_assignment_response_form_validate($form, &$form_state) {
+   if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $form_state['values']['field_uncensored_actassign_body'] = $form_state['values']['field_actassign_body'];
+    $current_body = $form_state['values']['field_actassign_body'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_actassign_body'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($current_body, TRUE, $profane); // filter out profanities from body
+    $form_state['values']['field_filtered'][LANGUAGE_NONE][0]['value'] = $profane;
+  }  
+}
+
+function sm_phonetic_lets_chat_reply_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+    $form_state['values']['field_uncensored_letschat_body'] = $form_state['values']['field_letschat_body'];
+    $current_body = $form_state['values']['field_letschat_body'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_letschat_body'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($current_body, TRUE, $profane); // filter out profanities from body
+    $form_state['values']['field_filtered'][LANGUAGE_NONE][0]['value'] = $profane;
+  }  
+}
+
+function sm_phonetic_lets_chat_form_validate($form, &$form_state) {
+  if (module_exists('sm_phonetic')) {
+    $profane='no';
+  //  $form_state['values']['field_uncensored_title_field'][LANGUAGE_NONE][0]['value'] = $form_state['values']['title_field'][LANGUAGE_NONE][0]['value'];
+ //   $form_state['values']['title_field'] = sm_phonetic_filter_process($form_state['values']['title_field'][LANGUAGE_NONE][0]['value'], TRUE, $profane); // filter out profanities from title
+    $form_state['values']['field_uncensored_conversation'] = $form_state['values']['field_conversation'];
+    $current_body = $form_state['values']['field_conversation'][LANGUAGE_NONE][0]['value'];
+    $form_state['values']['field_conversation'][LANGUAGE_NONE][0]['value'] = sm_phonetic_filter_process($current_body, TRUE, $profane); // filter out profanities from body
+    
+    $form_state['values']['field_filtered'][LANGUAGE_NONE][0]['value'] = $profane;
+  }  
+}

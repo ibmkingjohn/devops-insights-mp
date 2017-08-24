@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the All Blocks Export Feature feature.
+ */
+
+include_once 'all_blocks_exp_feature.features.inc';

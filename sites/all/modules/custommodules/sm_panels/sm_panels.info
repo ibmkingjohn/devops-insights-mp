@@ -1,0 +1,11 @@
+name = Smarter Mentoring Panels module
+description = Custom Panel sections
+package = Smarter Mentoring custom modules
+core = 7.x
+
+
+; Information added by drupal.org packaging script on 2013-03-11
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "sm_panels"
+datestamp = "1362963586"

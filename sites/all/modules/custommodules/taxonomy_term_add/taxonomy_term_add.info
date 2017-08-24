@@ -1,0 +1,5 @@
+name = Subsite Hierarchy Creater
+description = Ability for a staff admin to create a new location heirarchy for a new subsite
+version = "7.x"
+core = "7.x"
+package = Smarter Mentoring custom modules (Solomon)

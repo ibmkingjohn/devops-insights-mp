@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Flaging and Profanity views feature.
+ */
+
+include_once 'flaging_and_profanity_views.features.inc';

@@ -1,0 +1,126 @@
+diff --git a/README.txt b/README.txt
+index 4a10e47..4c21d15 100644
+--- a/README.txt
++++ b/README.txt
+@@ -8,6 +8,7 @@ Editable fields can be added on the base entity as well as on entities brought i
+ Currently, the following Views fields can be edited:
+ - all FieldAPI fields
+ - node title
++- node status
+ 
+ If a relationship is 'non-required', then it can bring empty data to the View. If there are editable fields on such a relationship, then it is possible to create new entities by entering data into those fields. However, the relationship must be of a sort that defines how to do this.
+ 
+diff --git a/editableviews.info b/editableviews.info
+index b7d8452..6b1991b 100644
+--- a/editableviews.info
++++ b/editableviews.info
+@@ -9,6 +9,7 @@ core = 7.x
+ files[] = editableviews_plugin_style_row_edit_table.inc
+ files[] = handlers/editableviews_handler_field_field_edit.inc
+ files[] = handlers/editableviews_handler_field_node_title_edit.inc
++files[] = handlers/editableviews_handler_field_node_status_edit.inc
+ files[] = handlers/editableviews_handler_field_entity_metadata_property.inc
+ files[] = handlers/editableviews_handler_field_save_button_jump_link.inc
+ 
+diff --git a/editableviews.views.inc b/editableviews.views.inc
+index a5b39ac..652a976 100644
+--- a/editableviews.views.inc
++++ b/editableviews.views.inc
+@@ -100,6 +100,14 @@ function editableviews_views_data_alter(&$data) {
+   $data['node']['title_editable']['field'] = $data['node']['title']['field'];
+   $data['node']['title_editable']['field']['handler'] = 'editableviews_handler_field_node_title_edit';
+ 
++  // Node status editable field.
++  $data['node']['status_editable'] = array(
++    'title' => $data['node']['status']['title'] . ' ' . t('(editable)'),
++    'help'  => $data['node']['status']['help'],
++  );
++  $data['node']['status_editable']['field'] = $data['node']['status']['field'];
++  $data['node']['status_editable']['field']['handler'] = 'editableviews_handler_field_node_status_edit';
++
+   // Define the direction of entityreference reverse relationships.
+   // This is set by entityreference module in the magic callback on the field,
+   // hook_field_views_data_views_data_alter(). This is invoked by Field module's
+diff --git a/handlers/editableviews_handler_field_node_status_edit.inc b/handlers/editableviews_handler_field_node_status_edit.inc
+new file mode 100644
+index 0000000..e7bd1b2
+--- /dev/null
++++ b/handlers/editableviews_handler_field_node_status_edit.inc
+@@ -0,0 +1,77 @@
++<?php
++
++/**
++ * Field handler for node status editable field.
++ */
++class editableviews_handler_field_node_status_edit extends views_handler_field_boolean {
++
++  /**
++   * Boolean to indicate to the style plugin that this field is editable.
++   *
++   * We do this here rather than just check the class parentage to allow field
++   * handlers to provide form elements for non-FieldAPI entity properties.
++   */
++  public $editable = TRUE;
++
++  function option_definition() {
++    $options = parent::option_definition();
++
++    $this->field_alias = 'status';
++
++    return $options;
++  }
++
++  function options_form(&$form, &$form_state) {
++    parent::options_form($form, $form_state);
++
++  }
++
++  function init(&$view, &$options) {
++    parent::init($view, $options);
++    $this->real_field = 'status';
++
++  }
++
++  /**
++   * Return the name of the entity property this handler controls.
++   */
++  function field_name() {
++    return 'status';
++  }
++
++  /**
++   * Return the edit form for the field.
++   */
++  function edit_form($entity_type, $entity, &$element, &$form_state) {
++    // Just do the same thing as node_content_form().
++    $element['status'] = array(
++      '#type' => 'checkbox',
++      '#title' => t('Published'),
++      // The title might not be set in the case where we're on a non-required
++      // relationship with empty data.
++      '#default_value' => isset($entity->status) ? $entity->status : '0',
++    );
++  }
++
++  /**
++   * Handle the form validation for this field's form element.
++   */
++  function edit_form_validate() {
++    // Nothing to do.
++  }
++
++  /**
++   * Handle the form submission for this field's form element.
++   */
++  function edit_form_submit($entity_type, $entity, &$element, &$form_state) {
++    $parents = $element['#parents'];
++    $parents[] = 'status';
++
++    // Get the value out of the form state.
++    $value = drupal_array_get_nested_value($form_state['values'], $parents);
++
++    // Set it on the node.
++    $entity->status = $value;
++  }
++
++}

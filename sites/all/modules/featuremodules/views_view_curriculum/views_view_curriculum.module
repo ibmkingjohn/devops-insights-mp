@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the views_view_curriculum feature.
+ */
+
+include_once 'views_view_curriculum.features.inc';

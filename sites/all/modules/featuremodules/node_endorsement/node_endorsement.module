@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Node: Endorsement feature.
+ */
+
+include_once 'node_endorsement.features.inc';

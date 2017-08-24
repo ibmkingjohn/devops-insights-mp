@@ -1,0 +1,164 @@
+<?php
+	/**
+* @file
+* Send email to using drupal_mail()
+* solomon
+*/
+    function email_the_user_mail($key, &$message, $params)
+    {
+        global $user;
+        $options = array('langcode' => $message['language']->language,);
+        switch ($key)
+        {
+            #  Send a simple message from the contact form.
+            case 'contact_message':
+                $message['subject'] = t('E-mail sent from @site-name', array('@site-name' => variable_get('site_name', 'Mentoring')), $options);
+                #  Note that the message body is an array, not a string.
+                $message['body'][] = t('@name has rejected your site registration, with the following explanation:', array('@name' => $user->name), $options);
+                $message['body'][] = check_plain($params['message']);
+                break;
+    }
+
+}
+
+
+# This function set user (field_user_acct_status) status to rejected.
+function email_the_user_and_reject()
+{
+    # get BlockUserID for url
+    $BlockUserID  = (isset($_GET['userid']) ? $_GET['userid'] :
+    'undefined');
+    $loadUser = user_load($BlockUserID);
+    # if BlockUserID is empty redirect to the main page
+    
+    if (($BlockUserID == 'undefined') || empty($loadUser))
+    {
+        header('Location: ' . $GLOBALS['base_url']);
+    }
+    else
+    {
+        $editUser = (array) $loadUser;
+        $editUser['field_user_acct_status']['und'][0]['tid'] = '3925';
+        user_save($loadUser, $editUser);
+    }
+
+}
+
+# Function to Send an e-mail to rejected user.
+function email_the_user_mail_send($form_values)
+{
+    # get UID from url
+    $BlockUserID  = (isset($_GET['userid']) ? $_GET['userid'] :
+    'undefined');
+    $loadUser = user_load($BlockUserID);
+    #  All system mails need to specify the module and template key (mirrored from
+	#  hook_mail()) that the message they want to send comes from.
+    $module = 'email_the_user';
+    $key = 'contact_message';
+    #  Specify 'to' and 'from' addresses.  hard coded email address jwk 10/8/2013
+    $to = $loadUser->mail;
+    $from = variable_get('site_mail', 'mentoring@mentorplace.net');
+    #  "params" loads in additional context for email content completion in
+	#  hook_mail(). In this case, we want to pass in the values the user entered
+	#  into the form, which include the message body in $form_values['message'].
+    $params = $form_values;
+    #  Since in our case, we are sending a message to a random e-mail address that
+	#  is not necessarily tied to a user account, we will use the site's default
+	#  language.
+    $language = language_default();
+    #  Whether or not to automatically send the mail when drupal_mail()
+    $send = TRUE;
+    #  Send the mail, and check for success.
+    $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
+    
+    if ($result['result'] == TRUE)
+    {
+        drupal_set_message(t('Email has been sent to '.$loadUser->name ));
+        drupal_set_message(t('User '.$loadUser->name.' has been rejected.'));
+        email_the_user_and_reject();
+    }
+    else
+    {
+        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    }
+
+}
+
+# This function is not required to send an email using Drupal's mail system.
+function email_the_user_mail_alter(&$message)
+{
+    #  For the purpose of this example, modify all the outgoing messages and
+	#  attach a site signature. The signature will be translated to the language
+	#  in which message was built.
+	
+    $options = array('langcode' => $message['language']->language,);
+    $signature = t(" ", array(), $options);
+    
+    if (is_array($message['body']))
+    {
+        $message['body'][] = $signature;
+    }
+    else
+    {
+        $message['body'] .= $signature;
+    }
+
+}
+
+# funtion to create a url to contact form.
+function email_the_user_menu()
+{
+    $items['email/email_the_user'] = array('title' => 'Compose mail','page callback' => 'drupal_get_form','page arguments' => array('email_the_user_form'),'access arguments' => array('access content'),);
+    return $items;
+}
+
+# function to generate contact form.
+function email_the_user_form()
+{
+    $BlockUserID  = (isset($_GET['userid']) ? $_GET['userid'] :
+    'undefined');
+    $loadUser = user_load($BlockUserID);
+    $checkroles= array('Group Admin','administrator','Subsite Admin', 'Staff Admin');
+    # check if the user id is empty then redirect.
+    foreach($checkroles as $role)
+    {
+        # Disable blocking Super users
+        
+        if (in_array($role, array_values($loadUser->roles)) )
+        {
+            header('Location: ' . $GLOBALS['base_url']);
+        }
+
+        # check if the user id is empty then redirect.
+        
+        if (($BlockUserID == 'undefined') || empty($loadUser))
+        {
+            header('Location: ' . $GLOBALS['base_url']);
+        }
+
+    }
+
+    $form['intro'] = array('#markup' => t('Please explain the reasons for rejecting the user <b>'.$loadUser->name.'</b> below.'),);
+    $form['email'] = array('#type' => 'textfield','#attributes'=>array('style'=>"display:none"),# '#title' => t('E-mail address'),
+    '#default_value' => $loadUser->mail,'#required' => TRUE,);
+    $form['message'] = array('#type' => 'textarea','#title' => t('Message / Reasons'),'#required' => TRUE,);
+    $form['submit'] = array('#type' => 'submit','#value' => t('Submit'),);
+    return $form;
+}
+
+# function for Form validation logic for the contact form.
+function email_the_user_form_validate($form, &$form_state)
+{
+    
+    if (!valid_email_address($form_state['values']['email']))
+    {
+        form_set_error('email', t('That e-mail address is not valid.'));
+    }
+
+}
+
+# function for Form submission logic for the contact form.
+function email_the_user_form_submit($form, &$form_state)
+{
+    email_the_user_mail_send($form_state['values']);
+}

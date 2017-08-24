@@ -1,0 +1,1180 @@
+<?php
+  
+/** 
+ * Returns whether a user is in a user subtree
+ * 
+ * @param $uid -- the uid of the user
+ * @param $tree -- the subtree
+ * @return boolean
+ * @author shaouy
+ */
+function sm_users_is_user_in_tree($uid, $tree) {
+  if (($tree==null)||($uid==null)) { // boundary test
+    return FALSE; 
+  }
+  foreach ($tree as $treeitem) { // $tree is a 1D array. For each item...
+    if ($treeitem !=null) {
+      $usertids = sm_users_get_tids($uid); // get the taxonomy tids of the user
+      foreach($usertids as $usertid) {
+        if ($treeitem->tid==$usertid) { // return true if there is a match
+          return TRUE;
+        }
+      }
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Returns the taxononomy subtree of the logged in user
+ * 
+ * @return array -- the subtree, flattened to a 1-dimensional array 
+ * @author shaouy
+ */
+function sm_users_trees_of_logged_in_user() {
+  global $user;
+  $tree=null;
+  
+  if (!$user || $user->uid == null) { // boundary cases
+    return;
+  }
+  // get the vid of our vocabulary
+  $vocab = taxonomy_vocabulary_machine_name_load('user_hierarchy');
+  if (($vocab == null) || ($vocab->vid==null)) {
+    return null;
+  }
+  $vid = ($vocab->vid);
+  
+ // module_load_all(); // this forces the load of the taxonomy module. 
+ 
+  // get user taxonomy tid
+  $tids = sm_users_get_tids($user->uid);
+  foreach ($tids as $tid) {
+    // get taxonomy subtree under tid and add to array
+    $trees[] = taxonomy_get_tree($vid,$tid);    
+  }
+  return $trees;
+}
+
+/**
+ * Returns the the user taxonomy tids of a user
+ *
+ * @param $uid -- the uid of the user
+ * @return array
+ * @author shaouy
+ */
+function sm_users_get_tids($uid) {
+  $tids = array();
+  $results = db_select('field_data_field_taxonomy_tag', 'f')
+      ->fields('f', array('field_taxonomy_tag_tid'))
+      ->condition('entity_id', $uid,'=')
+      ->execute()
+      ->fetchAll();
+  foreach($results as $result) {
+     if (!in_array($result->field_taxonomy_tag_tid, $tids)) {
+        $tids[] = $result->field_taxonomy_tag_tid;
+     }
+  }
+
+  return $tids;
+}
+
+// Is the logged in user the group admin of user $uid
+function sm_users_am_i_group_admin_of_uid($uid) {
+  global $user; // logged in user
+
+  // First test to see if user $uid and the currently logged in user
+  // are in the same spot in the user hierarchy
+  $mytids = sm_users_get_tids($user->uid);
+  $userstids = sm_users_get_tids($uid);
+  if ((is_array($mytids)) && (count($mytids)>0)) { // shaouy 12/2/12
+     foreach($mytids as $tid) {
+       if (in_array($tid, $userstids)) {
+          return TRUE;
+       }
+     }
+  }
+
+  // Next, test to see if user $uid is in a lower spot
+  // in the user hierarchy as the currently logged in user
+  $my_trees = sm_users_trees_of_logged_in_user();  
+  if (is_array($my_trees)) {
+    foreach($my_trees as $my_tree) {
+      if(sm_users_is_user_in_tree($uid, $my_tree)==TRUE) {
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
+}
+
+/**
+* prevent registration emails from going out
+* 
+* @param $message -- an array containing message data
+* @author bacheller
+*/
+function sm_users_mail_alter(&$message){
+  if($message['id'] == 'user_register_pending_approval_admin'){
+    $message['send'] = FALSE;
+    return;
+  }
+}
+
+/**
+ * Assigns a mentee to a mentor
+ * 
+ * @param $mentee_uid -- the uid of the mentee
+ * @param $mentor_uid -- the uid of the mentor
+ * @return none
+ * @author shaouy
+ */
+ /*  JWK do we need this? 422015 */
+function sm_users_assign_mentee_to_mentor($mentee_uid, $mentor_uid) {
+  $admin=user_load(1);
+  $mentee_obj = user_load($mentee_uid);
+  $mentor_obj = user_load($mentor_uid);  
+  $relationship = user_relationships_request_relationship($mentee_obj, $mentor_obj, 1, TRUE);
+  if ($relationship != NULL) {  
+    drupal_set_message('Mentor match successful!');
+    // notify mentor of match
+    $from = $admin->mail;
+    $subject = t('A mentor/mentee relationship has been established between you and') . ' ' . $mentee_obj->name;
+    $body =  t('The mentee') . ' ' . $mentee_obj->name . ' ';
+    $body .= t('has requested you as a mentor and the request has been approved by your administrator. Visit your dashboard to view your new mentee!');
+    //$pm_recipients = array();
+    //$pm_recipients[] = $mentor_obj;
+    //privatemsg_new_thread($pm_recipients, $subject, $body, array('author' => $admin,'timestamp' => time()));
+    $to =  $mentee_obj->mail;
+    $my_module = 'sm_users';
+    $my_mail_token = microtime();
+    $message = array(
+       'id' => $my_module . '_' . $my_mail_token,
+       'to' => $to,
+       'subject' => $subject,
+       'body' => array($body),
+       'headers' => array(
+          'From' => $from, 
+          'Sender' => $from, 
+           'Return-Path' => $from,
+       ),
+    );
+    $system = drupal_mail_system($my_module, $my_mail_token);
+    $message = $system->format($message);
+    $system->mail($message);    
+  }
+}
+
+/**
+* sets up menu items for approving and removing mentee/mentor matches 
+* @return items - an array of menu items
+*/
+
+function sm_users_menu() {
+  $items = array();
+//define menu items 
+  $items['match_approval_confirm'] = array(
+    'title' => t('Match Approval Confirmation'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sm_users_match_approval_form'),
+    'access callback' => TRUE,
+    'description' => 'Match approval confirmation form',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['mentee_match_confirm'] = array(
+    'title' => t('Mentee Match Confirmation'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sm_users_mentee_match_confirm_form'),
+    'access callback' => TRUE,
+    'description' => 'Mentee match confirmation form',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['match_removal_confirm'] = array(
+    'title' => t('Match Removal Confirmation'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sm_users_match_removal_form'),
+    'access callback' => TRUE,
+    'description' => 'Match removal confirmation form',
+    'type' => MENU_LOCAL_TASK,
+  );
+  //ajax page for matching
+  $items['manual_match_finalize'] = array(
+    'title' => t('Finalize Manual Match'),
+    'page callback' => 'sm_users_finalize_match',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  //page for auto matching
+  $items['auto_match_finalize'] = array(
+    'title' => t('Auto Matching Results'),
+    'page callback' => 'sm_users_finalize_automatch',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function sm_users_finalize_match(){
+  $mentors = arg(1);
+  $mentees = arg(2);
+  $output = '<div id="match-result">';
+  $success_message_begin = 'Matches successsfully created between users: <ul>';
+  $success_message = '';
+  $fail_message_begin = 'Matches could not be made between users: <ul>';
+  $fail_message = '';
+  $mentor_array = explode("+", $mentors);
+  $mentee_array = explode("+", $mentees);
+  $mentor_obj = user_load($mentor_array[0]);
+  $mentee_count = count($mentee_array);
+  
+  // get limit and number of matched mentees 
+  $mentor_match_limit = $mentor_obj->field_match_limit['und'][0]['value'];
+  $query = db_query('SELECT COUNT(1) as count FROM user_relationships ur WHERE ur.requestee_id='.$mentor_array[0].' LIMIT 1');
+  $result = $query->fetchAll();
+  $matched_mentees = $result[0]->count;
+
+  if($matched_mentees >= $mentor_match_limit){
+    return "Match could not be completed because the match limit for the mentor ".$mentor_obj->name." has been exceeded.";
+  }
+
+  for($x = 0; $x < $mentee_count; $x++){  
+    $mentee_obj = user_load($mentee_array[$x]);
+    $mentee_name = $mentee_obj->field_first_name['und'][0]['value'].' '.$mentee_obj->field_last_name['und'][0]['value'];
+    $mentor_name = $mentor_obj->field_first_name['und'][0]['value'].' '.$mentor_obj->field_last_name['und'][0]['value'];
+
+    $relationship_exists = user_relationships_load(array('requestee_id' => $mentor_obj->uid, 'requester_id' => $mentee_obj->uid));
+
+    if(!empty($relationship_exists)){
+      $fail_message .= "<li>".$mentee_name." and ".$mentor_name." (relationship already exists)</li>";
+    }else{
+      $relationship = user_relationships_request_relationship($mentee_obj, $mentor_obj, 1, TRUE);
+      if($relationship != NULL){
+        $success_message .= "<li>".$mentee_name." and ".$mentor_name."</li>";
+      }else{
+        $fail_message .= "<li>".$mentee_name." and ".$mentor_name."</li>";
+      }
+    }
+    watchdog("Match Creation", "Relationship Created");
+    unset($relationship);
+    unset($relationship_exists);
+  }
+
+  if(strlen($success_message) > 0){
+    $output .= $success_message_begin.$success_message."</ul>";
+  }
+
+  if(strlen($fail_message) > 0 ){
+    $output .= $fail_message_begin.$fail_message."</ul>";
+  }
+
+  $output .= '</div>';
+  return $output;
+}
+
+function sm_users_finalize_automatch(){
+  //Get mentees
+  $loc_filter = arg(1);
+  $mentee_view = null;
+  $mentee_view = views_get_view('administerusers_views');
+  $args=array($loc_filter); 
+  $mentee_view->set_arguments($args); //pass in the location tree as an argument
+  $display_id = 'mentee_automatch'; 
+  $mentee_view->set_display($display_id); // set the display
+  $mentee_view->set_items_per_page(0); 
+  $mentee_view->execute(); //load the view
+  $mentees = $mentee_view->result;
+  $total_mentees = count($mentees);
+
+  //Get mentors
+  $mentor_view = null;
+  $mentor_view = views_get_view('administerusers_views');
+  $mentor_view->set_arguments($args); //pass in the location tree as an argument
+  $display_id = 'mentors_automatch'; 
+  $mentor_view->set_display($display_id); // set the display
+  $mentor_view->set_items_per_page(0); 
+  $mentor_view->execute(); //load the view
+  $mentors = $mentor_view->result;
+  $total_mentors = count($mentors);
+
+  //Build an array to work with 
+  $mentor_array = array();
+  for($w = 0; $w < $total_mentors; $w++){
+    $mentor_array[$w]->uid = $mentors[$w]->uid;
+    $mentor_array[$w]->name = $mentors[$w]->users_name;
+    $mentor_array[$w]->gender = $mentors[$w]->_field_data['uid']['entity']->field_gender['und'][0]['tid'];
+    $mentor_array[$w]->matches = $mentors[$w]->raw_sql_field;
+    $mentor_array[$w]->matches_remaining = $mentors[$w]->_field_data['uid']['entity']->field_match_limit['und'][0]['value'] - $mentors[$w]->raw_sql_field;
+  }
+
+  //Sorting functions. Will sort by match availability first and then gender.
+  function order_by_least_matched_female($a, $b){
+      if ($a->matches == $b->matches){
+        if($a->gender == null) return 1;
+        if($b->gender == null) return -1;
+        if ($a->gender > $b->gender){
+          return -1;
+        } 
+      }
+      return $a->matches < $b->matches ? -1 : 1;
+  }
+
+  function order_by_least_matched_male($a, $b){
+      if ($a->matches == $b->matches){
+        if($a->gender == null) return 1;
+        if($b->gender == null) return -1;
+        if ($a->gender > $b->gender){
+          return 1;
+        } 
+      }
+      return $a->matches < $b->matches ? -1 : 1;
+  }
+
+  function order_by_least_matched($a, $b){
+      if ($a->matches == $b->matches){
+        if($a->gender == null) return -1;
+        if($b->gender == null) return 1;
+        return rand(0,1)*2-1;
+      }
+      return $a->matches < $b->matches ? -1 : 1;
+  }
+
+  
+  //Styling vars
+  $output = "<strong>Matches created:</strong><br/>";
+  $output .= "<table><tr><th>Mentee</th><th>Gender</th><th>Mentor</th><th>Gender</th></tr>";
+  $failed_matches = FALSE;
+  $gender_array[3836] = "F";
+  $gender_array[3835] = "M";
+  $failed_list = '';
+  //loop through twice to give everyone the chance to be matched with their own gender 
+  for($x = 0; $x < $total_mentees*2; $x++){ 
+    $loop_switch = 0;
+    if($x >= $total_mentees){
+      $loop_switch = $total_mentees; 
+    }
+    $gender = $mentees[$x-$loop_switch]->_field_data['uid']['entity']->field_gender['und'][0]['tid'];
+    if($gender == 3835){ //male
+      usort($mentor_array, "order_by_least_matched_male");
+    }else if($gender == 3836){ //female
+      usort($mentor_array, "order_by_least_matched_female");
+    }else{
+      usort($mentor_array, "order_by_least_matched");
+    }
+    
+    //first make sure mentee isn't matched. On the first pass, only allow them to be matched by same gender, otherwise the second time around match with best available. 
+    if($mentees[$x-$loop_switch]->matched != TRUE && (($gender == $mentor_array[0]->gender && $x < $total_mentees) || $x >= $total_mentees)){
+      if($mentor_array && $mentor_array[0]->matches == 0 && $gender != NULL){ //make sure the mentor has matches available
+        // get the mentee and mentor objects
+        $mentee_obj = user_load($mentees[$x-$loop_switch]->uid);
+        $mentor_obj = user_load($mentor_array[0]->uid);
+        /**
+        * Code to actually make the match. Uncomment when not testing.
+        **/
+        $relationship = user_relationships_request_relationship($mentee_obj, $mentor_obj, 1, TRUE);
+        //$relationship = 1; 
+        if($relationship != NULL){
+          $output .= "<tr><td><a href='/users/".$mentee_obj->name."' target='_new'>".$mentee_obj->field_first_name['und'][0]['value']." ".$mentee_obj->field_last_name['und'][0]['value']."</a></td><td>".$gender_array[$gender]."</td><td><a href='/users/".$mentor_obj->name."' target='_new'>".$mentor_obj->field_first_name['und'][0]['value']." ".$mentor_obj->field_last_name['und'][0]['value']."</a></td><td>".$gender_array[$mentor_array[0]->gender]."</td></tr>";
+          $mentor_array[0]->matches += 1; //increase match count for this mentor 
+          $mentor_array[0]->matches_remaining -= 1; //decrease matches remaining for this mentor
+          if($mentor_array[0]->matches_remaining < 1){ //if mentor has no more matches remaining, take them out of the array
+            unset($mentor_array[0]);
+          }
+        }
+      }else{ //if the best match has no matches remaining or is empty, matching will fail from here on out. Let the user know who couldn't be matched.
+        $mentee_first_name = $mentees[$x-$loop_switch]->_field_data['uid']['entity']->field_first_name['und'][0]['value'];
+        $mentee_last_name = $mentees[$x-$loop_switch]->_field_data['uid']['entity']->field_last_name['und'][0]['value'];
+        $failed_matches = TRUE;
+        $failed_list .= "<a href='/users/".$mentees[$x-$loop_switch]->_field_data['uid']['entity']->name."' target='_new'>".$mentee_first_name." ".$mentee_last_name."</a><br />";
+      }
+      $mentees[$x-$loop_switch]->matched = TRUE; //Mark the mentee as matched in the working array  
+    }
+  }
+
+  $output .= "</table>";
+
+  if($failed_matches == TRUE){
+    $output .= "<br /><br /><strong>The following mentees were not matched:</strong> <br />".$failed_list;
+  }
+  return $output;
+}
+
+function sm_users_match_approval_form($form, &$form_state) {
+  $mentee_uid = arg(1);
+  $mentor_uid = arg(2);
+  $title = t('Press submit to confirm the match');
+  if ((is_numeric($mentee_uid))&&(is_numeric($mentor_uid))) {
+    $mentee_obj = user_load($mentee_uid);
+    $mentor_obj = user_load($mentor_uid); 
+    $title = t('Press Submit to confirm the match of') . ' ' . $mentee_obj->name;
+    $title .= ' ' . t('with') . ' ' . $mentor_obj->name;
+  }
+  
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => $title,
+  );
+
+  // Adds a simple submit button that refreshes the form and clears its contents -- this is the default behavior for forms.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#suffix' => '<a href="'.$GLOBALS['base_url'].'/users/'.$mentee_obj->name.'" title="" class="button">'.t('Cancel').'</a>',
+  );
+  $form['#after_build'][] = 'sm_users_match_form_after_build';
+  return $form;
+}
+
+function sm_users_mentee_match_confirm_form($form, &$form_state) {
+  global $user; // this is the mentee
+  $mentee_obj = $user;
+  $mentor_uid = arg(1);
+  $title = t('Press submit to confirm the match');
+  if (is_numeric($mentor_uid)) {
+    $mentor_obj = user_load($mentor_uid); 
+    $title = t('Press Submit to confirm the match of') . ' ' . $mentee_obj->name;
+    $title .= ' ' . t('with') . ' ' . $mentor_obj->name.'.';
+  }
+  
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => $title,
+  );
+
+  // Adds a simple submit button that refreshes the form and clears its contents -- this is the default behavior for forms.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  $form['#after_build'][] = 'sm_users_mentee_match_confirm_form_after_build';
+  return $form;
+}
+
+
+
+/**
+ * Form after build
+ * 
+ * @param $form -- The form array
+ * @param $form_state -- The form state
+ * @author shaouy
+ */
+ function sm_users_match_form_after_build($form, &$form_state) {
+    if (arg(0)=='match_approval_confirm')  {
+      drupal_set_title(t('Match Confirmation'));
+    } 
+    return $form;
+ }
+
+ function sm_users_mentee_match_confirm_form_after_build($form, &$form_state) {
+    if (arg(0)=='mentee_match_confirm')  {
+      drupal_set_title(t('Match Confirmation'));
+    } 
+    return $form;
+ }
+
+/*  JWK do we need this? 422015 */
+function sm_users_match_approval_form_submit($form, &$form_state) {
+  global $user;
+  $mentee_uid = arg(1);
+  $mentor_uid = arg(2);
+  variable_set('limitmentee'.$user->uid, $mentee_uid);
+  variable_set('limitmentor'.$user->uid, $mentor_uid);
+  
+  /*
+  $requester = new stdClass;
+  $requester->op = 'Send';
+  $requester->requester = user_load($mentee_uid);
+  $requester->requestee = user_load($mentor_uid);
+  $requester->rtid = '1';
+  $relationship->type = user_relationships_type_load(1); // rid is 1
+  $relationship = user_relationships_request_relationship($relationship);
+  $relationship->approved = TRUE;
+  user_relationships_save_relationship($relationship, 'approve');
+  */
+
+  sm_users_assign_mentee_to_mentor($mentee_uid, $mentor_uid);
+
+  if (is_numeric($mentee_uid)) {
+    $form_state['redirect'] = 'user/' . $mentee_uid;
+  } else {
+    $form_state['redirect'] = 'index.php';
+  }
+}
+
+/*  JWK do we need this? 422015 */
+function sm_users_mentee_match_confirm_form_submit($form, &$form_state) {
+  global $user; // this is the mentee
+  $mentee_uid = $user->uid;
+  $mentor_uid = arg(1);
+  variable_set('limitmentee'.$user->uid, $mentee_uid);
+  variable_set('limitmentor'.$user->uid, $mentor_uid);
+
+  sm_users_assign_mentee_to_mentor($mentee_uid, $mentor_uid);
+
+  if (is_numeric($mentee_uid)) {
+//    $form_state['redirect'] = 'user/' . $mentee_uid;
+    $form_state['redirect'] = 'index.php';
+  } else {
+    $form_state['redirect'] = 'index.php';
+  }
+    
+}
+
+/**
+ * Gets the relationship limit for a user role (mentor or mentee)
+ * 
+ * @param $rolename -- the role name. Can only be 'mentee' or 'mentor'. If you pass in anything else, the function will return 0.
+ * @return integer
+ * @author shaouy
+ */
+function sm_users_get_relationship_limit($rolename) {
+  //module_load_all();
+  if (($rolename != 'mentee') && ($rolename != 'mentor')) {
+    return 0; // we only care about mentors and mentees
+  }
+  $role_obj = user_role_load_by_name($rolename);
+  if (!is_object($role_obj)) {
+    return 0; // error condition. execute no longer.
+  }
+  $relnamearray = array('name'=>'partner');
+  $rel_type_obj = user_relationships_type_load($relnamearray);
+  if (!is_object($rel_type_obj)) {
+      return 0; // error condition. execute no longer.
+  }
+  $limit = user_relationship_limits_role_limit($rel_type_obj->rtid, $role_obj->rid);
+  return $limit;
+}
+
+function sm_users_is_mentee_relationship_limit_reached($mentee_uid) {
+  $count = user_relationships_load(array('user' => $mentee_uid), array('count' => true));
+  $limit = sm_users_get_relationship_limit('mentee');
+  if ($count >= $limit) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+function sm_users_get_uid_from_profile_page() {
+  global $user;    // the logged in user, who should only be group admin whenever this function is called
+  $var_label = 'mpuid_'. $user->uid; // this variable is set by the rule 'Set uid variable'
+  $uid = variable_get($var_label); // the user whose profile page the logged-in user  is looking at
+  if (($uid==NULL) || ($uid=='') || ($uid==0)) {
+    return 0;
+  }
+  return $uid;
+}
+
+/*  JWK do we need this? 422015 */
+function sm_users_get_user_role($uid) {
+  $userobj=user_load($uid);
+  $roles=$userobj->roles;
+  foreach ($roles as $key => $value) {
+    if (strtolower($value)=='mentee') {
+      return 'mentee';
+    }
+    if (strtolower($value)=='mentor') {
+      return 'mentee';
+    }
+    if (strtolower($value)=='group admin') {
+      return 'groupadmin';
+    }
+    if (strtolower($value)=='administrator') {
+      return 'admin';
+    }
+  }
+}
+
+
+/**
+ * Gets the taxonomy term name(s) of the logged-in user
+ * 
+ * @param 
+ * @return String, of format "name1, name2, ...". For example, "Berngen", or "Berngen, Fugger"
+ * @author shaouy
+ */
+ /*  JWK do we need this? 422015 */
+function sm_users_get_term_names_of_logged_in_user() {
+  global $user;
+
+//  module_load_all();
+  $return_string = '';
+  $t_array = sm_users_get_tids($user->uid);
+  $count=1;
+  foreach ($t_array as $tid) {
+    $term = taxonomy_term_load($tid);
+    if (($term != NULL) && ($term != FALSE)) {
+      if ((count($t_array > 0)) && ($count > 1)) {
+        $return_string .= ', ';
+      }
+      $return_string .= $term->name;
+      $count++;
+    }
+  }
+  return $return_string;
+}
+
+/**
+ * Gets the parent taxonomy term name(s) of the logged-in user
+ * 
+ * @param 
+ * @return String, of format "name1, name2, ...". For example, "Goode", or "Goode, P-Tech"
+ * @author shaouy
+ */
+ /*  JWK do we need this? 422015 */
+function sm_users_get_parent_term_names_of_logged_in_user() {
+  global $user;
+
+ // module_load_all();
+  $return_string = '';
+  $t_array = sm_users_get_tids($user->uid);
+  $count=1;
+  $used_terms = array();
+  foreach ($t_array as $tid) {
+    $terms = taxonomy_get_parents($tid);
+    if ($terms == NULL) {
+    // logged in user is a group admin and has no parent taxonomy
+      return sm_users_get_term_names_of_logged_in_user();
+      break;
+    }
+    foreach($terms as $term) {
+      if (!in_array($term, $used_terms)) {
+        if ($count > 1) {
+          $return_string .= ', ';
+        }
+        $return_string .= $term->name;
+        $count++;
+        $used_terms[]=$term;
+      }
+    }
+  }
+  return $return_string;
+}
+
+/**
+ * Gets the uid of the person the user reports to 
+ * 
+ * @param 
+ * @return integer
+ * @author bacheller
+ */
+function sm_users_get_senior_uid(){
+  global $user;
+
+  $t_array = sm_users_get_tids($user->uid);//get an array of tids assigned to the user
+  if ((is_array($t_array)) && (count($t_array)>0)) {
+    foreach($t_array as $tid) {
+      $parents = sm_users_get_users_by_taxonomy($tid);//call the function to get the uids of users with this taxonomy
+    }
+  }
+  return $parents;
+}
+
+/**
+ * Gets uids of users with specific taxonomy
+ * 
+ * @param $tid - the user's taxonomy id
+ * @return integer
+ * @author bacheller
+ */
+function sm_users_get_users_by_taxonomy($tid){
+  $uid = array();
+  $terms = taxonomy_get_parents($tid);//get the parents of this tid 
+   $view_parent_uids = views_get_view('user_tids'); //load the user_tids view
+  if (($view_parent_uids==NULL) || (!is_object($view_parent_uids))) {
+    return ('NULL'); // do nothing
+  }
+  foreach($terms as $tid){
+    $parent_tid = $tid->tid;
+  }  
+  $args=array($parent_tid);
+  $view_parent_uids->set_arguments($args);
+
+  $view_parent_uids->set_display('tagged_users'); 
+
+  $view_parent_uids->execute();
+
+  $result = $view_parent_uids->result;   
+  foreach($result as $user_parent_uid){
+    $user_parents[] = $user_parent_uid->uid;
+  }
+  return($user_parents);
+
+}
+
+/**
+ * Get total logged in time
+ * 
+ * @param $uid - the user's id number
+ * @return integer
+ * @author bacheller
+ */
+function sm_users_get_total_logged_time($uid){
+  $view_logged_time = views_get_view('time_tracker_view');
+  if (($view_logged_time==NULL) || (!is_object($view_logged_time))) {
+    return ('NULL'); // do nothing
+  }
+  $args=array($uid);
+  $view_logged_time->set_arguments($args);
+
+  $view_logged_time->set_display('total_time'); 
+
+  $view_logged_time->execute();
+
+  $result = $view_logged_time->result;   
+  $user_time = 0;
+  foreach($result as $user_logged_time){
+    $user_time += $user_logged_time->time_tracker_entry_duration;
+  }
+  
+  return(ceil($user_time));
+}
+
+/**
+ * Get total logged in time for mentees or mentors 
+ * 
+ * @param $role - the user role for the data set (either mentee or mentor)
+ * @return integer
+ * @author bacheller
+ */
+function sm_users_get_total_role_logged_time(){
+  $view_logged_time = views_get_view('time_tracker_view');
+  if (($view_logged_time==NULL) || (!is_object($view_logged_time))) {
+    return ('NULL'); // do nothing
+  }
+
+  $view_logged_time->set_display('total_time_mentee'); 
+
+  $view_logged_time->execute();
+
+  $result = $view_logged_time->result;   
+  return $result;
+}
+
+/**
+* Implementation of hook_form_alter
+* 
+* @param mixed $form
+* @param mixed $form_state
+* @param mixed $form_id
+* @author bacheller
+*/
+function sm_users_form_alter(&$form, &$form_state, $form_id) { 
+  if($form_id == 'user_register_form'){
+  global $user;
+			$has_role = array_intersect(array('Group Admin', 'Staff Admin', 'Subsite Admin', 'administrator'), array_values($user->roles));
+			if (empty($has_role) ? FALSE : TRUE) {
+			$form['field_code_of_conduct']['und']['#required'] = FALSE;
+			}
+   
+    $form['#after_build'][] = 'sm_users_update_un_description';
+    $form['#validate'][] = 'sm_users_user_register_form_validate';
+  }
+  //bacheller edit - 2/3/14
+  if($form_id == 'user_pass'){
+    $form['#validate'][] = 'sm_users_user_forgot_pwd_validate';
+  }
+  //end 2/3/14 edit
+
+  if($form_id == 'user_profile_form' && arg(1) != 'reset'){
+    global $user;
+    $form['#validate'][] = 'sm_users_user_register_form_validate';
+    $form['actions']['cancel'] = array(
+      '#type' => 'submit',
+      '#value' => t('Cancel account'),
+      '#submit' => array('user_edit_cancel_submit'), 
+     //'#access' => array_intersect(array('Staff Admin', 'Subsite Admin', 'administrator'), array_values($user->roles)),
+     '#access' => array_intersect(array('administrator'), array_values($user->roles)),
+   
+    );
+    
+   /** 
+   * jwk 2/12/2014
+   * Hide picture upload button from user profile edit form.
+   */
+    unset($form['picture']['picture_upload']);
+    //unset($form['picture']);
+    /*  JWK do we need this? 422015 */
+    //$form['privatemsg']['pm_show_sender_mail'] = array('visible' => array(FALSE)); // hide notify settings
+    if(in_array("Mentee", $form['#user']->roles)){
+      field_group_hide_field_groups($form, array('group_administrative', 'group_mentor_mc', 'group_mentee', 'group_mentor_edu_bk'));   //if user is a mentee, hide the "administrative" and "my career" groups
+    }
+    else if(in_array("Mentor", $form['#user']->roles)){
+      field_group_hide_field_groups($form, array('group_administrative'));   //if user is a mentor, hide the "administrative" group
+    }
+    else if (in_array("Group Admin", $form['#user']->roles) || in_array("Subsite Admin", $form['#user']->roles) || in_array("Staff Admin", $form['#user']->roles)){
+      field_group_hide_field_groups($form, array('group_administrative', 'group_mentor_mc', 'group_mentee', 'group_mentor_edu_bk', 'group_mentor_am', 'group_mentor_free'));//if user is an admin, hide everything
+    }
+   
+
+     //Check code of conduct and if there is a value hide the field
+    $CurrentProfile = user_load(arg(1));
+    $user_data = user_load($CurrentProfile->uid);
+    $coc = $user_data->field_code_of_conduct;
+    $cocvalue= $coc['und'][0]['value'];
+    if ($cocvalue=='1') {
+     $form['field_code_of_conduct']['#disabled'] = TRUE;
+    }
+    $has_role = array_intersect(array('Group Admin', 'Staff Admin', 'Subsite Admin', 'administrator'), array_values($user->roles));
+		if (empty($has_role) ? FALSE : TRUE) {
+		$form['field_code_of_conduct']['und']['#required'] = FALSE;
+		}
+
+  }
+
+  /*
+  * Disable code of conduct validation on pwd reset form
+  */
+  if($form_id == 'user_profile_form' && arg(1) == 'reset'){
+    $form['field_code_of_conduct']['#type'] = 'actions'; //trick simple pwd reset module  into not modifying this field and let us deal with it here
+    if($form_state['user']->field_code_of_conduct['und'][0]['value'] == 1){
+      $form['field_code_of_conduct']['und']['#required'] = FALSE;
+      $form['field_code_of_conduct']['#access'] = FALSE;
+    }else{
+      $form['field_code_of_conduct']['#access'] = TRUE;
+    }
+  }
+     
+  //disable autocomplete on login form
+  if($form_id == 'user_login'){
+    $form["pass"]["#attributes"]['autocomplete'] = 'off';
+    $form["name"]["#attributes"]['autocomplete'] = 'off';
+    $form["#attributes"]['autocomplete'] = 'off';
+  }  
+}
+
+
+function sm_users_update_un_description($form, &$form_state) { 
+  $form['account']['name']['#description'] = t('Limit is 15 characters, minimum 6 characters. Spaces are allowed; punctuation is not allowed except for periods, hyphens, apostrophes, and underscores. Your username cannot include your last name.');
+  $form['field_code_of_conduct']['und']['#description'] = t('You must agree to abide by the <a href="'.$GLOBALS['base_url'].'/codeofconduct" target="_blank"> Code of Conduct</a>');
+  return $form;
+}
+
+/**
+ * require code of conduct field and also disallow real name as username
+ * @param $form
+ * @param $form_state
+ * @author bacheller
+ */
+function sm_users_user_register_form_validate($form, &$form_state) {
+  $first_name = $form_state['values']['field_first_name'][LANGUAGE_NONE][0]['value'];
+  $last_name = $form_state['values']['field_last_name'][LANGUAGE_NONE][0]['value'];
+  $username = $form_state['values']['name'];
+  $password = $form_state['values']['pass'];
+  if($form["#form_id"] == "user_profile_form" && !$password){
+    return TRUE;
+  }
+  //use this if you want to disallow first name as part of the username too
+  //$pattern = '/'.$first_name.'|'.$last_name.'/';
+  $error = "";
+  $pattern = '/'.$last_name.'/i';
+  if(preg_match ($pattern , $username) == 1){
+    $error .= "Username must not contain your real name.<br />";
+  }
+  //disallow spaces in username
+  $pattern = '/\s/';
+  if(preg_match($pattern, $username) == 1){
+    $error .= "Username must not contain spaces.<br />";
+  }
+  //disallow username being used in password (this should be part of password policy module but has not been implemented for user creation as of 8-13-14)
+  $pattern = '/'.$username.'/i';
+  if(preg_match($pattern, $password) == 1){
+    $error .= "Password must not contain username.<br />";
+  }
+
+  //require the password to be at least 8 chars
+  if(strlen($password) < 8){
+    $error .= "Password must be at least 8 characters.<br />";
+  }
+
+  //require one uppercase character in pwd -- no longer required - 3/4/15
+  /*$pattern = '/[A-Z]/';
+  if(preg_match($pattern, $password) != 1){
+    $error .= "Password must contain at least one uppercase letter.<br />";
+  }*/
+
+  //require a number in pwd 
+  $pattern = '/[0-9]/';
+  if(preg_match($pattern, $password) != 1){
+    $error .= "Password must contain at least one number.<br />";
+  }
+
+  //This makes sure that the username is more than 6 characters
+  if(strlen($username) <= 6){
+    $error .= "Username must be more than 6 characters.";
+  }
+
+  if(strlen($error) > 1){
+    form_set_error('username', t($error));
+  }
+}
+
+/**
+* extra validation for forgot password form
+* @param $form
+* @param $form_state
+* @author bacheller
+*/
+function sm_users_user_forgot_pwd_validate($form, &$form_state){
+  $email = $form_state['values']['name'];
+  if(!user_load_by_mail($email) && !user_load_by_name($email)){
+    form_set_error('name', t($email.' was not found in the system.'));
+  }
+}
+
+/**
+* Returns list of subsite admins for current logged in user
+*/
+function sm_users_get_subsite_admins($loc_tree = ''){
+  $sa_view = null;
+  $sa_view = views_get_view('jwk_user_tree_views');
+  $args=array($loc_tree); 
+  $sa_view->set_arguments($args); //pass in the location tree as an argument
+  $display_id = 'my_subsite_admins'; 
+  $sa_view->set_display($display_id); // set the display
+  $sa_view->execute(); //load the view
+  $results = $sa_view->result;
+  $resultOut = null;
+  foreach ($results as $result) {
+    $resultOut[] = user_load($result->uid); 
+  }
+  return $resultOut;
+}
+
+/**
+ * Returns the parent tid chain, given a user tid
+ *
+ * @param $user_tid - the user's tid
+ * @return array-- the parent tid chain, in a one-dimensional array, e.g. array(13, 8, 5, 3, 2, 1)
+ * @author shaouy
+ */
+function sm_users_get_parent_tid_chain($user_tid) {
+  if (!is_numeric($user_tid)) {
+    return array();
+  }
+  $tids = array($user_tid);
+  $current_tid=$user_tid;
+//  module_load_all();
+  $done=FALSE;
+  while($done==FALSE) {
+    $parents = taxonomy_get_parents($current_tid);
+    if (($parents==NULL) || (count($parents)==0)) {
+      $done=TRUE;
+    } else {
+      foreach($parents as $parent) {
+        $current_tid=$parent->tid;
+      }
+      $tids[]=$current_tid;
+    }
+  }
+  return $tids;
+}
+
+
+/**
+ * Returns the taxonomy subtree of a passed-in tid, in the form of a single string separated by +'s
+ *
+ * @param $tid - the tid to get the subtree of
+ * @return string-- the taxonomy subtree of a passed-in tid, in the form of a single string separated by +'s
+ * @author shaouy
+ */
+function sm_users_get_subtree_tids($tid) {
+ // module_load_all();
+  $vocab = taxonomy_vocabulary_machine_name_load('user_hierarchy');
+  if (($vocab == null) || ($vocab->vid==null)) {
+    return null;
+  }
+  $vid = ($vocab->vid);
+  $tid_objects = taxonomy_get_tree($vid, $tid, NULL, FALSE);
+  $tids='';
+  foreach ($tid_objects as $tid_object) {
+    if (strlen($tids)>0) {
+      $tids .= '+';
+    }
+    $tids .= (string)$tid_object->tid;
+  }
+  return $tids;
+}
+
+
+/**
+ * Gets the taxonomy term name of the logged-in user, the names of the user's subtree leaves, and the name of the parent
+ * 
+ * @param 
+ * @return string -- a string of names separated by +'s
+ * @author shaouy
+ */
+
+function sm_users_get_surrounding_tids_of_logged_in_user() {
+  global $user;
+//  module_load_all();
+  $tids = '';
+  $t_array = sm_users_get_tids($user->uid);
+  foreach ($t_array as $tid) { // should loop once
+    if (strlen($tids)>0) {
+      $tids .= '+';
+    }
+    $tids .= sm_users_get_subtree_tids($tid);
+    $term = taxonomy_term_load($tid);
+    if (($term != NULL) && ($term != FALSE)) {
+      if (strlen($tids)>0) {
+        $tids .= '+';
+      }
+      $tids .= (string)$term->tid;
+    }
+    // So we now have the term name of the logged in user and the user's subtree. 
+    // Now get the user's parent name
+    $parents = taxonomy_get_parents($tid);
+    foreach ($parents as $parent) { // should loop once
+      if (strlen($tids)>0) {
+        $tids .= '+';
+      }
+      $tids.= (string)$parent->tid;
+    }
+  }
+  return $tids;
+}
+
+
+//**************************************************************************************************************
+
+/**
+ * Returns the taxonomy subtree of a passed-in tid, in the form of a single string separated by +'s
+ *
+ * @param $tid - the tid to get the subtree of
+ * @return string-- the taxonomy subtree of a passed-in tid, in the form of a single string separated by +'s
+ * @author shaouy
+ */
+ 
+function sm_users_get_subtree_names_array($tid) {
+ // module_load_all();
+  $vocab = taxonomy_vocabulary_machine_name_load('user_hierarchy');
+  if (($vocab == null) || ($vocab->vid==null)) {
+    return null;
+  }
+  $vid = ($vocab->vid);
+  $tid_objects = taxonomy_get_tree($vid, $tid, NULL, FALSE);
+  $names=array();
+  foreach ($tid_objects as $tid_object) {
+    $names[]= strtolower($tid_object->name);
+  }
+  return $names;
+}
+
+
+/**
+ * Gets the forum taxonomy tid of the logged-in user, the tids of the user's subtree leaves, and the tid of the parent
+ * 
+ * @param 
+ * @return string -- a string of names separated by +'s
+ * @author shaouy
+ */
+
+function sm_users_get_surrounding_forum_tids_of_logged_in_user() {
+  global $user;
+  //module_load_all();
+  $names = array();
+  $term_name = NULL;
+  $t_array = sm_users_get_tids($user->uid);
+  foreach ($t_array as $tid) { // should loop once
+    $names = array_merge($names, sm_users_get_subtree_names_array($tid));
+    $term = taxonomy_term_load($tid);
+    if (($term != NULL) && ($term != FALSE)) {
+      $names[] = $term->name;
+    }
+    // So we now have the term name of the logged in user and the user's subtree. 
+    // Now get the user's parent name
+    $parents = taxonomy_get_parents($tid);
+    foreach ($parents as $parent) { // should loop once
+      $names[]=$parent->name;
+    }
+  }
+
+  // Ok. We have names to match. 
+  $forum_vocabulary = taxonomy_vocabulary_machine_name_load('Forums');
+  $forum_tree = taxonomy_get_tree($forum_vocabulary->vid);
+  $tids = '';
+  foreach ($names as $name) {
+    foreach ($forum_tree as $forum_term) {
+      if (strtolower($forum_term->name) == strtolower($name)) {
+        if (strlen($tids)>0) {
+          $tids .= '+';
+        }
+        $tids .= (string)$forum_term->tid;
+      }
+    }
+  }
+  return $tids;
+}
+/*  JWK do we need this? 422015 */
+function _print_timestamp($message) {
+ $format2= 'Y-m-d H:i:s';
+ $date2= date ( $format2 );
+ drupal_set_message($message . $date2);
+}
+
+/*
+* Include custom js file for matching page
+function sm_users_inc_matching_js(){
+  drupal_add_js(drupal_get_path('module', 'sm_users') . '/js/matching.js');
+}
+*/
+
+/*
+* Include custom js file for auto matching page
+
+function sm_users_inc_auto_matching_js(){
+  drupal_add_js(drupal_get_path('module', 'sm_users').'/js/auto_matching.js');
+}
+*/
+
+/**  jwk 08/04/2016vreplacing code above
+ ** adds js file to matching view process
+ */
+function sm_users_preprocess_views_view(&$vars) {
+  $view = &$vars['view'];
+  // Make sure it's the correct view
+  if ($view->name == 'administerusers_views' && $view->current_display == 'ga_menteematching') {
+  // include javascript & css here
+  drupal_add_js(drupal_get_path('module', 'sm_users') . '/js/matching.js');
+   // add needed stylesheet
+   // drupal_add_css(drupal_get_path('theme', 'your-theme') . '/your-css.css');
+}    
+if ($view->name == 'administerusers_views' && $view->current_display == 'mentee_automatch') {
+  // include javascript & css here
+ drupal_add_js(drupal_get_path('module', 'sm_users').'/js/auto_matching.js');
+   // add needed stylesheet
+   // drupal_add_css(drupal_get_path('theme', 'your-theme') . '/your-css.css');
+}   
+
+}
+
+function sm_users_views_pre_view($view, &$display_id, &$args) {
+  if ($view->name == 'jwk_user_reports' && $display_id == 'communication_report' ) {
+    $footer = get_reportstats();
+    $view->add_item('communication_report', 'footer', 'views', 'area', array('content' => $footer, 'format' => 'full_html'));
+  }
+}  
+
+function get_reportstats(){
+$output1 = "<p><strong>Totals</strong></p>";
+$context_filter = arg(2);
+$filter_string = "'".str_replace(" ", "','", $context_filter)."'";
+if(!$context_filter){
+ global $user;
+ $user_data = user_load($user->uid);
+ $filter_string = sm_utilities_build_adminlocation_filter_string($user_data);
+ $filter_string = "'".str_replace("+", "','", $filter_string)."'";
+}
+$result = db_query("SELECT count(1) as count FROM  {node} LEFT JOIN {users} ON node.uid = users.uid LEFT JOIN {field_data_field_taxonomy_tag} ON users.uid = field_data_field_taxonomy_tag.entity_id LEFT JOIN {users_roles as roles} ON node.uid = roles.uid WHERE (node.type IN  ('activity_assignment_response') AND field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN($filter_string) AND roles.rid = 5)")->fetchAll();
+$results = $result[0]->count;
+$output2 = "<p>Total Mentor Activity Responses: ".$results."</p>";
+
+$result = db_query("SELECT count(1) as count FROM  {node} LEFT JOIN {users} ON node.uid = users.uid LEFT JOIN {field_data_field_taxonomy_tag} ON users.uid = field_data_field_taxonomy_tag.entity_id LEFT JOIN {users_roles as roles} ON node.uid = roles.uid WHERE (node.type IN  ('activity_assignment_response') AND field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN($filter_string) AND roles.rid = 6)")->fetchAll();
+$results = $result[0]->count;
+$output3 = "<p>Total Mentee Activity Responses: ".$results."</p>";
+$output = $output1 . $output2 . $output3;
+	return $output;
+}

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the node_activity_assigned_bylocation feature.
+ */
+
+include_once 'node_activity_assigned_bylocation.features.inc';

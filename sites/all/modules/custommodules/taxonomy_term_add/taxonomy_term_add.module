@@ -1,0 +1,145 @@
+<?php
+	/**
+* This function defines the URL to the page created etc.
+*/
+    function taxonomy_term_add_menu()
+    {
+        $items = array();
+        $items['taxonomy_term_add/form'] = array(    'title' => t('Create a new location'),    'page callback' => 'taxonomy_term_add_form',    'access arguments' => array('access content'),    'description' => t('My form'),    'type' => MENU_CALLBACK,  );
+        return $items;
+    }
+
+    
+    function taxonomy_term_add_form()
+    {
+        return drupal_get_form('taxonomy_term_add_my_form');
+    }
+
+    
+    function taxonomy_term_add_my_form($form_state)
+    {
+        global $user;
+        # vocabulary ID
+        $vid = 3;
+        # vocabulary Depth
+        $depth = 0;
+        $num_at_depth = 0;
+        $user_data = user_load($user->uid);
+        # Get current user location ID from field_taxonomy_tag field
+        $UserCurrentLoc = $user_data->field_taxonomy_tag['und'];
+        # //if User has a value
+        
+        if (isset($UserCurrentLoc))
+        {
+            # Filter and create Taxonomy terms array.
+            $CurUserLocationTID = array();
+            foreach($UserCurrentLoc as $termids)
+            {
+                foreach($termids as $termid)
+                {
+                    $getnametid=taxonomy_term_load($termid);
+                }
+
+                $CurUserLocationTID[$getnametid->tid] = $getnametid->tid;
+                $childresults = sm_curriculum_taxonomy_get_children_all($termid, $vid);
+                foreach($childresults as $grandchildresults)
+                {
+                    $CurUserLocationTID[$grandchildresults->tid] = $grandchildresults->tid;
+                }
+
+            }
+
+            #  The ID of the taxonomy vocabulary for which you'd like to create with nested list
+            $tree = taxonomy_get_tree($vid);
+            foreach ($tree as $term)
+            {
+                $diffdepth=0;
+                #  compare users location with the whole taxonomy tree
+                
+                if (in_array($term->tid,$CurUserLocationTID))
+                {
+                    $childresults = taxonomy_get_children($term->tid, $vid = 3);
+                    $ttotal = count($childresults);
+                    
+                    if ($term->depth > $depth)
+                    {
+                        $options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+                        $depth = $term->depth;
+                        $num_at_depth = 0;
+                    }
+
+                    
+                    if ($term->depth < $depth)
+                    {
+                        $diffdepth= $depth -$term->depth;
+                        while ($diffdepth > 0)
+                        {
+                            $options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+                            $diffdepth -- ;
+                        }
+
+                        $depth = $term->depth;
+                    }
+
+                    
+                    if (($term->depth == $depth) && ($num_at_depth > 0))
+                    {
+                        $options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+                    }
+
+                    $arg = arg(0).'/'.arg(1);
+                    
+                    if ($ttotal <= 0)
+                    {
+                        $FilterTidUrl = url($arg.'/'.$term->tid, array('absolute' => TRUE));
+                        $ViewfilterURL = rawurldecode($FilterTidUrl);
+                    }
+                    else
+                    {
+                        # call function to get all child term id
+                        $urlviewfinal = get_all_child($term->tid);
+                        $FilterTidUrl = url($arg.'/'.$term->tid.$urlviewfinal, array('absolute' => TRUE));
+                        # Generate url for each terms
+                        $ViewfilterURL = rawurldecode($FilterTidUrl);
+                    }
+
+                    $num_at_depth ++;
+                }
+
+            }
+
+            // This is the first form element. It's a textfield with a label, "Name"
+            $form['intro'] = array('#markup' => t('Please enter the name of the new location'),);
+            $form['taxonomy_term'] = array('#type' => 'textfield','#title' => t('Location Name :'),'#required' => TRUE,);
+            $form['parent']=array(        '#title'=>'Belong to:',        //'#description'=>'Where do you like to add?',
+            '#type'=>'select',        '#name'=>'parent',        '#required'=>TRUE,        '#options' => $options,        );
+            $form['submit'] = array('#type' => 'submit','#value' => t('Submit'),);
+            return $form;
+        }
+
+    }
+
+    
+    function taxonomy_term_add_my_form_validate($form, &$form_state)
+    {
+        $termName=$form_state['values']['taxonomy_term'];
+        $parent=$form_state['values']['parent'];
+        
+        if (!empty($parent) && !empty($termName))
+        {
+            // Save the Taxonomy Term 
+            $term = new stdClass();
+            $term->name = $form_state['values']['taxonomy_term'];
+            ;
+            $term->vid = 3;
+            $term->parent = $parent;
+            //$term->field_new[LANGUAGE_NONE][0]['value'] = â��Value for this fieldâ��; 
+            taxonomy_term_save($term);
+            drupal_set_message("<pre>".print_r('New Location '.$termName.' has been created ',true)."</pre>");
+            $destpath = '/taxonomy_term_add/form';
+            drupal_goto($GLOBALS['base_url'] . $destpath);
+        }
+
+    }
+
+    ?>

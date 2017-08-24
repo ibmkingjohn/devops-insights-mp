@@ -1,0 +1,804 @@
+/**
+ * @file
+ * Dashboard Styling
+ */
+/**
+ * Common dashboard elements
+ */
+/* line 12, ../sass/dashboards.scss */
+.node-type-customdashboard h1.title {
+  display: none;
+}
+/* line 15, ../sass/dashboards.scss */
+.node-type-customdashboard .tabs {
+  display: none;
+}
+/* line 18, ../sass/dashboards.scss */
+.node-type-customdashboard .more-link {
+  margin: .5em 0;
+  text-align: center;
+}
+
+/* line 23, ../sass/dashboards.scss */
+.dash_left_col {
+  float: left;
+  width: 73%;
+  margin-right: 2%;
+}
+
+/* line 28, ../sass/dashboards.scss */
+.dash_right_col {
+  float: left;
+  width: 25%;
+}
+
+/* line 32, ../sass/dashboards.scss */
+.dash_left_col.mentor {
+  float: left;
+  width: 49%;
+  margin-right: 2%;
+}
+
+/* line 37, ../sass/dashboards.scss */
+.dash_right_col.mentor {
+  float: left;
+  width: 49%;
+}
+
+/* line 42, ../sass/dashboards.scss */
+.dash_block_content {
+  background-color: white;
+  border: solid 1px #d8dcd6;
+  margin-top: 0;
+  padding: 15px 15px 20px 15px;
+  overflow: auto;
+}
+
+/* line 50, ../sass/dashboards.scss */
+#dash_profile {
+  float: left;
+  width: 43%;
+  margin-right: 2%;
+}
+
+/* line 55, ../sass/dashboards.scss */
+#dash_actions {
+  float: left;
+  width: 55%;
+}
+
+/**
+ * Profile block
+ */
+/* line 65, ../sass/dashboards.scss */
+.view-display-id-logged_in_user_block .views-field-name,
+.view-display-id-menteebymentor_block .views-field-name,
+/*.view-display-id-menteementor_dash_page .views-field-name*/ {
+  float: left;
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  font-size: 2em;
+  padding-bottom: 10px;
+  color: #e9a607;
+}
+/* line 73, ../sass/dashboards.scss */
+.view-display-id-logged_in_user_block .views-field-edit-node,
+.view-display-id-menteebymentor_block .views-field-edit-node,
+/*.view-display-id-menteementor_dash_page .views-field-edit-node*/ {
+  float: right;
+}
+/* line 76, ../sass/dashboards.scss */
+.view-display-id-logged_in_user_block .views-field-picture img,
+.view-display-id-menteebymentor_block .views-field-picture img,
+/*.view-display-id-menteementor_dash_page .views-field-picture img*/ {
+  float: left;
+  border: solid 3px #e9e8df;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border: 3px;
+  border-radius: 3px;
+}
+/* line 84, ../sass/dashboards.scss */
+.view-display-id-logged_in_user_block .views-field-field-check-in,
+.view-display-id-menteebymentor_block .views-field-field-check-in,
+/*.view-display-id-menteementor_dash_page .views-field-field-check-in*/ {
+  position: relative;
+  float: left;
+  width: 45%;
+  height: 75px;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfeff), to(#daf1fd));
+  background: -moz-linear-gradient(#fcfeff, #daf1fd);
+  background: -o-linear-gradient(#fcfeff, #daf1fd);
+  background: linear-gradient(#fcfeff, #daf1fd);
+  background-color: #f6fcff;
+  padding: 10px;
+  border: solid 2px #d1d3d4;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border: 4px;
+  border-radius: 4px;
+  line-height: normal;
+  margin-left: 10px;
+  -webkit-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+}
+/* line 106, ../sass/dashboards.scss */
+.view-display-id-logged_in_user_block .views-field-field-check-in p,
+.view-display-id-menteebymentor_block .views-field-field-check-in p,
+/*.view-display-id-menteementor_dash_page .views-field-field-check-in p*/ {
+  margin: 0;
+  font-size: 1em;
+}
+/* line 111, ../sass/dashboards.scss */
+.view-display-id-logged_in_user_block .views-field-field-check-in:before,
+.view-display-id-menteebymentor_block .views-field-field-check-in:before,
+/*.view-display-id-menteementor_dash_page .views-field-field-check-in:before*/ {
+  content: "";
+  position: absolute;
+  top: 40px;
+  /* controls vertical position */
+  bottom: auto;
+  left: -10px;
+  /* value = - border-left-width - border-right-width */
+  border-style: solid;
+  border-width: 5px 10px 5px 0;
+  border-color: transparent #d1d3d4;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+}
+/* line 125, ../sass/dashboards.scss */
+.view-display-id-logged_in_user_block .views-field-login,
+.view-display-id-menteebymentor_block .views-field-login,
+/*.view-display-id-menteementor_dash_page .views-field-login*/ {
+  clear: both;
+  font-size: .85em;
+  color: #666666;
+  text-transform: uppercase;
+  padding-top: 10px;
+}
+
+/* line 135, ../sass/dashboards.scss */
+#dash_actions h2 {
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  margin: 0;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+/* line 145, ../sass/dashboards.scss */
+#dash_activities {
+  margin-bottom: 18px;
+}
+/* line 151, ../sass/dashboards.scss */
+#dash_activities .view-display-id-user_activity_entity_view,
+#dash_activities .view-display-id-mentor_activity_entity_view,
+#dash_activities .view-display-id-user_activity_entity_view,
+#dash_activities .view-id-dash_activities {
+  margin-top: 3px;
+  border: solid 1px #909499;
+  height: 124px;
+  padding: 3px;
+  overflow: auto;
+  clear:both;
+}
+/* line 158, ../sass/dashboards.scss */
+#dash_activities .view-display-id-user_activity_entity_view td,
+#dash_activities .view-display-id-mentor_activity_entity_view td,
+#dash_activities .view-display-id-user_activity_entity_view td,
+#dash_activities .view-id-dash_activities td {
+  line-height: 29px;
+  padding: 0 2px;
+  font-size: .9em;
+}
+/* line 164, ../sass/dashboards.scss */
+#dash_activities .view-display-id-user_activity_entity_view td.views-field-php,
+#dash_activities .view-display-id-mentor_activity_entity_view td.views-field-php,
+#dash_activities .view-display-id-user_activity_entity_view td.views-field-php,
+#dash_activities .view-id-dash_activities td.views-field-php {
+  font-size: .8em;
+  color: #585858;
+  font-style: italic;
+}
+/* line 168, ../sass/dashboards.scss */
+#dash_activities .view-display-id-user_activity_entity_view td.views-field-php a,
+#dash_activities .view-display-id-mentor_activity_entity_view td.views-field-php a,
+#dash_activities .view-display-id-user_activity_entity_view td.views-field-php a,
+#dash_activities .view-id-dash_activities td.views-field-php a {
+  color: #585858;
+  text-decoration: underline;
+}
+/* line 176, ../sass/dashboards.scss */
+#dash_activities #column1-wrap {
+  clear: both;
+  float: none;
+  width: inherit;
+}
+/* line 181, ../sass/dashboards.scss */
+#dash_activities #column1 {
+  float: left;
+  margin-right: 5px;
+  width: 32%;
+  font-size: .8em;
+}
+/* line 187, ../sass/dashboards.scss */
+#dash_activities #column2 {
+  float: left;
+  width: 32%;
+  margin-left: 0;
+  margin-right: 5px;
+  font-size: .8em;
+}
+/* line 194, ../sass/dashboards.scss */
+#dash_activities #column3 {
+  float: left;
+  width: 32%;
+  margin-left: 0;
+  font-size: .8em;
+}
+/* line 200, ../sass/dashboards.scss */
+#dash_activities #progress-bar-wrapper {
+  padding: 2px 0;
+}
+/* line 203, ../sass/dashboards.scss */
+#dash_activities #progress-wrapper {
+  width: inherit;
+}
+/* line 206, ../sass/dashboards.scss */
+#dash_activities .insidetext {
+  font-size: .8em;
+}
+/* line 210, ../sass/dashboards.scss */
+#dash_activities .titlebar_link {
+  margin-bottom: 5px;
+}
+/* line 213, ../sass/dashboards.scss */
+#dash_activities .go-button {
+  margin-right: 0;
+}
+
+/* line 220, ../sass/dashboards.scss */
+.dash_left_col.mentor #dash_messages {
+  margin-top: 5px;
+}
+
+/* line 225, ../sass/dashboards.scss */
+#dash_messages h2 {
+  float: left;
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  margin: 0;
+  line-height: normal;
+  text-transform: uppercase;
+}
+/* line 233, ../sass/dashboards.scss */
+#dash_messages .messages_block {
+  clear: both;
+  margin-top: 3px;
+  border: solid 1px #909499;
+  height: 142px;
+  padding: 3px;
+  overflow: auto;
+}
+/* line 241, ../sass/dashboards.scss */
+#dash_messages thead {
+  display: none;
+}
+/* line 244, ../sass/dashboards.scss */
+#dash_messages td {
+  line-height: 29px;
+  padding: 0 2px;
+  font-size: .9em;
+}
+/* line 249, ../sass/dashboards.scss */
+#dash_messages p {
+  margin: 0;
+}
+/* line 252, ../sass/dashboards.scss */
+#dash_messages a.button,
+.view-dashboard-private-messages a.button {
+  background: none;
+  color: #0066cc;
+  padding: 0;
+}
+/* line 258, ../sass/dashboards.scss */
+#dash_messages a:hover.button,
+#dash_messages a:focus.button,
+.view-dashboard-private-messages a:hover.button,
+.view-dashboard-private-messages a:focus.button {
+  text-decoration: none;
+}
+/* line 261, ../sass/dashboards.scss */
+#dash_messages .username {
+  font-size: .85em;
+  color: #585858;
+  font-style: italic;
+}
+/* line 265, ../sass/dashboards.scss */
+#dash_messages .username a {
+  color: #585858;
+  text-decoration: underline;
+}
+
+/* line 272, ../sass/dashboards.scss */
+#dash_rewards {
+  margin-top: 10px;
+}
+/* line 275, ../sass/dashboards.scss */
+#dash_rewards h2 {
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  margin: 0;
+  line-height: normal;
+  text-transform: uppercase;
+}
+/* line 282, ../sass/dashboards.scss */
+#dash_rewards .messages_block {
+  clear: both;
+  margin-top: 3px;
+  border: solid 1px #909499;
+  padding: 3px;
+}
+/* line 288, ../sass/dashboards.scss */
+#dash_rewards td {
+  line-height: 29px;
+  padding: 0 2px;
+  font-size: .9em;
+}
+/* line 293, ../sass/dashboards.scss */
+#dash_rewards .views-field-name {
+  width: 90%;
+}
+
+.awardlink {
+  background-image: url(../images/note.png);
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 28px;
+  display: inline-block;
+}
+
+
+
+/* line 297, ../sass/dashboards.scss */
+#dash_rewards .award_participation,
+.award_participation {
+  background-image: url(../images/award_ap_icon.png);
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 28px;
+  display: inline-block;
+}
+
+/* line 304, ../sass/dashboards.scss */
+#dash_rewards .award_leadership,
+.award_leadership {
+  background-image: url(../images/award_dl_icon.png);
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 28px;
+  display: inline-block;
+}
+
+/* line 311, ../sass/dashboards.scss */
+#dash_rewards .award_communication,
+.award_communication {
+  background-image: url(../images/award_ec_icon.png);
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 28px;
+  display: inline-block;
+}
+/* line 318, ../sass/dashboards.scss */
+#dash_rewards .award_teamwork,
+.award_teamwork {
+  background-image: url(../images/award_gt_icon.png);
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 28px;
+  display: inline-block;
+}
+/* line 325, ../sass/dashboards.scss */
+#dash_rewards .award_thinking,
+.award_thinking {
+  background-image: url(../images/award_it_icon.png);
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 28px;
+  display: inline-block;
+}
+
+/**
+ * My Mentors / My Mentees block
+ */
+/* line 339, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-corner-top,
+.view-user-relationships-view .ui-corner-all {
+  -khtml-border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border: 0;
+  border-radius: 0;
+}
+/* line 345, ../sass/dashboards.scss */
+.view-user-relationships-view .view-empty {
+  background-color: white;
+  padding: 10px;
+}
+/* line 348, ../sass/dashboards.scss */
+.view-user-relationships-view .view-empty p {
+  margin: 0;
+  padding: 10px;
+}
+/* line 353, ../sass/dashboards.scss */
+.view-user-relationships-view .views-row {
+  background-color: #023263;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#023263), to(#2e8ed1));
+  background: -moz-linear-gradient(#023263, #2e8ed1);
+  background: -o-linear-gradient(#023263, #2e8ed1);
+  background: linear-gradient(#023263, #2e8ed1);
+  overflow: auto;
+}
+/* line 361, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-accordion .ui-accordion-icons {
+  padding: 0;
+}
+/* line 364, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-accordion .ui-accordion-header .ui-icon {
+  left: inherit;
+  right: .5em;
+  /* Remove for June launch */
+  display: none;
+}
+/* line 370, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-icon {
+  background-position: inherit;
+  width: 18px;
+  height: 19px;
+}
+/* line 375, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-state-active .ui-icon {
+  background-position: 0 -19px;
+}
+/* line 378, ../sass/dashboards.scss */
+.view-user-relationships-view .offline {
+  background-image: url(../images/userstatus/Offline.png);
+  background-repeat: no-repeat;
+  padding-left: 25px;
+}
+/* line 383, ../sass/dashboards.scss */
+.view-user-relationships-view .online {
+  background-image: url(../images/userstatus/Online.png);
+  background-repeat: no-repeat;
+  padding-left: 25px;
+}
+/* line 388, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-accordion .ui-accordion-header {
+  margin: 0;
+  padding-top: 5px;
+}
+/* line 392, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-accordion .ui-accordion-header a {
+  padding: 0 0 3px 10px;
+  display: inherit;
+  color: #231f20;
+  /* Remove for June launch */
+}
+/* line 399, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-widget-content {
+  border: none;
+}
+/* line 402, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-accordion .ui-accordion-content {
+  -khtml-border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border: 0;
+  border-radius: 0;
+  margin: 4px 4px 8px 4px;
+  padding: 5px 5px 10px 5px;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  height: 250px;
+  display: block !important;
+}
+/* line 415, ../sass/dashboards.scss */
+.view-user-relationships-view .ui-accordion-header {
+  border-top: solid 1px #04386c;
+  border-left: solid 1px #04386c;
+  border-right: solid 1px #04386c;
+  border-bottom: solid 1px #39719b;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#f1f2f2), to(#858689));
+  background: -moz-linear-gradient(#f1f2f2, #858689);
+  background: -o-linear-gradient(#f1f2f2, #858689);
+  background: linear-gradient(#f1f2f2, #858689);
+  background-color: #858689;
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  font-size: 1.3em;
+}
+/* line 429, ../sass/dashboards.scss */
+.view-user-relationships-view .username {
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  font-size: 1.3em;
+  padding-bottom: 10px;
+}
+/* line 435, ../sass/dashboards.scss */
+.view-user-relationships-view .views-field-picture {
+  width: 50%;
+}
+/* line 438, ../sass/dashboards.scss */
+.view-user-relationships-view .views-field-picture img {
+  float: left;
+  border: solid 3px #e9e8df;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border: 3px;
+  border-radius: 3px;
+}
+/* line 446, ../sass/dashboards.scss */
+.view-user-relationships-view .views-field-field-check-in {
+  position: relative;
+  float: left;
+  width: 45%;
+  height: 100px;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfeff), to(#daf1fd));
+  background: -moz-linear-gradient(#fcfeff, #daf1fd);
+  background: -o-linear-gradient(#fcfeff, #daf1fd);
+  background: linear-gradient(#fcfeff, #daf1fd);
+  background-color: #f6fcff;
+  padding: 5px;
+  border: solid 2px #d1d3d4;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border: 4px;
+  border-radius: 4px;
+  line-height: normal;
+  margin-left: 10px;
+  -webkit-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+  font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
+  font-size: .9em;
+}
+/* line 470, ../sass/dashboards.scss */
+.view-user-relationships-view .views-field-field-check-in:before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  /* controls vertical position */
+  bottom: auto;
+  left: -10px;
+  /* value = - border-left-width - border-right-width */
+  border-style: solid;
+  border-width: 5px 10px 5px 0;
+  border-color: transparent #d1d3d4;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+}
+/* line 483, ../sass/dashboards.scss */
+.view-user-relationships-view .views-field-login {
+  clear: both;
+  padding-top: 10px;
+  font-size: .80em;
+  color: #666666;
+  line-height: 2em;
+  text-transform: uppercase;
+}
+/* line 492, ../sass/dashboards.scss */
+.view-user-relationships-view .go-button,
+.view-user-relationships-view .button {
+  float: left;
+  font-size: .85em;
+  margin-top: 5px;
+}
+
+/* line 501, ../sass/dashboards.scss */
+.dash_right_col.mentor .ui-accordion .ui-accordion-content {
+  height: 400px;
+}
+/* line 504, ../sass/dashboards.scss */
+.dash_right_col.mentor .views-field-field-check-in {
+  height: 75px;
+  padding: 10px;
+  font-size: 1em;
+}
+
+/* line 512, ../sass/dashboards.scss */
+.views-field-php-4 {
+  clear: both;
+  padding-top: 20px;
+}
+/* line 516, ../sass/dashboards.scss */
+.views-field-php-4 h2 {
+  float: left;
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  margin: 8px 0 0 0;
+  line-height: normal;
+  text-transform: uppercase;
+}
+/* line 524, ../sass/dashboards.scss */
+.views-field-php-4 .go-button {
+  margin-right: 0;
+  margin-bottom: 5px;
+}
+
+/* line 530, ../sass/dashboards.scss */
+.views-field-view {
+  clear: both;
+}
+
+/* line 535, ../sass/dashboards.scss */
+.view-display-id-embed_mentormenteematch_activity_page .view-content {
+  clear: both;
+  border: solid 1px #909499;
+  height: 150px;
+  padding: 3px;
+  overflow: auto;
+}
+/* line 542, ../sass/dashboards.scss */
+.view-display-id-embed_mentormenteematch_activity_page .ui-accordion {
+  width: auto;
+}
+/* line 545, ../sass/dashboards.scss */
+.view-display-id-embed_mentormenteematch_activity_page thead {
+  display: none;
+}
+/* line 548, ../sass/dashboards.scss */
+.view-display-id-embed_mentormenteematch_activity_page td {
+  line-height: 29px;
+  padding: 0 2px;
+  font-size: .85em;
+}
+/* line 553, ../sass/dashboards.scss */
+.view-display-id-embed_mentormenteematch_activity_page .views-field-field-completion-status {
+  text-align: center;
+}
+
+/**
+ * Group Admin
+ */
+/* line 563, ../sass/dashboards.scss */
+.dash_left_col.group_admin {
+  float: left;
+  width: 70%;
+  margin-right: 2%;
+}
+
+/* line 568, ../sass/dashboards.scss */
+.dash_right_col.group_admin {
+  float: right;
+  width: 28%;
+}
+
+/* line 572, ../sass/dashboards.scss */
+.dash_one_col.group_admin {
+  clear: both;
+}
+
+/* line 576, ../sass/dashboards.scss */
+.dash_block.flags .views-field-nothing {
+  width: 80%;
+}
+/* line 579, ../sass/dashboards.scss */
+.dash_block.flags .views-field-count {
+  text-align: center;
+}
+/* line 582, ../sass/dashboards.scss */
+.dash_block.flags p {
+  margin: 0;
+}
+
+/* line 587, ../sass/dashboards.scss */
+a.publishcontent-link,
+.views-field-delete-node a {
+  background: #007dc4;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+
+/* line 593, ../sass/dashboards.scss */
+a:link.publishcontent-link,
+a:visited.publishcontent-link,
+.views-field-delete-node a:link,
+.views-field-delete-node a:visited {
+  color: white;
+}
+
+/* line 599, ../sass/dashboards.scss */
+a:hover.publishcontent-link,
+a:focus.publishcontent-link,
+.views-field-delete-node a:hover,
+.views-field-delete-node a:focus {
+  text-decoration: none;
+}
+
+/* line 603, ../sass/dashboards.scss */
+.ui-accordion-content-active .views-row {
+  margin-top: 25px;
+}
+/* line 606, ../sass/dashboards.scss */
+.ui-accordion-content-active .views-row-first {
+  margin-top: 0;
+}
+
+/* line 611, ../sass/dashboards.scss */
+#quicktabs-group_admin_reports .view-content {
+  clear: both;
+}
+
+/* line 618, ../sass/dashboards.scss */
+.view-jwk-user-reports .view-user-relationships-view .view-empty {
+  background-color: inherit;
+  padding: inherit;
+}
+/* line 622, ../sass/dashboards.scss */
+.view-jwk-user-reports .view-user-relationships-view .username {
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  padding-bottom: inherit;
+}
+/* line 629, ../sass/dashboards.scss */
+.view-jwk-user-reports .views-field-php-4 {
+  padding: inherit;
+}
+
+/**
+ * Site News block
+ */
+/* line 637, ../sass/dashboards.scss */
+.dash_blog {
+  clear: both;
+}
+
+/* line 640, ../sass/dashboards.scss */
+.view-display-id-most_recent_blog_block {
+  background-color: white;
+  border: solid 1px #d8dcd6;
+  margin-top: 0;
+  padding: 15px 15px 20px 15px;
+  overflow: auto;
+}
+
+/* how to videos */
+.view-display-id-mentee_how_to_block {
+    float: right;
+}
+
+.view-display-id-mentor_how_to_block .view-content{
+  min-height: 50px;
+}
+
+.view-display-id-mentor_how_to_block .view-content table{
+  float: right;
+  width: 150px;
+}
+    

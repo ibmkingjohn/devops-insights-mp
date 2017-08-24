@@ -1,0 +1,75 @@
+diff --git a/includes/FeedsSource.inc b/includes/FeedsSource.inc
+index 98cd0f1..8be6150 100644
+--- a/includes/FeedsSource.inc
++++ b/includes/FeedsSource.inc
+@@ -367,6 +367,7 @@ class FeedsSource extends FeedsConfigurable {
+     if ($result == FEEDS_BATCH_COMPLETE || isset($e)) {
+       $this->imported = time();
+       $this->log('import', 'Imported in !s s', array('!s' => $this->imported - $this->state[FEEDS_START]), WATCHDOG_INFO);
++      $this->importer->fetcher->afterImport($this);
+       module_invoke_all('feeds_after_import', $this);
+       unset($this->fetcher_result, $this->state);
+     }
+diff --git a/plugins/FeedsFetcher.inc b/plugins/FeedsFetcher.inc
+index 33457de..9a7e8da 100644
+--- a/plugins/FeedsFetcher.inc
++++ b/plugins/FeedsFetcher.inc
+@@ -222,4 +222,12 @@ abstract class FeedsFetcher extends FeedsPlugin {
+    *   $source, NULL otherwise.
+    */
+   public function importPeriod(FeedsSource $source) {}
++
++  /**
++   * Invoked after an import is finished.
++   *
++   * @param $source
++   *   A FeedsSource object.
++   */
++  public function afterImport(FeedsSource $source) {}
+ }
+diff --git a/plugins/FeedsFileFetcher.inc b/plugins/FeedsFileFetcher.inc
+index 5e8e116..14f9266 100644
+--- a/plugins/FeedsFileFetcher.inc
++++ b/plugins/FeedsFileFetcher.inc
+@@ -213,6 +213,7 @@ class FeedsFileFetcher extends FeedsFetcher {
+ 
+     return array(
+       'allowed_extensions' => 'txt csv tsv xml opml',
++      'delete_uploaded_file' => FALSE,
+       'direct' => FALSE,
+       'directory' => $scheme . '://feeds',
+       'allowed_schemes' => $schemes,
+@@ -230,6 +231,12 @@ class FeedsFileFetcher extends FeedsFetcher {
+       '#description' => t('Allowed file extensions for upload.'),
+       '#default_value' => $this->config['allowed_extensions'],
+     );
++    $form['delete_uploaded_file'] = array(
++      '#type' => 'checkbox',
++      '#title' => t('Immediately delete uploaded file after import'),
++      '#description' => t('Useful if the file contains private information. If not selected, the file will remain on the server, allowing the import to be re-run without having to upload it again.'),
++      '#default_value' => $this->config['delete_uploaded_file'],
++    );
+     $form['direct'] = array(
+       '#type' => 'checkbox',
+       '#title' => t('Supply path to file or directory directly'),
+@@ -301,6 +308,20 @@ class FeedsFileFetcher extends FeedsFetcher {
+   }
+ 
+   /**
++   * Overrides FeedsFetcher::afterImport().
++   */
++  public function afterImport(FeedsSource $source) {
++    // Immediately delete the file after import, if requested.
++    if (!empty($this->config['delete_uploaded_file'])) {
++      $source_config = $source->getConfigFor($this);
++      if (!empty($source_config['fid'])) {
++        $this->deleteFile($source_config['fid'], $source->feed_nid);
++        $source->setConfigFor($this, array());
++      }
++    }
++  }
++
++  /**
+    * Deletes a file.
+    *
+    * @param int $fid

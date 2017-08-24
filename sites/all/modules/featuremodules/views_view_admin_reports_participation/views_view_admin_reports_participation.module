@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Admin Reports: Participation feature.
+ */
+
+include_once 'views_view_admin_reports_participation.features.inc';

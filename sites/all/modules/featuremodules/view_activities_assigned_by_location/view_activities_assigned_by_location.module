@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the View: Activities Assigned by Location feature.
+ */
+
+include_once 'view_activities_assigned_by_location.features.inc';

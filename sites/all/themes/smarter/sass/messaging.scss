@@ -1,0 +1,168 @@
+/**
+ * @file
+ * Messaging Styling
+ */
+
+@import "base";
+
+/**
+ * Common messaging elements
+ */
+
+.page-messages {
+  
+  .action-links {
+    position: inherit;
+    right: inherit;
+    top: inherit;
+    list-style: none;
+    padding-left: 0;
+    padding-top: 5px;
+    
+    a {
+      @include button;
+    }
+    
+    a:hover,
+    a:focus {
+      text-decoration: none;
+    }
+  }
+  
+  #content-wrapper {
+    position: relative;
+  }
+  
+  .container-inline {
+    margin-bottom: 10px;
+  }
+  
+  #edit-delete {
+    display: none;
+  }
+  #edit-body-format {
+    display: none;
+  }
+  
+  .sticky-table {
+    margin-top: 10px;
+    
+    thead {
+      background: $table-head-bg; /* Old browsers */
+      background: -moz-linear-gradient(top,  $table-head-gradient-start 50%, $table-head-gradient-finish 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,$table-head-gradient-start), color-stop(100%,$table-head-gradient-finish)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top,  $table-head-gradient-start 50%,$table-head-gradient-finish 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top,  $table-head-gradient-start 50%,$table-head-gradient-finish 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top,  $table-head-gradient-start 50%,$table-head-gradient-finish 100%); /* IE10+ */
+      background: linear-gradient(to bottom,  $table-head-gradient-start 50%,$table-head-gradient-finish 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbfdfe', endColorstr='#b2e8fd',GradientType=0 ); /* IE6-9 */
+      border-top: solid 1px $table-head-border;
+    }
+    
+    th {
+      border-bottom: solid 1px $table-head-border;
+      padding-right: .1em;
+    }
+    
+    .select-all,
+    .form-type-checkbox {
+      padding-left: 4px;
+    }
+    
+  }
+  
+  .privatemsg-message-participants {
+    display: none;
+  }
+  
+  h2.subject {
+    font-size: 1.1em;
+    margin-top: auto;
+  }
+  
+  h2.privatemsg-reply {
+    font-family: $rokkitt;
+    font-weight: 400;
+    font-size: 1.7em;
+    margin-botom: 0;
+    line-height: normal;
+  }
+  
+  .privatemsg-message-date {
+    color: $font-stats;
+    font-size: .9em;
+  }
+  
+  .new {
+    color: $font-alert;
+    font-weight: bold;
+  }
+  
+  .privatemsg-message-actions {
+    float: right;
+    display: none;
+  }
+  
+  .privatemsg-message-even {
+    border-bottom: solid 1px $content-box;
+    margin-bottom: 20px;
+  }
+    
+  #edit-submit {
+    margin-right: 15px;
+  }
+  
+  .auto-gen {
+    font-size: .8em;
+    margin-top: 20px;
+  }
+  
+  .privatemsg-message-column {
+    float: none;
+  }
+  
+  .privatemsg-message-body {
+    margin-left: 0;
+  }
+  
+  .flag-wrapper {
+    font-size: .8em;
+  }
+  
+}
+
+.page-messages-view {
+  .form-item-recipient {
+    display: none;
+  }
+}
+
+.page-messages-new {
+  
+  #content-wrapper {
+    position: relative;
+    @include block-body;
+  }
+  
+  .tabs {
+    display: none;
+  }
+  
+  .form-item,
+  .form-actions {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  
+  .form-textarea-wrapper {
+  
+    textarea  {
+      width: auto;
+    }
+  }
+  
+  #edit-body-format {
+    display: none;
+  }
+  
+}

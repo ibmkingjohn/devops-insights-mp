@@ -1,0 +1,135 @@
+From 81cf582cd11d898233dd205e89590370ce731cc7 Mon Sep 17 00:00:00 2001
+From: aklump <sourcecode@intheloftstudios.com>
+Date: Thu, 29 Aug 2013 17:39:54 -0700
+Subject: [PATCH] Patch for https://drupal.org/node/1718252 Fixes bug that
+ required a double click of the first image to select Adds
+ auto check the delete image to give user feedback
+
+---
+ avatar_selection.module |   30 +++++++++++++++++++++++-------
+ js/avatar_selection.js  |   19 ++++++++++++++++---
+ 2 files changed, 39 insertions(+), 10 deletions(-)
+
+diff --git a/avatar_selection.module b/avatar_selection.module
+index 6dfff0b..7c1d460 100644
+--- a/avatar_selection.module
++++ b/avatar_selection.module
+@@ -190,7 +190,6 @@ function avatar_selection_form_user_register_form_alter(&$form, &$form_state, $f
+   $selects = _avatar_selection_image_list($anon_user, '', 0, $page * $avatars_per_page, $avatars_per_page);
+ 
+   if (count($selects['avatars'])) {
+-    drupal_add_css(drupal_get_path('module', 'avatar_selection') . '/avatar_selection.css');
+     $upload = 1;
+     if (empty($form['picture']) || !is_array($form['picture']) || !$form['picture']['#access']) {
+       $upload = 0; // I.e. Not provided by 'register with picture' contributed module.
+@@ -202,7 +201,6 @@ function avatar_selection_form_user_register_form_alter(&$form, &$form_state, $f
+       );
+     }
+     $form['picture']['#access'] = TRUE;
+-    drupal_add_js(drupal_get_path('module', 'avatar_selection') . '/js/avatar_selection_pager.js');
+     $form['picture']['select_avatar'] = array(
+       '#type' => 'radios',
+       '#title' => ($upload == 0 ? t('Select an avatar') : t('Or simply select an icon')),
+@@ -218,13 +216,31 @@ function avatar_selection_form_user_register_form_alter(&$form, &$form_state, $f
+   else {
+     $form['#validate'][] = 'avatar_selection_validate_user_avatar';
+   }
++
++  // Add our CSS and JS using #after_build so it gets reloaded after a
++  // validation error.
++  $form['#after_build'][] = '_avatar_selection_form_after_build';
++
++  return $form;
++}
++
++/**
++ * Add CSS and JS to the form
++ *
++ * @param array $form
++ * @param array &$form_state
++ *
++ * @return array
++ */
++function _avatar_selection_form_after_build($form, &$form_state) {
++  drupal_add_css(drupal_get_path('module', 'avatar_selection') . '/avatar_selection.css');
++  drupal_add_js(drupal_get_path('module', 'avatar_selection') . '/js/avatar_selection_pager.js');
+   $js_file = drupal_get_path('module', 'avatar_selection') . '/js/avatar_selection.js';
+   drupal_add_js($js_file);
+ 
+   return $form;
+ }
+ 
+-
+ /**
+  * Implements hook_form_alter().
+  *
+@@ -264,7 +280,6 @@ function avatar_selection_form_user_profile_form_alter(&$form, &$form_state, $fo
+   }
+ 
+   if (is_array($form['picture'])) {
+-    drupal_add_css(drupal_get_path('module', 'avatar_selection') . '/avatar_selection.css');
+     $force_choose = variable_get('avatar_selection_force_user_avatar', 0);
+ 
+     // If upload support has been disabled, remove the ability to upload
+@@ -287,12 +302,12 @@ function avatar_selection_form_user_profile_form_alter(&$form, &$form_state, $fo
+     $selects = _avatar_selection_image_list($user, '', 0, $page * $avatars_per_page, $avatars_per_page);
+ 
+     if (count($selects['avatars']) && isset($form['picture']['#type'])) {
+-      drupal_add_js(drupal_get_path('module', 'avatar_selection') . '/js/avatar_selection_pager.js');
+       $form['picture']['select_avatar'] = array(
+         '#type' => 'radios',
+         '#title' => $disable_upload ? t('Select an avatar') : t('Or simply select an icon'),
+         '#description' => $disable_upload ? t('Your virtual face or picture.') : '',
+         '#options' => $selects['avatars'],
++        '#default' => 0,
+         '#required' => $force_choose ? TRUE : FALSE,
+         '#attributes' => array('class' => array('user-avatar-select')),
+         '#prefix' => '<div id="avatar-selection-loading"></div>',
+@@ -305,8 +320,9 @@ function avatar_selection_form_user_profile_form_alter(&$form, &$form_state, $fo
+       $form['#validate'][] = 'avatar_selection_validate_user_avatar';
+     }
+ 
+-    $js_file = drupal_get_path('module', 'avatar_selection') . '/js/avatar_selection.js';
+-    drupal_add_js($js_file);
++    // Add our CSS and JS using #after_build so it gets reloaded after a
++    // validation error.
++    $form['#after_build'][] = '_avatar_selection_form_after_build';
+   }
+ 
+   return $form;
+diff --git a/js/avatar_selection.js b/js/avatar_selection.js
+index 26fb23d..44b31c0 100644
+--- a/js/avatar_selection.js
++++ b/js/avatar_selection.js
+@@ -14,12 +14,25 @@
+ 
+   function image_click_handler() {
+     $('div.user-avatar-select img').bind("click", function(){
+-      $("div.user-avatar-select img.avatar-select").each(function(){
++
++      $("div.user-avatar-select img.avatar-select")
++      .each(function(){
+         $(this).removeClass("avatar-select");
+-        $(this).parent().children("input").attr("checked", "");
++        $(this).parents('.form-item').children("input").attr("checked", "");
+       });
++
++      var $deletePic = $('#edit-picture-delete');
++      var $input = $(this).parents('.form-item').children("input");
++
+       $(this).addClass("avatar-select");
+-      $(this).parent().children("input").attr("checked", "checked");
++      $input.attr("checked", "checked");
++      $deletePic.attr("checked", "checked");
++
++      // Feedback to user that the current avatar will be deleted
++      var deletePic = $('#edit-picture-delete');
++      if (deletePic.length && !deletePic.is(':checked')) {
++        deletePic.click();
++      }
+     });
+   }
+ 
+-- 
+1.7.10.2 (Apple Git-33)
+

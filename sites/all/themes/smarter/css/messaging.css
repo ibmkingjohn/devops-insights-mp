@@ -1,0 +1,193 @@
+/**
+ * @file
+ * Messaging Styling
+ */
+/**
+ * Common messaging elements
+ */
+/* line 14, ../sass/messaging.scss */
+.page-messages .action-links {
+  position: inherit;
+  right: inherit;
+  top: inherit;
+  list-style: none;
+  padding-left: 0;
+  padding-top: 5px;
+}
+/* line 22, ../sass/messaging.scss */
+.page-messages .action-links a {
+  background: #007dc4;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+/* line 27, ../sass/messaging.scss */
+.page-messages .action-links a:hover,
+.page-messages .action-links a:focus {
+  text-decoration: none;
+}
+/* line 32, ../sass/messaging.scss */
+.page-messages #content-wrapper {
+  position: relative;
+}
+/* line 36, ../sass/messaging.scss */
+.page-messages .container-inline {
+  margin-bottom: 10px;
+}
+/* line 40, ../sass/messaging.scss */
+.page-messages #edit-delete {
+  display: none;
+}
+/* line 43, ../sass/messaging.scss */
+.page-messages #edit-body-format {
+  display: none;
+}
+/* line 47, ../sass/messaging.scss */
+.page-messages .sticky-table {
+  margin-top: 10px;
+}
+/* line 50, ../sass/messaging.scss */
+.page-messages .sticky-table thead {
+  background: #fbfdfe;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, #fbfdfe), color-stop(100%, #b2e8fd));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #fbfdfe 50%, #b2e8fd 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbfdfe', endColorstr='#b2e8fd',GradientType=0 );
+  /* IE6-9 */
+  border-top: solid 1px #1f4977;
+}
+/* line 62, ../sass/messaging.scss */
+.page-messages .sticky-table th {
+  border-bottom: solid 1px #1f4977;
+  padding-right: .1em;
+}
+/* line 68, ../sass/messaging.scss */
+.page-messages .sticky-table .select-all,
+.page-messages .sticky-table .form-type-checkbox {
+  padding-left: 4px;
+}
+/* line 74, ../sass/messaging.scss */
+.page-messages .privatemsg-message-participants {
+  display: none;
+}
+/* line 78, ../sass/messaging.scss */
+.page-messages h2.subject {
+  font-size: 1.1em;
+  margin-top: auto;
+}
+/* line 83, ../sass/messaging.scss */
+.page-messages h2.privatemsg-reply {
+  font-family: "Rokkitt", serif;
+  font-weight: 400;
+  font-size: 1.7em;
+  margin-botom: 0;
+  line-height: normal;
+}
+/* line 91, ../sass/messaging.scss */
+.page-messages .privatemsg-message-date {
+  color: #666666;
+  font-size: .9em;
+}
+/* line 96, ../sass/messaging.scss */
+.page-messages .new {
+  color: red;
+  font-weight: bold;
+}
+/* line 101, ../sass/messaging.scss */
+.page-messages .privatemsg-message-actions {
+  float: right;
+  display: none;
+}
+/* line 106, ../sass/messaging.scss */
+.page-messages .privatemsg-message-even {
+  border-bottom: solid 1px #909499;
+  margin-bottom: 20px;
+}
+/* line 111, ../sass/messaging.scss */
+.page-messages #edit-submit {
+  margin-right: 15px;
+}
+/* line 115, ../sass/messaging.scss */
+.page-messages .auto-gen {
+  font-size: .8em;
+  margin-top: 20px;
+}
+/* line 120, ../sass/messaging.scss */
+.page-messages .privatemsg-message-column {
+  float: none;
+}
+/* line 124, ../sass/messaging.scss */
+.page-messages .privatemsg-message-body {
+  margin-left: 0;
+}
+/* line 128, ../sass/messaging.scss */
+.page-messages .flag-wrapper {
+  font-size: .8em;
+}
+
+/* line 135, ../sass/messaging.scss */
+.page-messages-view .form-item-recipient {
+  display: none;
+}
+
+/* line 142, ../sass/messaging.scss */
+.page-messages-new #content-wrapper {
+  position: relative;
+  background-color: white;
+  border: solid 1px #d8dcd6;
+  margin-top: 0;
+  padding: 15px 15px 20px 15px;
+  margin-bottom: 1.5em;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+}
+/* line 147, ../sass/messaging.scss */
+.page-messages-new .tabs {
+  display: none;
+}
+/* line 152, ../sass/messaging.scss */
+.page-messages-new .form-item,
+.page-messages-new .form-actions {
+  width: 650px;
+  margin: 1.5em auto;
+}
+/* line 159, ../sass/messaging.scss */
+.page-messages-new .form-textarea-wrapper textarea {
+  width: auto;
+}
+/* line 164, ../sass/messaging.scss */
+.page-messages-new #edit-body-format {
+  display: none;
+}

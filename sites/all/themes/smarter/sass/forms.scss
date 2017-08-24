@@ -1,0 +1,624 @@
+/**
+ * @file
+ * Form Styling
+ */
+
+@import "base";
+
+
+.form-item { /* Wrapper for a form element (or group of form elements) and its label */
+  margin: 1.5em 0;
+
+  input.error,
+  textarea.error,
+  select.error { /* Highlight the form elements that caused a form submission error */
+    border: 1px solid $alert;
+  }
+
+  label { /* The label for a form element */
+    color: $font-form-label;
+    font-weight: bold;
+    line-height: 1.75em; 
+    margin-right: 1em;
+  }
+
+  label.option { /* The label for a radio button or checkbox */
+    display: inline;
+    font-weight: normal;
+  }
+
+  .form-required { /* The part of the label that indicates a required field */
+    color: $font-alert;
+  }
+
+  .description { /* The descriptive help text (separate from the label) */
+    clear: both;
+    font-size: 0.85em;
+  }
+
+  .form-checkboxes & ,
+  .form-radios & { /* Pack groups of checkboxes and radio buttons closer together */
+    margin: 0; /* Drupal core uses "0.4em 0" */
+  }
+  
+  input {
+    border: 2px solid $form-border;
+    background: $form-bg; /* Old browsers */
+    background: -moz-linear-gradient(top,  $form-bg-gradient-start 0%, $form-bg-gradient-finish 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$form-bg-gradient-start), color-stop(100%,$form-bg-gradient-finish)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  $form-bg-gradient-start 0%,$form-bg-gradient-finish 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  $form-bg-gradient-start 0%,$form-bg-gradient-finish 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  $form-bg-gradient-start 0%,$form-bg-gradient-finish 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  $form-bg-gradient-start 0%,$form-bg-gradient-finish 100%); /* W3C */
+    //filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f0f0', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+    background-repeat: no-repeat;
+    -khtml-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    padding-left: 3px;
+  }
+  
+  input.form-checkboxe,
+  input.form-radio {
+    background: none;
+    border: none;
+  }
+}
+
+.form-type-checkbox,
+.form-type-radios {
+  label {
+    float: none;
+    text-align: left;
+    width: inherit;
+  }
+}
+
+.form-field-type-taxonomy-term-reference,
+.field-type-taxonomy-term-reference {
+  .tabledrag-toggle-weight-wrapper,
+  .field-multiple-drag {
+    display: none;
+  }
+  th {
+    padding: 0;
+    border: none;
+  }
+  tbody {
+    border: none;
+  }
+  tr {
+    //background: none;
+  }
+  td {
+    padding: 10px;
+    label {
+      display: none;
+    }
+  }
+  .form-submit {
+    @include button;
+  }
+  
+}
+
+
+/* Text field input resize (out of box are too long) */
+#user-register-form {
+  #edit-mail,
+  #edit-field-first-name-und-0-value,
+  #edit-field-last-name-und-0-value {
+    width: 50%;
+  }
+  #edit-name {
+    width: 30%;
+  }
+}
+
+.form-submit,
+input.add-to-dropbox { /* The submit button */
+  @include button;
+}
+
+.container-inline {
+  div,
+  label { /* Inline labels and form divs */
+    display: inline;
+  }
+}
+
+.tips { /* Tips for Drupal's input formats */
+}
+
+a.button { /* Buttons used by contrib modules like Media */
+  @include button;
+}
+a:link.button,
+a:visited.button {
+  color: $font-button;
+}
+a:hover.button,
+a:focus.button {
+  text-decoration: none;
+}
+
+a.go-button { /* Buttons used by contrib modules like Media */
+  @include go-button;
+}
+a:link.go-button,
+a:visited.go-button {
+  color: $font-button;
+}
+a:hover.go-button,
+a:focus.go-button {
+  text-decoration: none;
+}
+
+/*
+ * Password confirmation
+ */
+
+.password-parent,
+.confirm-parent {
+  margin: 0;
+}
+
+/*
+ * Search (search-block-form.tpl.php)
+ */
+
+#block-search-form { /* Wrapper for the search form */
+}
+
+/*
+ * Drupal's default login form block
+ */
+ 
+ .front {
+ 
+   #content-wrapper {
+      @include no-block-body;
+   }
+  
+ }
+.page-user-login,
+.anonymous-form {
+
+  #content {
+    width: 718px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .form-item {
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+    
+  input.form-text {
+    height: 24px;
+    font-size: 1.25em;
+    width: 40%;
+  }
+  
+  .description {
+    display: none;
+  }
+    
+  input.form-submit {
+    font-size: 1em;
+  }
+  
+  .item-list {
+    display: none;
+  }
+  
+  ul.menu { /* Menu block links */
+    margin: 0;
+    padding: 0;
+    text-align: left; /* LTR */
+    border: none;
+
+    li { /* A simple method to get navigation links to appear in one line. */
+      list-style-type: none;
+      list-style-image: none;
+    }
+  }
+}
+#user-login {
+  text-align: left; /* LTR */
+  
+  label { /* The label for a form element */
+    float: left;  
+    width: 10em; 
+    text-align: right;
+    font-size: 1.25em;
+    font-weight: 500;
+  }
+
+  /*
+   * OpenID
+   *
+   * The default styling for the OpenID login link seems to assume Garland's
+   * styling of list items.
+   */
+
+  ul { /* OpenID creates a new ul above the login form's links. */
+    margin-bottom: 0; /* Position OpenID's ul next to the rest of the links. */
+  }
+
+  html.js & li.openid-link,
+  li.openid-link { /* The "Log in using OpenID" link. */
+    margin-top: 1.5em;
+    margin-left: -20px; /* LTR */ /* Un-do some of the padding on the ul list. */
+  }
+
+  li.user-link { /* The "Cancel OpenID login" link. */
+    margin-top: 1.5em;
+  }
+  
+  .form-actions {
+    .form-wrapper {
+      width:auto;
+    }
+  }
+  
+  #edit-actions,
+  .links {
+    padding-left: 275px;
+  }
+  
+  .form-submit {
+    padding: 12px 24px;
+  }
+  
+}
+
+#user-login ul {
+  margin: 1.5em 0;
+}
+
+/*
+ * Drupal admin tables
+ *
+ * We overrode these styles in normalize.css, but restore them for the admin
+ * section of the site.
+ */
+
+form {
+  th {
+    text-align: left; /* LTR */
+    padding-right: 1em; /* LTR */
+    border-bottom: 3px solid #ccc;
+  }
+
+  tbody {
+    border-top: 1px solid #ccc;
+  }
+
+  table .item-list ul {
+    margin: 0;
+  }
+}
+
+@if $legacy-support-for-ie6 or $legacy-support-for-ie7 {
+  .lt-ie8 tr.even,
+  .lt-ie8 tr.odd {
+    th,
+    td {
+      border-bottom: 1px solid #ccc; /* IE doesn't display borders on table rows */
+    }
+  }
+}
+
+/*
+ * Drupal core wrongly puts this in system.menus.css. Since we override that, add it back.
+ */
+
+td.menu-disabled {
+  background: #ccc;
+}
+
+/*
+ * Register and Forgot Password
+ */
+.page-user-register,
+.page-user-password {
+
+  /* Fix for tabbed interface on profile pages */
+  ul.horizontal-tabs-list {
+    display: none;
+  }
+  .horizontal-tabs .horizontal-tab-hidden {
+    display: block;
+    position: relative;
+    top: inherit;
+  }
+  /* end fix */
+
+  .tabs {
+    display: none;
+  }
+  
+  form {
+    .grippie {
+      display: none;
+    }
+  }
+  
+  .form-wrapper {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    
+    legend {
+      display: none;
+    }
+  }
+  
+  h3 {
+    display: none;
+  }
+  
+  label { /* The label for a form element */
+    float: left;  
+    width: 10em; 
+    text-align: right;
+  }
+  
+  .form-item-field-address-und-0-administrative-area,
+  .form-item-field-address-und-0-locality,
+  .form-item-field-address-und-0-postal-code,
+  .field-widget-phone-textfield,
+  .form-item-field-phone-und-0-value {
+    margin-top: 0;
+  }
+  
+  .password-confirm {
+    margin: 0;
+  }
+  
+  #edit-field-address-und-0 {
+    legend {
+      display: none;
+    }
+  }
+  
+  .form-item-field-address-und-0-administrative-area:before {
+    clear: both;
+  }
+  
+  .field-type-addressfield,
+  .form-item-field-address-und-0-postal-code {
+    margin-bottom: 0;
+  }
+  
+  .addressfield-container-inline > div.form-item {
+    float: inherit;
+  }
+  
+  .form-item-terms-of-use {
+    padding-left: 5em;
+    label {
+      width: auto;
+    }
+  }
+
+  #edit-field-taxonomy-tag {
+    input.form-submit{
+      @include button;
+    }
+    
+    .form-item {
+      .description {
+        clear: none;
+      }
+    }
+  }
+  .dropbox {
+    margin-left: 5em;
+  }
+  #edit-field-user-acct-type {
+    display: none;
+  }
+  .confirm-parent,
+  .password-parent {
+    width: 100%;
+  }
+  .password-strength {
+    margin: 0;
+  }
+  
+  #edit-actions {
+    text-align: center;
+  }
+  
+  .form-item-mollom-captcha {
+    width: 650px;
+    margin: 0 auto;
+    
+    #edit-mollom-captcha {
+      margin-left: 11em;
+    }
+  }
+  
+  #edit_field_taxonomy_tag_und_0_tid_select_1_chzn {
+    .chzn-single {
+      margin-left: inherit;
+    }
+  }
+  
+  .field-type-taxonomy-term-reference {
+    .tabledrag-toggle-weight-wrapper,
+    .field-multiple-drag {
+      display: none;
+    }
+    thead {
+      float: left;
+      width: 10em;
+      text-align: right;
+      margin-right: 1em;
+    }
+    th {
+      padding: 0;
+      border: none;
+    }
+    tbody {
+      float: left;
+      width: 400px;
+      border: none;
+    }
+    tr {
+      //background: none;
+    }
+    td {
+      padding: 10px;
+      label {
+        display: none;
+      }
+    }
+    .field-add-more-submit {
+      margin-left: 12em;
+    }
+    
+  }
+}
+
+.page-user-password {
+  #content {
+    width: 718px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  form {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+  
+  label {
+    width: 15em;
+  }
+  
+  .form-item {
+    width: 650px;
+    margin: 0 auto;
+  }
+  
+}
+
+/*
+ * Edit Profile
+ */
+.page-user-edit,
+.page-admin-people-create {
+  
+  form {
+    width: 750px;
+    margin: 1.5em auto;
+  }
+  
+  .selects {
+    margin-right: 1em;
+  }
+  
+  .confirm-parent,
+  .password-parent {
+    width: 100%;
+  }
+  .password-strength {
+    margin: 0;
+  }
+  
+  .addressfield-container-inline > div.form-item {
+    float: inherit;
+  }
+  
+  .form-item-field-address-und-0-administrative-area,
+  .form-item-field-address-und-0-locality,
+  .form-item-field-address-und-0-postal-code,
+  .field-widget-phone-textfield {
+    margin-top: 0;
+  }
+  
+  .form-item-pass-pass2 {
+    margin-bottom: 0;
+  }
+  
+  .field-type-addressfield,
+  .form-item-field-address-und-0-postal-code {
+    margin-bottom: 0;
+  }
+  
+  .user-avatar-select {
+    .form-item {
+      text-align: center;
+      float: none;
+      display: inline;
+      width: 85px;
+    }
+    
+    .form-radio {
+      display: none;
+    }
+    
+    img {
+      padding: 5px;
+    }
+  } 
+  
+  .form-item-picture-delete,
+  #edit-field-preregistered {
+    display: none;
+  }
+  
+  #edit-field-check-in-und-0-value {
+    width: 560px;
+  }
+  
+}
+
+.page-user-edit.role-Mentee,
+.page-user-edit.role-Mentor {
+  #edit-field-user-acct-type,
+  .form-item-name {
+    display: none;
+  }
+}
+
+/*
+ * Relationship Request
+ */
+.page-relationship-request {
+  
+  form {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  
+  .form-item-rtid {
+    display: none;
+  }
+  
+}
+
+/*
+ * Contact
+ */
+.page-contact,
+.page-node-add-custom-contact-us {
+  
+  form {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  
+}
+ 

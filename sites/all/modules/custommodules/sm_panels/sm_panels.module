@@ -1,0 +1,317 @@
+<?php
+/**
+* Implements hook_ctools_plugin_directory
+*/
+
+function sm_panels_ctools_plugin_directory($module, $plugin) {
+if ($module== 'ctools' && $plugin == 'content_types'){
+	return 'plugins/' . $plugin;
+}
+
+}
+
+/**
+ * Implements hook_ctools_block_info().
+ *
+ * @see ctools_block_content_type_content_types().
+ */
+function sm_panels_ctools_block_info($module, $delta, &$info) {
+ $info ['category'] = t('Custom blocks');
+}
+
+/**
+ * Declare what blocks are provided by this module.
+ * Implements hook_block_info().
+ */
+function sm_panels_block_info(){
+    $block['admin_panel_left'] = array(
+        'info' => t('Admin Panel Left'),
+        'category' => t('Custom Block'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+    $block['admin_panel_right'] = array(
+        'info' => t('Admin Panel Right'),
+        'category' => t('Custom Block'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+    return $block;
+}
+
+/**
+ * Define what our block is going to look like.
+ * Implements hook_block_view().
+ */
+function sm_panels_block_view($block_key){
+    $block = array();
+global $user;
+
+$arg1filter = str_replace("+",",",arg(1));
+//print($arg1filter);
+
+//$arg1filter = str_replace("+",",","5806+5811+5875+5874+5876+5877+5821+5893+5816");
+   // && (drupal_is_front_page() || arg(0)=='dashboard'))
+    if(($block_key == 'admin_panel_left')&& (drupal_is_front_page() || arg(0)=='dashboard')){ //We only want to define the content of OUR block
+        //This is the title of the block.
+       // $block['subject'] = t('Marty McFly Countdown');
+if (arg(1) == NULL){
+//$result1 = db_query("SELECT node.nid AS nid
+//FROM 
+//{node} node
+//LEFT JOIN {users} users_node ON node.uid = users_node.uid
+//LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+//WHERE (( (node.status = '1') AND (node.type IN  ('custom_contact_us')) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IS NOT NULL ) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+/**
+* contact us query
+*/
+$result1 = db_query("SELECT * FROM node WHERE ((type = 'custom_contact_us') && (STATUS = '1'))");
+/**
+* mentors awaiting approval query
+*/
+$result2= db_query("SELECT DISTINCT users.name AS users_name, users.uid AS uid, users.created AS users_created, taxonomy_term_data_field_data_field_taxonomy_tag.name AS taxonomy_term_data_field_data_field_taxonomy_tag_name, field_data_field_last_name.field_last_name_value AS field_data_field_last_name_field_last_name_value, field_data_field_first_name.field_first_name_value AS field_data_field_first_name_field_first_name_value
+FROM 
+{users} users
+LEFT JOIN {field_data_field_taxonomy_tag} field_data_field_taxonomy_tag ON users.uid = field_data_field_taxonomy_tag.entity_id AND field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {field_data_field_user_acct_status} field_data_field_user_acct_status ON users.uid = field_data_field_user_acct_status.entity_id AND field_data_field_user_acct_status.entity_type = 'user'
+INNER JOIN {field_data_field_user_acct_type} field_data_field_user_acct_type ON users.uid = field_data_field_user_acct_type.entity_id AND field_data_field_user_acct_type.entity_type = 'user'
+LEFT JOIN {field_data_field_last_name} field_data_field_last_name ON users.uid = field_data_field_last_name.entity_id AND field_data_field_last_name.entity_type = 'user'
+LEFT JOIN {field_data_field_first_name} field_data_field_first_name ON users.uid = field_data_field_first_name.entity_id AND field_data_field_first_name.entity_type = 'user'
+WHERE (( (users.status = '0') AND (users.uid NOT IN  ('0')) AND (field_data_field_user_acct_status.field_user_acct_status_tid = '3961') AND (field_data_field_user_acct_type.field_user_acct_type_tid = '25') AND (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IS NOT NULL ) AND (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+
+/**
+* total mentors query
+*/
+$result3= db_query("SELECT DISTINCT users.uid AS uid
+FROM 
+{users} users
+LEFT JOIN {field_data_field_taxonomy_tag} field_data_field_taxonomy_tag ON users.uid = field_data_field_taxonomy_tag.entity_id AND field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid
+INNER JOIN {field_data_field_user_acct_status} field_data_field_user_acct_status ON users.uid = field_data_field_user_acct_status.entity_id AND field_data_field_user_acct_status.entity_type = 'user'
+WHERE (( (users_roles.rid = '5') AND (field_data_field_user_acct_status.field_user_acct_status_tid = '3923') AND (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IS NOT NULL ) AND (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+/**
+* total mentees query
+*/
+$result4= db_query("SELECT DISTINCT users.uid AS uid
+FROM 
+{users} users
+LEFT JOIN {field_data_field_taxonomy_tag} field_data_field_taxonomy_tag ON users.uid = field_data_field_taxonomy_tag.entity_id AND field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid
+INNER JOIN {field_data_field_user_acct_status} field_data_field_user_acct_status ON users.uid = field_data_field_user_acct_status.entity_id AND field_data_field_user_acct_status.entity_type = 'user'
+WHERE (( (users_roles.rid = '6') AND (field_data_field_user_acct_status.field_user_acct_status_tid = '3923') AND (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IS NOT NULL ) AND (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+}
+else{
+/**
+* contact us query
+*/
+$result1 = db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+WHERE (( (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (node.status = '1') AND (node.type IN  ('custom_contact_us')) )))");
+
+/**
+* mentors awaiting approval query
+*/
+$result2= db_query("SELECT DISTINCT users.uid AS uid
+FROM 
+{users} users
+LEFT JOIN {field_data_field_taxonomy_tag} field_data_field_taxonomy_tag ON users.uid = field_data_field_taxonomy_tag.entity_id AND field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {field_data_field_user_acct_status} field_data_field_user_acct_status ON users.uid = field_data_field_user_acct_status.entity_id AND field_data_field_user_acct_status.entity_type = 'user'
+INNER JOIN {field_data_field_user_acct_type} field_data_field_user_acct_type ON users.uid = field_data_field_user_acct_type.entity_id AND field_data_field_user_acct_type.entity_type = 'user'
+WHERE (( (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (users.status = '0') AND (users.uid NOT IN  ('0')) AND (field_data_field_user_acct_status.field_user_acct_status_tid = '3961') AND (field_data_field_user_acct_type.field_user_acct_type_tid = '25') )))");
+/**
+* total mentors query
+*/
+$result3= db_query("SELECT DISTINCT users.uid AS uid
+FROM 
+{users} users
+LEFT JOIN {field_data_field_taxonomy_tag} field_data_field_taxonomy_tag ON users.uid = field_data_field_taxonomy_tag.entity_id AND field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid
+INNER JOIN {field_data_field_user_acct_status} field_data_field_user_acct_status ON users.uid = field_data_field_user_acct_status.entity_id AND field_data_field_user_acct_status.entity_type = 'user'
+WHERE (( (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (users_roles.rid = '5') AND (field_data_field_user_acct_status.field_user_acct_status_tid = '3923') )))");
+/**
+* total mentees query
+*/
+$result4= db_query("SELECT DISTINCT users.uid AS uid
+FROM 
+{users} users
+LEFT JOIN {field_data_field_taxonomy_tag} field_data_field_taxonomy_tag ON users.uid = field_data_field_taxonomy_tag.entity_id AND field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid
+INNER JOIN {field_data_field_user_acct_status} field_data_field_user_acct_status ON users.uid = field_data_field_user_acct_status.entity_id AND field_data_field_user_acct_status.entity_type = 'user'
+WHERE (( (field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (users_roles.rid = '6') AND (field_data_field_user_acct_status.field_user_acct_status_tid = '3923') )))");
+}
+global $user;
+$mentorapproveddate = "";
+$UserRoleCheck = array_intersect(array('Staff Admin', 'administrator'), array_values($user->roles));
+if ((empty($UserRoleCheck) ? FALSE : TRUE)) {
+$mentorapproveddate = ('<a href="/reports/mentorapproveddate/'. arg(1). '">Mentors by Approval Date</a>');
+}
+
+        //Define the block content.
+        $block['content'] = t('
+        <h3>Users</h3>
+<table>
+<tr class="odd"><td><a href="/users/mgrcontactus/'.arg(1).'">Manage Contact-Us ('.$result1->rowCount().')</td></tr>
+<tr class="even"><td><a href="/mentorsawaiting-approval/'.arg(1).'">Mentors Awaiting Approval ('.$result2->rowCount().')</a></td></tr>
+<tr class="odd"><td> <a href="/users/gaallusers">Manage All Users</a></td></tr>
+<tr class="even"><td><a href="/users/gamentors/'.arg(1).'">Total Mentors ('.$result3->rowCount().')</a>
+        </td></tr>
+<tr class="odd"><td>
+<a href="/users/gamentees/'.arg(1).'">Total Mentees ('.$result4->rowCount().')</a></td></tr>
+<tr class="even"><td>
+        <a href="/reports/menteementormatches/'.arg(1).'">Mentee/Mentor Matches</a></td></tr>
+<tr class="odd"><td>
+        <a href="/reports/mentormenteematches/'.arg(1).'">Mentor/Mentee Matches</a></td></tr>
+        <tr class="even"><td>'.$mentorapproveddate.'</td></tr> 
+        </table>
+<h3>Correspondence Reports</h3>
+<table>
+<tr class="odd"><td>
+<a href="/reports/activity-report-mentee/'.arg(1).'">Activity Report by Mentee</a>
+</td></tr>
+<tr class="even"><td>
+<a href="/reports/activity-response-report/'.arg(1).'">Activity Response Report</a>
+</td></tr>
+<tr class="odd"><td>
+<a href="/reports/lets-chat/'.arg(1).'">Let&#39;s Chat Report</a>
+</td></tr>
+<tr class="even last"><td></td></tr>
+<tr class="even more-link"><td>
+<a href="/reports/menteecontact/'.arg(1).'">View all reports >></a>
+</td></tr>
+</table>
+');    
+    }
+    
+    // && (drupal_is_front_page() || arg(0)=='dashboard'))
+    if(($block_key == 'admin_panel_right')&& (drupal_is_front_page() || arg(0)=='dashboard')){ //We only want to define the content of OUR block
+        //This is the title of the block.
+       // $block['subject'] = t('Marty McFly Countdown');
+if(arg(1)==NULL){
+	/**
+* Completed Activites query
+*/
+	$result1 = db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {field_data_field_completion_status} field_data_field_completion_status ON node.nid = field_data_field_completion_status.entity_id AND field_data_field_completion_status.entity_type = 'node'
+LEFT JOIN {field_data_field_mparchive} field_data_field_mparchive ON node.nid = field_data_field_mparchive.entity_id AND field_data_field_mparchive.entity_type = 'node'
+WHERE (( (node.type IN  ('activity_assignment')) AND (node.status = '1') AND (field_data_field_completion_status.field_completion_status_value = 'Complete') AND (field_data_field_mparchive.field_mparchive_value IS NULL ) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IS NOT NULL ) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+/**
+* in Progress Activites query
+*/
+$result2 = db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {field_data_field_completion_status} field_data_field_completion_status ON node.nid = field_data_field_completion_status.entity_id AND field_data_field_completion_status.entity_type = 'node'
+LEFT JOIN {field_data_field_mparchive} field_data_field_mparchive ON node.nid = field_data_field_mparchive.entity_id AND field_data_field_mparchive.entity_type = 'node'
+WHERE (( (node.type IN  ('activity_assignment')) AND (node.status = '1') AND (field_data_field_completion_status.field_completion_status_value = 'In Progress') AND (field_data_field_mparchive.field_mparchive_value IS NULL ) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IS NOT NULL ) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+/**
+* Flagged Activity Responses query
+*/
+$result3= db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {flagging} flagging_node ON node.nid = flagging_node.entity_id AND flagging_node.fid = '6'
+WHERE (( (node.type IN  ('activity_assignment_response')) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+/**
+* Flagged chats query
+*/
+$result4= db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {flagging} flagging_node ON node.nid = flagging_node.entity_id AND flagging_node.fid = '6'
+WHERE (( (node.type IN  ('lets_chat', 'lets_chat_reply')) AND (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN (SELECT tte.tid FROM {taxonomy_term_edge} tte WHERE tte.parent in (SELECT tt.field_taxonomy_tag_tid FROM {field_data_field_taxonomy_tag} tt WHERE tt.bundle='user'  AND tt.deleted=0 AND tt.entity_id=".$user->uid."))) ))");
+}
+else{
+$result1 = db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {field_data_field_completion_status} field_data_field_completion_status ON node.nid = field_data_field_completion_status.entity_id AND field_data_field_completion_status.entity_type = 'node'
+LEFT JOIN {field_data_field_mparchive} field_data_field_mparchive ON node.nid = field_data_field_mparchive.entity_id AND field_data_field_mparchive.entity_type = 'node'
+WHERE (( (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (node.status = '1') AND (node.type IN  ('activity_assignment')) AND (field_data_field_completion_status.field_completion_status_value = 'Complete') AND (field_data_field_mparchive.field_mparchive_value IS NULL ) )))");
+
+$result2 = db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {field_data_field_completion_status} field_data_field_completion_status ON node.nid = field_data_field_completion_status.entity_id AND field_data_field_completion_status.entity_type = 'node'
+LEFT JOIN {field_data_field_mparchive} field_data_field_mparchive ON node.nid = field_data_field_mparchive.entity_id AND field_data_field_mparchive.entity_type = 'node'
+WHERE (( (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (node.status = '1') AND (node.type IN  ('activity_assignment')) AND (field_data_field_completion_status.field_completion_status_value = 'In Progress') AND (field_data_field_mparchive.field_mparchive_value IS NULL ) )))");
+
+$result3= db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {flagging} flagging_node ON node.nid = flagging_node.entity_id AND flagging_node.fid = '6'
+WHERE (( (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (node.type IN  ('activity_assignment_response')) )))");
+
+$result4= db_query("SELECT node.nid AS nid
+FROM 
+{node} node
+LEFT JOIN {users} users_node ON node.uid = users_node.uid
+LEFT JOIN {field_data_field_taxonomy_tag} users_node__field_data_field_taxonomy_tag ON users_node.uid = users_node__field_data_field_taxonomy_tag.entity_id AND users_node__field_data_field_taxonomy_tag.entity_type = 'user'
+LEFT JOIN {taxonomy_term_data} taxonomy_term_data_field_data_field_taxonomy_tag ON users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid = taxonomy_term_data_field_data_field_taxonomy_tag.tid
+INNER JOIN {flagging} flagging_node ON node.nid = flagging_node.entity_id AND flagging_node.fid = '6'
+WHERE (( (users_node__field_data_field_taxonomy_tag.field_taxonomy_tag_tid IN(".$arg1filter.") ) )AND(( (node.type IN  ('lets_chat', 'lets_chat_reply')) )))");
+	
+}
+
+        //Define the block content.
+        $block['content'] = t('
+        <h3>Activities</h3>
+<table>
+<tr class="odd"><td>
+<a href="/reports/gaactivityreportbylocation/'.arg(1).'">Completed Activities ('.$result1->rowCount().')</a>
+</td></tr>
+<tr class="even"><td>
+<a href="/reports/gaactivityreportbylocation/'.arg(1).'">In Progress ('.$result2->rowCount().')</a>
+</td></tr>
+<tr class="odd"><td>
+<a href="/curriculum/createdbyme">My Curricula</a>
+</td></tr>
+<tr class="even last"><td></td></tr>
+</table>
+<br />
+<h3>Flagged Content</h3>
+<table>
+<tr class="odd"><td>
+<a href="/reports/flagged-activity-responses/'.arg(1).'">Flagged Activity Responses ('.$result3->rowCount().')</a>
+</td></tr>
+<tr class="even"><td>
+<a href="/reports/flagged-chat/'.arg(1).'">Flagged Chats ('.$result4->rowCount().')</a>
+</td></tr>
+<tr class="odd last"><td></td></tr>
+</table>
+
+');    
+    }
+
+    return $block;
+}

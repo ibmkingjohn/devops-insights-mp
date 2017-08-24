@@ -1,0 +1,335 @@
+//
+// "base" partial
+//
+// To make it easier to use all variables and mixins in any Sass file in this
+// theme, each .scss file has a @import "base" declaration. And this _base.scss
+// file is in charge of importing all the other partials needed for the theme.
+//
+// This base partial is organized in this way:
+// - First we set any shared Sass variables.
+// - Next we import Compass plug-ins (Sass mixin libraries).
+// - Last we import a _custom.scss partial that includes our custom mixins.
+//
+
+
+//
+// Legacy IE support
+//
+// These variables are used by many mixins to add additional CSS to support
+// specific versions of IE or specific vendor prefixes.
+//
+// To turn on support for IE6 or IE7, set those variables to true.
+//
+// Zen does not require special handling for IE8 or later. But Compass uses that
+// variable for a couple edge cases. We include it for completeness sake. See
+// the documentation at http://compass-style.org/reference/compass/support/
+$legacy-support-for-ie6: false;
+$legacy-support-for-ie7: false;
+$legacy-support-for-ie8: true;
+
+
+//
+// Font faces, stacks and sizes.
+//
+
+// Compass' vertical_rhythm extension is a powerful tool to set up a vertical
+// rhythm for your entire page. You can see some of its mixins and functions in
+// use in the normalize.scss file.
+// @see http://compass-style.org/reference/compass/typography/vertical_rhythm/
+
+$base-font-size:   14px; // The font size set on the root html element.
+$base-line-height: 22px; // This line-height determines the basic unit of vertical rhythm.
+
+$h1-font-size: 2    * $base-font-size;
+$h2-font-size: 1.5  * $base-font-size;
+$h3-font-size: 1.17 * $base-font-size;
+$h4-font-size: 1    * $base-font-size;
+$h5-font-size: 0.83 * $base-font-size;
+$h6-font-size: 0.75 * $base-font-size;
+
+// The following font family declarations are based on the Microsoft core web
+// fonts which are common fonts available on most computer systems. The DejaVu
+// and Nimbus Sans fonts are commonly available on Linux systems where the MS
+// fonts are less common. Tahoma and Helvetica are also widely available.
+//
+// A user's web browser will look at the comma-separated list and will
+// attempt to use each font in turn until it finds one that is available
+// on the user's computer. The final "generic" font (sans-serif, serif or
+// monospace) hints at what type of font to use if the web browser doesn't
+// find any of the fonts in the list.
+
+// First, let's create some font stacks.
+$times-new-roman: "Times New Roman", Times, Georgia, "DejaVu Serif", serif;
+$times:           Times, "Times New Roman", Georgia, "DejaVu Serif", serif;
+$georgia:         Georgia, "Times New Roman", "DejaVu Serif", serif;
+
+$verdana:         Verdana, Tahoma, "DejaVu Sans", sans-serif;
+$tahoma:          Tahoma, Verdana, "DejaVu Sans", sans-serif;
+$helvetica:       Helvetica, Arial, "Nimbus Sans L", sans-serif;
+$arial:           Arial, Helvetica, "Nimbus Sans L", sans-serif;
+
+$rokkitt:         "Rokkitt", serif;
+
+// For an explanation of why "sans-serif" is at the end of this list, see
+// http://meyerweb.com/eric/thoughts/2010/02/12/fixed-monospace-sizing/
+$courier:         "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
+
+// Now create some variables for the font stacks we want to use on this site.
+$base-font-family: $arial; // The font family set on the html element.
+$font-body:        $arial;
+$font-monospace:   $courier;
+
+
+//
+// Colors for the Blue theme.
+//
+// Body background colors
+$bg-gradient-start: #0b51a8;
+$bg-gradient-finish: #55d1fd;
+$body-bg: #55d1fd;
+// Header colors
+$header-bg: #fff;
+$header-border: #bbc1c8;
+// Navigation colors
+$nav-bg: #151515;
+$nav-border: #3295dd;
+$nav-tab-bg: #135fb2;
+$nav-tab-gradient-start: #135fb1;
+$nav-tab-gradient-finish: #135fb2;
+$sub-nav-tab-bg: #fff;
+// Footer colors
+$footer-bg: #fff;
+// Table colors
+$table-row-even: #fff;
+$table-row-odd: #eee;
+$table-head-bg: #fbfdfe;
+$table-head-gradient-start: #fbfdfe;
+$table-head-gradient-finish: #b2e8fd;
+$table-head-border: #1f4977;
+// Font colors
+$font-site-name: #001b38; //top header site name
+$font-global: #000; //top header and footer text
+$font-link: #0066cc; //link text
+$font-block-header: #fff; //block header text 
+$font-nav-tab-active: #fff; //nav tab text
+$font-nav-tab: #fff; //nav tab text
+$font-body: #012d5a; //body content header and paragraph text
+$font-stats: #666; //mini profile and account stats
+$font-sub-tab: #fff; //content tab inactive text
+$font-sub-tab-active: #333; //content tab active text
+$font-form-label: #333; //form label text
+$font-alert: #f00; //alert text
+$font-button: #fff; //button text
+$font-bread-crumb: #fff; //bread crumb text
+$font-bread-crumb-link: #000; //bread crumb link text
+$font-sent-by-link: #585858; //dashboard sent by link text
+$font-active-user-id: #e9a607; //dashboard logged in user id
+$font-partner-header-id: #231f20;
+$font-status-complete: #008000; //completed status color
+//Alert colors
+$alert: #f00;
+// Block colors
+$block-bg: #fff;
+$block-border: #d8dcd6;
+$block-top-border: #a7a9ac;
+$block-top-gradient-start: #46494f;
+$block-top-gradient-finish: #11181c;
+$block-top-bg: #9acefe;
+// Button colors
+$button-bg: #007dc4;
+$button-gradient-start: #007dc4;
+$button-gradient-finish: #01649e;
+$go-button-bg: #699d00;
+$go-button-gradient-start: #99cc00;
+$go-button-gradient-finish: #3c7100;
+// Primary tab colors
+$tabs-container-bg: #fff;
+$tabs-border: #bbb;
+$tabs-link-border: #e9e9e9;
+$tabs-link-bg: #dedede;
+$tabs-link: #333;
+$tabs-hover-bg: #e9e9e9;
+$tabs-hover-border: #f2f2f2;
+$tabs-active-border: #fff;
+$tabs-active-gradient: #e9e9e9;
+// Secondary tab colors
+$sub-tabs-link-bg: #f2f2f2;
+$sub-tabs-link: #666;
+$sub-tabs-hover-bg: #dedede;
+$sub-tabs-hover-border: #999;
+$sub-tabs-hover: #333;
+$sub-tabs-active-bg: #666;
+$sub-tabs-active-border: #000;
+$sub-tabs-active: #fff;
+// Pop-up window colors
+$pop-bg: #fff;
+$pop-border: #d8dcd6;
+// User status balloon colors
+$status-user-avatar-border: #e9e8df;
+$status-user-bg-gradient-start: #fcfeff;
+$status-user-bg-gradient-finish: #daf1fd;
+$status-user-bg: #f6fcff;
+$status-user-border: #d1d3d4;
+// Dashboard - My Mentees/Mentors block colors
+$partners-block-bg: #023263;
+$partners-bg-gradient-start: #023263;
+$partners-bg-gradient-finish: #2e8ed1;
+$partners-header-bg: #858689;
+$partners-header-gradient-start: #f1f2f2;
+$partners-header-gradient-finish: #858689;
+$partners-header-border: #04386c;
+$partners-header-border2: #39719b;
+$partners-user-bg-gradient-start: #fcfeff;
+$partners-user-bg-gradient-finish: #daf1fd;
+$partners-user-bg: #f6fcff;
+$partners-user-border: #d1d3d4;
+// Text Header colors
+$text-header-bg: #eee;
+// Content optional colors
+$content-highlight: #eee;
+// Content box colors
+$content-box: #909499;
+// Skip link colors
+$skip-link-bg: #666;
+$skip-link: #fff;
+// Form colors
+$form-border: #a7c7dd;
+$form-bg: #f0f0f0;
+$form-bg-gradient-start: #f0f0f0;
+$form-bg-gradient-finish: #ffffff;
+// Comment colors
+$comment-border: #787878;
+$comment-bg: #fbfdfe;
+$comment-bg-gradient-start: #fbfdfe;
+$comment-bg-gradient-finish: #b2e8fd;
+
+//
+// Body
+//
+@mixin page-bg {
+  background-color: $body-bg; /* Old browsers */
+  background-image:-webkit-gradient(linear, 0 0, 0 100%, from($bg-gradient-start), to($bg-gradient-finish));
+  background-image:-moz-linear-gradient(top, $bg-gradient-start 0%, $bg-gradient-finish 100%); /* FF3.6+ */
+  background-image:-o-linear-gradient($bg-gradient-start, $bg-gradient-finish);
+  background-image:linear-gradient($bg-gradient-start, $bg-gradient-finish);
+  background-image: -ms-linear-gradient(top, $bg-gradient-start 0%, $bg-gradient-finish 100%); /* IE10+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0b51a8', endColorstr='#55d1fd',GradientType=0 ); /* IE6-9 */
+  background-repeat: no-repeat;
+}
+
+//
+// Blocks, headers
+//
+@mixin block-top {
+  background: $block-top-bg; /* Old browsers */
+  background:-webkit-gradient(linear, 0 0, 0 100%, from($block-top-gradient-start), to($block-top-gradient-finish));
+  background:-moz-linear-gradient($block-top-gradient-start, $block-top-gradient-finish);
+  background:-o-linear-gradient($block-top-gradient-start, $block-top-gradient-finish);
+  background:linear-gradient($block-top-gradient-start, $block-top-gradient-finish);
+  background: -ms-linear-gradient(top, $block-top-gradient-start 0%, $block-top-gradient-finish 100%); /* IE10+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#46494f', endColorstr='#11181c',GradientType=0 ); /* IE6-9 */
+  background-repeat: no-repeat;
+  height: 34px;
+  font-family: $rokkitt;
+  font-weight: 100;
+  text-transform: uppercase;
+  color: $font-block-header;
+  padding-left: 12px;
+  line-height: 1.75em;
+  border-top: solid 1px $block-top-border;
+  -khtml-border-radius-topleft: 3px;
+  -khtml-border-radius-topright: 3px;
+  -moz-border-radius-topleft: 3px;
+  -moz-border-radius-topright: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+@mixin block-body {
+  background-color: $block-bg;
+  border: solid 1px $block-border;
+  margin-top: 0;
+  padding: 15px 15px 20px 15px;
+  //overflow: auto;
+  margin-bottom: 1.5em;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+}
+@mixin h2-header {
+  font-family: $rokkitt;
+  font-weight: 100;
+  text-transform: uppercase;
+}
+@mixin no-block-body {
+  background: none;
+  border: none;
+  margin: inherit;
+  padding: inherit;
+  -webkit-box-shadow: inherit;
+  -moz-box-shadow: inherit;
+  box-shadow: inherit;
+}
+
+// The amount lists, blockquotes and comments are indented.
+$indent-amount: 30px;
+
+//
+// Buttons
+//
+@mixin button {
+  background: $button-bg; /* Old browsers */
+  background: -moz-linear-gradient(top,  $button-gradient-start 0%, $button-gradient-finish 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$button-gradient-start), color-stop(100%,$button-gradient-finish)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  $button-gradient-start 0%,$button-gradient-finish 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  $button-gradient-start 0%,$button-gradient-finish 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  $button-gradient-start 0%,$button-gradient-finish 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  $button-gradient-start 0%,$button-gradient-finish 100%); /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: $font-button;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+
+@mixin go-button {
+  background: $go-button-bg; /* Old browsers */
+  background: -moz-linear-gradient(top,  $go-button-gradient-start 0%, $go-button-gradient-finish 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$go-button-gradient-start), color-stop(100%,$go-button-gradient-finish)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  $go-button-gradient-start 0%,$go-button-gradient-finish 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  $go-button-gradient-start 0%,$go-button-gradient-finish 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  $go-button-gradient-start 0%,$go-button-gradient-finish 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  $go-button-gradient-start 0%,$go-button-gradient-finish 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#99cc00', endColorstr='#3c7100',GradientType=0 ); /* IE6-9 */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: $font-button;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+}
+
+//
+// Partials to be shared with all .scss files.
+//
+
+@import "compass/support";  // Add Compass' IE and vendor prefix support variables.
+@import "compass/utilities/general/clearfix"; // Better than Drupal's clearfix.
+@import "compass/utilities/sprites"; // See http://compass-style.org/help/tutorials/spriting/
+@import "compass/css3";     // Use one CSS3 mixin instead of multiple vendor prefixes.
+@import "compass/typography/vertical_rhythm"; // Helps set up a vertical rhythm.
+@import "zen";              // Add the Zen Grids responsive layout mixins.
+
+@import "custom";           // Import our custom mixins last.

@@ -1,0 +1,283 @@
+/**
+ * @file
+ * Activities Styling
+ */
+
+@import "base";
+
+/*
+ * Activities Page (main menu tab)
+ */
+.page-activities {
+    
+  td {
+    line-height: 29px;
+  }
+  
+  .views-field-field-start-activity {
+    padding-left: 5px;
+  }
+  
+  .form-submit {
+    background: none;
+    filter: inherit;
+    border-radius: inherit;
+    color: $font-link;
+    font-size: inherit;
+    text-transform: none;
+    padding: inherit;
+    margin-right: inherit;
+  }
+  
+  .form-submit:hover {
+    text-decoration: underline;
+  }
+  
+  .status_complete {
+    color: $font-status-complete;
+  }
+  
+}
+
+.node-type-activity {
+  
+  form {
+    margin-top: 10px;
+  }
+  
+  #view-field-start-activity-mentor-und-0-value {
+    display: none;
+  }
+}
+
+/*
+ * Activities assignment
+ */
+.node-type-activity-assignment {
+  h1#page-title {
+    display: none;
+  }
+  
+  .tabs {
+    display: none;
+  }
+  
+  #content-wrapper {
+    @include no-block-body;
+  }
+
+  h2.block-title {
+    @include block-top;
+  }
+  
+  p {
+    margin: .7em 0;
+  }
+  
+  .activity_content {
+    @include block-body;
+    padding: 15px 70px 20px 70px;
+  }
+  
+  h2.node-title {
+    @include h2-header;
+  }
+  
+  .filter-wrapper {
+    padding: 0;
+  }
+  
+  #view-field-approve-assignment-und-0-value {
+    margin: 10px 0;
+  }
+  
+  .view-display-id-activity_assignment_attach_entity_view {
+    .view-content {
+      margin-top: 20px;
+    }
+  }
+  
+  .field-type-fivestar {
+    /* Temporary until decision is made */
+    display: none;
+    
+    .field-items {
+      margin-top: 2px;
+    }
+  }
+  
+  /* Comments */
+  .ctools-collapsible-container {
+    margin-top: 20px;
+  }
+  .ctools-toggle.ctools-toggle-collapsed {
+    background-image: url(../images/theme_blue/icon_toggle_blue.png);
+    background-position: left top;
+    width: 18px;
+    height: 19px;
+    padding-right: 5px;
+  }
+  .ctools-toggle {
+    background-image: url(../images/theme_blue/icon_toggle_blue.png);
+    background-position: 0 -19px;
+    width: 18px;
+    height: 19px;
+    padding-right: 5px;
+  }
+  .comment-title,
+  #edit-author--2 {
+    display: none;
+  }
+  .comment-wrapper {
+    h2.title {
+      display: none;
+    }
+  }
+  .activity_results {
+    background-color: $content-highlight;
+    padding: 5px 15px;
+  }
+  
+  .comment-content {
+    .form-type-item {
+      display: none;
+    }
+  }
+  
+  .flag-wrapper {
+    font-size: .8em;
+    position: absolute;
+    bottom: 10px;
+  }
+  
+}
+
+/* Mentor view of mentees activities */
+.page-activitiesbymentee {
+  td {
+    line-height: 29px;
+  }
+  
+  .views-field-field-start-activity-mentor {
+    padding-left: 5px;
+  }
+  
+  .form-submit {
+    background: none;
+    filter: inherit;
+    border-radius: inherit;
+    color: $font-link;
+    font-size: inherit;
+    text-transform: none;
+    padding: inherit;
+    margin-right: inherit;
+  }
+  
+  .form-submit:hover {
+    text-decoration: underline;
+  }
+}
+
+/*
+ * Comment Pages
+ */
+
+
+/*
+ * Activities (add an assignment resource)
+ */
+.page-node-add-act-assignment-resource {
+  
+  form {
+    width: 650px;
+    margin: 1.5em auto;
+  }
+  
+  label {
+    width: 15em;
+  }
+
+}
+
+/*
+ * Create activities (admin)
+ */
+
+.page-node-add-activity,
+.node-type-activity.page-node-edit {
+  
+  .form-wrapper,
+  .form-item-title {
+    width: 650px;
+    margin: 0 auto;
+  }
+  
+  /* Admin view of ckeditor */
+  #edit-field-activity-objective.form-field-type-text-long {
+    width: auto;
+  }
+  
+  #edit-field-activity-description.form-field-type-text-long {
+    width: auto;
+  }
+  
+  h3 {
+    background-color: $text-header-bg;
+    padding: 5px;
+  }
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+  .form-item label {
+    font-weight: bold;
+  }
+  .fieldset-legend {
+    font-weight: bold;
+  }
+  .summary {
+    color: $font-global;
+  }
+  
+  #edit-comment {
+    padding-left: 10px;
+  }
+  
+  .form-field-type-datetime {
+    margin-top: 20px;
+  }
+  
+  .form-field-name-field-attachments {
+    margin-bottom: 25px;
+  }
+  
+  .group-curr-details-one,
+  .group-curr-details-two {
+    width: 650px;
+    margin: 0 auto;
+    
+    h3 {
+      display: none;
+    }
+  }
+  
+  #edit-field-topic-tag,
+  .group-act-details {
+    clear: both;
+  }
+  
+  #edit_field_taxonomy_tag_und_chzn {
+    width: 260px !important;
+  }
+  
+  .media-widget {
+    .button {
+      padding: 3px 6px;
+    }
+  }
+  
+  .media-item img {
+    width: inherit;
+  }
+}

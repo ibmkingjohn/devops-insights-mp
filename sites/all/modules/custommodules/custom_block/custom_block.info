@@ -1,0 +1,8 @@
+name = "Custom Block"
+description = "Custom Block with advance features"
+core = "7.x"
+php = "5.3"
+
+version = "7.x-1.0"
+core = "7.x"
+dependencies[] = "views"

@@ -1,0 +1,15 @@
+name = Views: User Reports Activity by Location
+core = 7.x
+package = IBM MentorPlace
+dependencies[] = better_exposed_filters
+dependencies[] = ctools
+dependencies[] = taxonomy_edge
+dependencies[] = views
+dependencies[] = views_data_export
+dependencies[] = views_filters_selective
+dependencies[] = views_litepager
+dependencies[] = views_raw_sql
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = correspondence_report_bjb
+features[views_view][] = reports_activitybylocation

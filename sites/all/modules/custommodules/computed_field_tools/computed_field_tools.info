@@ -1,0 +1,5 @@
+name = Computed Field Tools
+description = "Re-compute values in computed fields"
+package = Fields
+core = 7.x
+dependencies[] = computed_field

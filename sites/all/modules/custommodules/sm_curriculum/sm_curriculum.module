@@ -1,0 +1,305 @@
+<?php
+	/**
+ * Creates an activity assignment and saves it. Author is logged-in user
+ *
+ * @param $activity_id -- the nid of the activity node to point to 
+ * @param $mentee_id
+ * @return node -- the new Activity Assignment node
+ * @author shaouy
+ */
+	function sm_curriculum_create_assignment($activity_id, $mentee_id) {
+		global $language;
+		global $user;
+		$lang_name = $language->language;
+		// boundary case
+		
+		if (!is_numeric ($activity_id)) {
+			drupal_set_message('Activity parameter is not numeric, so no assignment was made');
+			return;
+			// do nothing. 
+		}
+
+		// boundary case
+		
+		if (!is_numeric ($mentee_id)) {
+			drupal_set_message('Mentee parameter is not numeric, so no assignment was made');
+			return;
+			// do nothing. 
+		}
+
+		// Create a node object of type activity assignment, and add node properties.
+		$newNode = (object) NULL;
+		$newNode->type = 'activity_assignment';
+		$newNode->uid = 0;
+		$newNode->created = strtotime("now");
+		$newNode->changed = strtotime("now");
+		$newNode->status = 1;
+		$newNode->language = $lang_name;
+		$activity_node = node_load($activity_id);
+		$newNode->title = $activity_node->title . ' ' . t('by') . ' ' . $user->name;
+		node_object_prepare($newNode);
+		// Save the node. The node will also get published, if $newNode->status was set to 1.
+		node_save($newNode);
+		// set field_activity_entity_ref
+		$value_array = array('target_id'=>$activity_id);
+		$und_array = array($value_array);
+		$newNode->field_activity_entity_ref = array(LANGUAGE_NONE=>$und_array);
+		// set field_mentee
+		//$value_array = array('uid'=>$mentee_id);
+		//$und_array = array($value_array);
+		//$newNode->field_mentee = array(LANGUAGE_NONE=>$und_array);
+		//  $body_text = t('This is your assignment for the activity ') . ' ' . $activity_node->title; 
+		//  $newNode->body[$lang_name][0]['value']   = $body_text;
+		//  $newNode->body[$lang_name][0]['summary'] = text_summary($body_text);
+		//  $newNode->body[$lang_name][0]['format']  = 'filtered_html';
+		node_save($newNode);
+		return $newNode;
+	}
+
+	/**
+ * Creates an activity assignment and saves it. Author is $mentee_id
+ *
+ * @param $activity_id -- the nid of the activity node to point to 
+ * @param $mentee_id
+ * @return node -- the new Activity Assignment node
+ * @author shaouy
+ */
+	function sm_curriculum_create_assignment_by_mentee($activity_id, $mentee_id) {
+		global $language;
+		$user = user_load($mentee_id);
+		$lang_name = $language->language;
+		// boundary case
+		
+		if (!is_numeric ($activity_id)) {
+			drupal_set_message('Activity parameter is not numeric, so no assignment was made');
+			return;
+			// do nothing. 
+		}
+
+		// boundary case
+		
+		if (!is_numeric ($mentee_id)) {
+			drupal_set_message('Mentee parameter is not numeric, so no assignment was made');
+			return;
+			// do nothing. 
+		}
+
+		// boundary case
+		
+		if (!is_object($user)) {
+			drupal_set_message('User ID is invalid, so no assignment was made');
+			return;
+			// do nothing. 
+		}
+
+		// Create a node object of type activity assignment, and add node properties.
+		$newNode = (object) NULL;
+		$newNode->type = 'activity_assignment';
+		$newNode->uid = $mentee_id;
+		$newNode->created = strtotime("now");
+		$newNode->changed = strtotime("now");
+		$newNode->status = 1;
+		$newNode->language = $lang_name;
+		$activity_node = node_load($activity_id);
+		$newNode->title = $activity_node->title . ' ' . t('by') . ' ' . $user->name;
+		node_object_prepare($newNode);
+		// Save the node. The node will also get published, if $newNode->status was set to 1.
+		node_save($newNode);
+		// set field_activity_entity_ref
+		$value_array = array('target_id'=>$activity_id);
+		$und_array = array($value_array);
+		$newNode->field_activity_entity_ref = array(LANGUAGE_NONE=>$und_array);
+		// set field_mentee
+		//$value_array = array('uid'=>$mentee_id);
+		//$und_array = array($value_array);
+		$newNode->uid = $mentee_id;
+		//$newNode->field_mentee = array(LANGUAGE_NONE=>$und_array);
+		//  $body_text = t('This is your assignment for the activity ') . ' ' . $activity_node->title; 
+		//  $newNode->body[$lang_name][0]['value']   = $body_text;
+		//  $newNode->body[$lang_name][0]['summary'] = text_summary($body_text);
+		//  $newNode->body[$lang_name][0]['format']  = 'filtered_html';
+		node_save($newNode);
+		return $newNode;
+	}
+
+	/**
+ * Creates an activity assignment and saves it. Author is logged-in user
+ *
+ * @param $activity_id -- the nid of the activity node to point to 
+ * @param $mentee_id
+ * @return node -- the new Activity Assignment node
+ * @author shaouy
+ */
+	function sm_curriculum_create_assignment_by_mentor($activity_id, $menteename) {
+		global $language;
+		$lang_name = $language->language;
+		// boundary case
+		
+		if (!is_numeric ($activity_id)) {
+			drupal_set_message('Activity parameter is not numeric, so no assignment was made');
+			return;
+			// do nothing. 
+		}
+
+		// Create a node object of type activity assignment, and add node properties.
+		$newNode = (object) NULL;
+		$newNode->type = 'activity_assignment';
+		$newNode->uid = 0;
+		$newNode->created = strtotime("now");
+		$newNode->changed = strtotime("now");
+		$newNode->status = 1;
+		$newNode->language = $lang_name;
+		$activity_node = node_load($activity_id);
+		$newNode->title = $activity_node->title . ' ' . t('by') . ' ' . $menteename;
+		node_object_prepare($newNode);
+		// Save the node. The node will also get published, if $newNode->status was set to 1.
+		node_save($newNode);
+		// set field_activity_entity_ref
+		$value_array = array('target_id'=>$activity_id);
+		$und_array = array($value_array);
+		$newNode->field_activity_entity_ref = array(LANGUAGE_NONE=>$und_array);
+		// set field_mentee
+		//$value_array = array('uid'=>$mentee_id);
+		//$und_array = array($value_array);
+		//$newNode->field_mentee = array(LANGUAGE_NONE=>$und_array);
+		//  $body_text = t('This is your assignment for the activity ') . ' ' . $activity_node->title; 
+		//  $newNode->body[$lang_name][0]['value']   = $body_text;
+		//  $newNode->body[$lang_name][0]['summary'] = text_summary($body_text);
+		//  $newNode->body[$lang_name][0]['format']  = 'filtered_html';
+		node_save($newNode);
+		return $newNode;
+	}
+
+	/**
+ * Creates an activity assignment for all mentees in the system. Author is the mentee.
+ * WARNING: Use sparingly. This will create a large amount of activity assignment nodes
+ * THIS FUNCTION IS HARDCODED TO CREATE ACTIVITY ASSIGNMENTS THAT REFERENCE NODE 232, "Getting Started"
+ * TODO: Make this function more generic by adding a parameter
+ *
+ * @param $activity_nid -- the nid of the activity node to point to 
+ * @author shaouy
+ */
+	function sm_curriculum_assign_activity_to_all_mentees() {
+		global $user;
+		
+		if ($user->uid!=1) {
+			// admin only can execute this
+			drupal_set_message('This function is accessible to only the admin user');
+			return FALSE;
+		}
+
+		//module_load_all();
+		// Get all mentees
+		$view=views_get_view('jwk_mentor_mentee_lookups');
+		
+		if (is_object($view)) {
+			$view->set_display('all_mentees');
+			$view->execute();
+			$mentees = $view->result;
+		}
+
+		// Now get all activity assignments that point to 232
+		$getting_starteds = array();
+		$view=views_get_view('jwk_user_activities_views');
+		
+		if (is_object($view)) {
+			$view->set_display('all_getting_started');
+			$view->execute();
+			$getting_starteds = $view->result;
+		}
+
+		// create 232 assignement only for those who don't have one
+		foreach ($mentees as $mentee) {
+			
+			if (property_exists($mentee, 'uid')) {
+				$match=FALSE;
+				foreach ($getting_starteds as $getting_started) {
+					
+					if ($getting_started->node_uid==$mentee->uid) {
+						$match=TRUE;
+						drupal_set_message('match is true for '. $mentee->uid);
+					}
+
+				}
+
+				
+				if ($match==FALSE) {
+					sm_curriculum_create_assignment_by_mentee(232, $mentee->uid);
+				}
+
+			}
+
+		}
+
+	}
+
+	
+	function sm_curriculum_menu() {
+		$items = array();
+		$items['mass_assign_getting_started'] = array(    'title' => t('Mass Assign The Getting Started Activity Assignment'),    'page callback' => 'drupal_get_form',    'page arguments' => array('sm_curriculum_mass_assign_form'),    'access callback' => TRUE,    'description' => 'Mass assignment form',    'type' => MENU_LOCAL_TASK,  );
+		return $items;
+	}
+
+	
+	function sm_curriculum_mass_assign_form($form, &$form_state) {
+		$form['description'] = array(    '#type' => 'item',    '#title' => t('Press Submit to mass assign the Getting Started Activity Assignment to all mentees who do not yet have that assignment. WARNING: use this sparingly. It will create many nodes.'),  );
+		$form['submit'] = array(    '#type' => 'submit',    '#value' => t('Submit'),  );
+		return $form;
+	}
+
+	
+	function sm_curriculum_mass_assign_form_submit($form, &$form_state) {
+		sm_curriculum_assign_activity_to_all_mentees();
+	}
+
+	
+	function sm_curriculum_taxonomy_get_children_all($tid, $vid = 0, $key = 'tid'){
+		$c = taxonomy_get_children($tid, $vid, $key);
+		$result = array();
+		foreach ($c as $t => $d){
+			$result[$t] = $d;
+			$below = sm_curriculum_taxonomy_get_children_all($t, $vid, $key);
+			
+			if (!empty($below)) {
+				foreach ($below as $nt => $nd){
+					$result[$nt] = $nd;
+				}
+
+			}
+
+		}
+
+		return $result;
+	}
+	
+/**
+ * Implements hook_node_access().
+ * Allows conditional access to an activity assignment node.
+ * Node author (usually mentee) has access, as does his/her mentor
+ * Other mentees do not have access
+ * Mentors not connected with the mentee do not have access
+ * All other authenticated users fall to default access
+ */
+function sm_curriculum_node_access($node, $op, $account = NULL) {
+  global $user;  
+  if ((!is_object($node)) || ($node->type != 'activity_assignment') || ($node->uid == $user->uid)) { // boundary cases
+      return NODE_ACCESS_IGNORE;
+  } 
+  $role = sm_users_get_user_role($user->uid);
+  if (in_array('Mentee',$user->roles)) { // if mentee...
+    if (!in_array('Mentor',$user->roles)) { // if not a mentor too, then deny
+      return NODE_ACCESS_DENY;
+    }
+  }
+  if (in_array('Mentor',$user->roles)) { // if mentor...
+    $relationships = user_relationships_load(array('between' => array($node->uid, $user->uid)));
+    $count = count($relationships);
+    if ($count==0) { // deny access if the relationship does not exist
+      return NODE_ACCESS_DENY;
+    }
+  }
+  
+  return NODE_ACCESS_IGNORE;
+}
+  
+	

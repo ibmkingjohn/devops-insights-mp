@@ -1,0 +1,46 @@
+<?php
+/**
+ * @file
+ * Code for the views_view_user_reports_careerinterest feature.
+ */
+
+include_once 'views_view_user_reports_careerinterest.features.inc';
+
+
+function views_view_user_reports_careerinterest_form_alter(&$form, &$form_state, $form_id) {
+  if (strpos($form_id, 'views_exposed_form') !== FALSE && ($form['#id'] == 'views-exposed-form-reports-careerinterest-career-choices-page' || $form['#id'] == 'views-exposed-form-reports-careerinterest-mentee-choosementorjwk-page')) {
+    $vocabulary_name = 'mentor_job_field_specialty';
+    $max_depth = 1;
+
+    global $user;
+
+    if (in_array('Mentee', $user->roles, TRUE)) {
+      $vocabulary_name = 'mentee_career_fields';
+      $max_depth = NULL;
+
+      $form['#info']['filter-raw_filter']['label'] = 'Career Interests';
+    }
+
+    if (in_array('Mentor', $user->roles, TRUE)) {
+      $form['#info']['filter-raw_filter']['label'] = 'Job Specialty';
+    }
+
+    if(!empty($vocabulary_name)) {
+      if ($vocabulary = taxonomy_vocabulary_machine_name_load($vocabulary_name)) {
+        if ($terms = taxonomy_get_tree($vocabulary->vid, 0, $max_depth, FALSE)) {
+          $options = array();
+
+          foreach ($terms as $term) {
+              $options[$term->name] = str_repeat('-', $term->depth) . $term->name;
+          }
+
+          $form['career_specialty']['#type'] = 'select';
+          $form['career_specialty']['#options'] = $options;
+          $form['career_specialty']['#validated'] = TRUE;
+//
+//          $form['submit']['#limit_validation_errors'] = array();
+        }
+      }
+    }
+  }
+}

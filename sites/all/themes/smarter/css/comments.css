@@ -1,0 +1,255 @@
+/**
+ * @file
+ * Comment Styling
+ * bjb chanegd 7/7/14 to make this area bigger 
+ */
+/* line 9, ../sass/comments.scss */
+#comment-form .cke_contents {
+  height: 300px !important;
+}
+/* line 13, ../sass/comments.scss */
+#comment-form .wysiwyg-toggle-wrapper,
+#comment-form #edit-comment-body-und-0-format {
+  display: none;
+}
+
+/* line 18, ../sass/comments.scss */
+.comments {
+  /* Wrapper for the list of comments and its title */
+  margin: 1.5em 0;
+}
+/* line 21, ../sass/comments.scss */
+.comments h2.title {
+  /* Heading for the list of comments */
+}
+/* line 24, ../sass/comments.scss */
+.comments h2.comment-form {
+  /* Heading for the comment form */
+}
+/* line 27, ../sass/comments.scss */
+.comments form.comment-form {
+  margin-top: 15px;
+}
+/* line 30, ../sass/comments.scss */
+.comments form.comment-form #edit-author--2 {
+  display: none;
+}
+form.comment-form #edit-author--2 {
+  display: none;
+}
+/* line 35, ../sass/comments.scss */
+.comments form.comment-form #edit-comment-body label {
+  float: none;
+  text-align: left;
+}
+
+/* line 44, ../sass/comments.scss */
+.comment {
+  /* Wrapper for a single comment */
+}
+/* line 46, ../sass/comments.scss */
+.comment.comment-preview {
+  /* Preview of the comment before submitting new or updated comment */
+  background-color: #ffffea;
+  /* Drupal core will use a #ffffea background. See #1110842 */
+}
+/* line 50, ../sass/comments.scss */
+.comment.new {
+  /* A new comment since the user last viewed the page. */
+}
+/* line 53, ../sass/comments.scss */
+.comment.first {
+  /* The first comment in the list of comments */
+}
+/* line 56, ../sass/comments.scss */
+.comment.last {
+  /* The last comment in the list of comments */
+}
+/* line 59, ../sass/comments.scss */
+.comment.odd {
+  /* An odd-numbered comment in the list of comments */
+}
+/* line 62, ../sass/comments.scss */
+.comment.even {
+  /* An even-numbered comment in the list of comments */
+}
+/* line 65, ../sass/comments.scss */
+.comment.comment-by-anonymous {
+  /* A comment created by an anonymous user */
+}
+/* line 68, ../sass/comments.scss */
+.comment.comment-by-node-author {
+  /* A comment created by the node's author */
+}
+/* line 71, ../sass/comments.scss */
+.comment.comment-by-viewer {
+  /* A comment created by the current user */
+}
+/* line 74, ../sass/comments.scss */
+.comment h3.comment-title {
+  /* Comment title */
+}
+/* line 77, ../sass/comments.scss */
+.comment .new {
+  /* "New" marker for comments that are new for the current user */
+  color: red;
+}
+/* line 81, ../sass/comments.scss */
+.comment .user-picture {
+  /* The picture of the comment author */
+  float: left;
+  width: 10%;
+  display: block;
+}
+/* line 87, ../sass/comments.scss */
+.comment .submitted {
+  /* The "posted by" information */
+}
+/* line 90, ../sass/comments.scss */
+.comment .permalink {
+  /* Comment's permalink wrapper */
+  text-transform: uppercase;
+  font-size: 75%;
+}
+/* line 95, ../sass/comments.scss */
+.comment .user-signature {
+  /* The user's signature */
+}
+/* line 98, ../sass/comments.scss */
+.comment ul.links {
+  /* Comment links. See also the ul.links declaration in the pages.css. */
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  width: 80%;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-transform: capitalize;
+}
+/* line 110, ../sass/comments.scss */
+.comment .comment-author a {
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  font-size: 1.7em;
+  color: #012d5a;
+  line-height: 1.5em;
+}
+/* line 119, ../sass/comments.scss */
+.comment .comment-content {
+  float: left;
+  position: relative;
+  min-height: 95px;
+  width: 80%;
+  margin-left: 1em;
+  background: #fbfdfe;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, #fbfdfe), color-stop(100%, #b2e8fd));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fbfdfe 50%, #b2e8fd 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #fbfdfe 50%, #b2e8fd 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbfdfe', endColorstr='#b2e8fd',GradientType=0 );
+  /* IE6-9 */
+  padding: 10px;
+  border: solid 2px #787878;
+  -khtml-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border: 8px;
+  border-radius: 8px;
+  line-height: normal;
+  -webkit-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+}
+/* line 144, ../sass/comments.scss */
+.comment .comment-content .field-label {
+  display: none;
+}
+/* line 150, ../sass/comments.scss */
+.comment .comment-content:before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  /* controls vertical position */
+  bottom: auto;
+  left: -15px;
+  /* value = - border-left-width - border-right-width */
+  border-style: solid;
+  border-width: 10px 15px 10px 0;
+  border-color: transparent #787878;
+  /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+}
+/* line 164, ../sass/comments.scss */
+.comment .comment-date {
+  color: #666666;
+  font-size: .8em;
+}
+/* line 169, ../sass/comments.scss */
+.comment p {
+  margin: 1em;
+  line-height: 1.5em;
+}
+
+/* line 175, ../sass/comments.scss */
+.indented {
+  /* Nested comments are indented */
+  margin-left: 30px;
+  /* Drupal core uses a 25px left margin */
+}
+
+/* line 179, ../sass/comments.scss */
+.comment-unpublished {
+  /* Unpublished comments */
+  /* background-color: #fff4f4; */
+  /* Drupal core uses a #fff4f4 background */
+}
+/* line 182, ../sass/comments.scss */
+.comment-unpublished p.unpublished {
+  /* The word "Unpublished" displayed underneath the content. */
+  height: 0;
+  overflow: visible;
+  color: #d8d8d8;
+  font-size: 75px;
+  line-height: 1;
+  font-family: Impact, "Arial Narrow", Helvetica, sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+/* line 189, ../sass/comments.scss */
+.node-type-blog .comment-content .links {
+  display: none;
+}
+/* line 193, ../sass/comments.scss */
+.node-type-blog .flag-wrapper {
+  font-size: .8em;
+  position: absolute;
+  bottom: 10px;
+}
+
+.js #comments h2.title.comment-form {
+  padding-left: 20px;
+  background: url('/sites/all/themes/tts/images/open-close-sprite.gif') 0 -3px no-repeat;
+}
+.js #comments h2.title.comment-form.open {
+  background-position: 0 -43px;
+}
+.js #comments h2.title.comment-form.transition {  /* This rule must come after .open */
+  background-position: 0 -23px;
+}
+.js #comments h2.title.comment-form:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  cursor: hand; /* For IE */
+}

@@ -1,0 +1,22 @@
+diff --git a/computed_field_tools.module b/computed_field_tools.module
+index dab9eaa..a147f8a 100644
+--- a/computed_field_tools.module
++++ b/computed_field_tools.module
+@@ -528,7 +528,7 @@ function _computed_field_tools_batch_recompute($entities_by_type, $field_name, $
+             ->execute()
+             ->fetchField();
+           // Insert new computed field value.
+-          if (empty($existing_content)) {
++          if (!isset($existing_content)) {
+             $query = db_insert($table_name_current)
+               ->fields(array('entity_type', 'bundle', 'deleted', 'entity_id', 'revision_id', 'language', 'delta', $table_value_column_name))
+               ->values(array($recomputed_values))
+@@ -559,7 +559,7 @@ function _computed_field_tools_batch_recompute($entities_by_type, $field_name, $
+             ->condition('delta', $delta)
+             ->execute()
+             ->fetchField();
+-          if (empty($existing_content)) {
++          if (!isset($existing_content)) {
+             $query = db_insert($table_name_revision)
+               ->fields(array('entity_type', 'bundle', 'deleted', 'entity_id', 'revision_id', 'language', 'delta', $table_value_column_name))
+               ->values(array($recomputed_values))

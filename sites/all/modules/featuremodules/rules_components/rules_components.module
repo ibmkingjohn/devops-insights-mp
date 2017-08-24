@@ -1,0 +1,323 @@
+<?php
+/**
+ * @file
+ * Drupal needs this blank file.
+ */
+
+function rules_components_form_alter(&$form, &$form_state, $form_id) {
+  if (strpos($form_id, 'views_form_curriculum') !== FALSE && !empty($form['parameter'])) {
+    //location
+$param = 'location';
+    if (!empty($form['parameter'][$param])) {
+   global $user;
+	# vocabulary ID
+				$vid = 3;
+				# vocabulary Depth
+				$depth = 0;
+				$num_at_depth = 0;
+				$user_data = user_load($user->uid);
+				# Get current user location ID from field_taxonomy_tag field
+				$UserCurrentLoc = $user_data->field_taxonomy_tag['und'];
+				# //if User has a value
+				
+				if (isset($UserCurrentLoc))        {
+					# Filter and create Taxonomy terms array.
+					$CurUserLocationTID = array();
+					foreach($UserCurrentLoc as $termids)            {
+						foreach($termids as $termid)                {
+							$getnametid=taxonomy_term_load($termid);
+						}
+
+						$CurUserLocationTID[$getnametid->tid] = $getnametid->tid;
+						$childresults = sm_curriculum_taxonomy_get_children_all($termid, $vid);
+						foreach($childresults as $grandchildresults)                {
+							$CurUserLocationTID[$grandchildresults->tid] = $grandchildresults->tid;
+						}
+
+					}
+
+					#  The ID of the taxonomy vocabulary for which you'd like to create with nested list
+					$tree = taxonomy_get_tree($vid);
+					foreach ($tree as $term)            {
+						$diffdepth=0;
+						#  compare users location with the whole taxonomy tree
+						
+						if (in_array($term->tid,$CurUserLocationTID))                {
+							$childresults = taxonomy_get_children($term->tid, $vid = 3);
+							$ttotal = count($childresults);
+							
+							#if no children jwk 3/11/2014
+							if($ttotal == 0){
+								$options[$term->tid] = $term->name;
+							}
+							
+							if ($term->depth > $depth)                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+								$depth = $term->depth;
+								$num_at_depth = 0;
+							}
+
+							
+							if ($term->depth < $depth)                    {
+								$diffdepth= $depth -$term->depth;
+								while ($diffdepth > 0)                        {
+									$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+									$diffdepth -- ;
+								}
+
+								$depth = $term->depth;
+							}
+
+							
+							
+							if (($term->depth == $depth) && ($num_at_depth > 0))                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+							}
+
+							$arg = arg(0).'/'.arg(1);
+							
+							if ($ttotal <= 0)                    {
+								$FilterTidUrl = url($arg.'/'.$term->tid, array('absolute' => TRUE));
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							} else                    {
+								# call function to get all child term id
+								$urlviewfinal = get_all_child($term->tid);
+								$FilterTidUrl = url($arg.'/'.$term->tid.$urlviewfinal, array('absolute' => TRUE));
+								# Generate url for each terms
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							}
+
+							$num_at_depth ++;
+						}
+
+					} # end foreach get tree
+
+				} # end users location
+      $form['parameter'][$param]['settings'][$param]['#type'] = 'select';
+      $form['parameter'][$param]['settings'][$param]['#options'] = $options;
+    }
+
+
+
+    //title
+    $param = 'title';
+    if (!empty($form['parameter'][$param])) {
+      $form['parameter'][$param]['settings'][$param]['#type'] = 'textfield';
+      unset($form['parameter'][$param]['settings']['help']);
+    }
+
+$param = 'activity_location';
+    if (!empty($form['parameter'][$param])) {
+   global $user;
+	# vocabulary ID
+				$vid = 3;
+				# vocabulary Depth
+				$depth = 0;
+				$num_at_depth = 0;
+				$user_data = user_load($user->uid);
+				# Get current user location ID from field_taxonomy_tag field
+				$UserCurrentLoc = $user_data->field_taxonomy_tag['und'];
+				# //if User has a value
+				
+				if (isset($UserCurrentLoc))        {
+					# Filter and create Taxonomy terms array.
+					$CurUserLocationTID = array();
+					foreach($UserCurrentLoc as $termids)            {
+						foreach($termids as $termid)                {
+							$getnametid=taxonomy_term_load($termid);
+						}
+
+						$CurUserLocationTID[$getnametid->tid] = $getnametid->tid;
+						$childresults = sm_curriculum_taxonomy_get_children_all($termid, $vid);
+						foreach($childresults as $grandchildresults)                {
+							$CurUserLocationTID[$grandchildresults->tid] = $grandchildresults->tid;
+						}
+
+					}
+
+					#  The ID of the taxonomy vocabulary for which you'd like to create with nested list
+					$tree = taxonomy_get_tree($vid);
+					foreach ($tree as $term)            {
+						$diffdepth=0;
+						#  compare users location with the whole taxonomy tree
+						
+						if (in_array($term->tid,$CurUserLocationTID))                {
+							$childresults = taxonomy_get_children($term->tid, $vid = 3);
+							$ttotal = count($childresults);
+							
+							#if no children jwk 3/11/2014
+							if($ttotal == 0){
+								$options[$term->tid] = $term->name;
+							}
+							
+							if ($term->depth > $depth)                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+								$depth = $term->depth;
+								$num_at_depth = 0;
+							}
+
+							
+							if ($term->depth < $depth)                    {
+								$diffdepth= $depth -$term->depth;
+								while ($diffdepth > 0)                        {
+									$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+									$diffdepth -- ;
+								}
+
+								$depth = $term->depth;
+							}
+
+							
+							
+							if (($term->depth == $depth) && ($num_at_depth > 0))                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+							}
+
+							$arg = arg(0).'/'.arg(1);
+							
+							if ($ttotal <= 0)                    {
+								$FilterTidUrl = url($arg.'/'.$term->tid, array('absolute' => TRUE));
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							} else                    {
+								# call function to get all child term id
+								$urlviewfinal = get_all_child($term->tid);
+								$FilterTidUrl = url($arg.'/'.$term->tid.$urlviewfinal, array('absolute' => TRUE));
+								# Generate url for each terms
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							}
+
+							$num_at_depth ++;
+						}
+
+					} # end foreach get tree
+
+				} # end users location
+      $form['parameter'][$param]['settings'][$param]['#type'] = 'select';
+      $form['parameter'][$param]['settings'][$param]['#options'] = $options;
+    }
+    
+    //activity_objective
+    $param = 'activity_objective';
+    if (!empty($form['parameter'][$param])) {
+      unset($form['parameter'][$param]['settings']['help']);
+    }
+
+    //activity_description
+    $param = 'activity_description';
+    if (!empty($form['parameter'][$param])) {
+      unset($form['parameter'][$param]['settings']['help']);
+    }
+  }
+  if ((strpos($form_id, 'views_form_administerusers_views_admin_mgr_users') !== FALSE && !empty($form['parameter'])) || (strpos($form_id, 'views_form_administerusers_views_manageallusers_page') !== FALSE && !empty($form['parameter'])))  {
+    //location
+$param = 'vbo_location';
+    if (!empty($form['parameter'][$param])) {
+    global $user;
+	# vocabulary ID
+				$vid = 3;
+				# vocabulary Depth
+				$depth = 0;
+				$num_at_depth = 0;
+				$user_data = user_load($user->uid);
+				# Get current user location ID from field_taxonomy_tag field
+				$UserCurrentLoc = $user_data->field_taxonomy_tag['und'];
+				# //if User has a value
+				
+				if (isset($UserCurrentLoc))        {
+					# Filter and create Taxonomy terms array.
+					$CurUserLocationTID = array();
+					foreach($UserCurrentLoc as $termids)            {
+						foreach($termids as $termid)                {
+							$getnametid=taxonomy_term_load($termid);
+						}
+
+						$CurUserLocationTID[$getnametid->tid] = $getnametid->tid;
+						$childresults = sm_curriculum_taxonomy_get_children_all($termid, $vid);
+						foreach($childresults as $grandchildresults)                {
+							$CurUserLocationTID[$grandchildresults->tid] = $grandchildresults->tid;
+						}
+
+					}
+
+					#  The ID of the taxonomy vocabulary for which you'd like to create with nested list
+					$tree = taxonomy_get_tree($vid);
+					foreach ($tree as $term)            {
+						$diffdepth=0;
+						#  compare users location with the whole taxonomy tree
+						
+						if (in_array($term->tid,$CurUserLocationTID))                {
+							$childresults = taxonomy_get_children($term->tid, $vid = 3);
+							$ttotal = count($childresults);
+							
+							#if no children jwk 3/11/2014
+							if($ttotal == 0){
+								$options[$term->tid] = $term->name;
+							}
+							
+							if ($term->depth > $depth)                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+								$depth = $term->depth;
+								$num_at_depth = 0;
+							}
+
+							
+							if ($term->depth < $depth)                    {
+								$diffdepth= $depth -$term->depth;
+								while ($diffdepth > 0)                        {
+									$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+									$diffdepth -- ;
+								}
+
+								$depth = $term->depth;
+							}
+
+							
+							
+							if (($term->depth == $depth) && ($num_at_depth > 0))                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+							}
+
+							$arg = arg(0).'/'.arg(1);
+							
+							if ($ttotal <= 0)                    {
+								$FilterTidUrl = url($arg.'/'.$term->tid, array('absolute' => TRUE));
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							} else                    {
+								# call function to get all child term id
+								$urlviewfinal = get_all_child($term->tid);
+								$FilterTidUrl = url($arg.'/'.$term->tid.$urlviewfinal, array('absolute' => TRUE));
+								# Generate url for each terms
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							}
+
+							$num_at_depth ++;
+						}
+
+					} # end foreach get tree
+
+				} # end users location
+      $form['parameter'][$param]['settings'][$param]['#type'] = 'select';
+      $form['parameter'][$param]['settings'][$param]['#options'] = $options;
+    }
+    }
+	if (strpos($form_id, 'views_form_administerusers_views_ga_menteematching') !== FALSE && !empty($form['parameter'])) {
+	$param = 'matching_mentor';
+	    if (!empty($form['parameter'][$param])) {
+	    	$matchesView = null;
+			$matchesView = views_get_view('administerusers_views');
+			//$args=array($uid); 
+			//$matchesView->set_arguments($args); //pass in the location as an argument
+			$display_id = 'mentor_match_list'; 
+			$matchesView->set_display($display_id); // set the display
+			$matchesView->execute(); //load the view
+			$results = $matchesView->result;
+			$resultOut = null;
+			  foreach ($results as $result) {
+			    $options[$result->uid] = $result->users_name;
+			  }
+			  
+	    	$form['parameter'][$param]['settings'][$param]['#type'] = 'select';
+      		$form['parameter'][$param]['settings'][$param]['#options'] = $options;
+		}
+	}
+}

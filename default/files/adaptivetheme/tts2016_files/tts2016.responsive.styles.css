@@ -1,0 +1,1039 @@
+/*
+ * responsive.custom.css is for custom media queries that are not set via the
+ * theme settings, such as cascading media queries.
+ *
+ * By default all the other responsive stylesheets used in Adaptivetheme use a
+ * "stacking method", however cascading media queries use a waterfall method so
+ * you can leverage the cascade and inheritance for all browsers that support
+ * media queries, regardless of screen size.
+ *
+ * @SEE http://zomigi.com/blog/essential-considerations-for-crafting-quality-media-queries/#mq-overlap-stack
+ *
+ * NOTE: this file loads by default, to disable got to your theme settings and
+ * look under the "CSS" settings tab.
+ */
+/*
+ * Really small screens and up
+ */
+/* @media only screen and (min-width: 220px) {} */
+/*
+ * Smalltouch sizes and up
+ */
+/* @media only screen and (min-width: 320px) {} */
+/*
+ * Smalltouch sizes and down
+ */
+@media only screen and (max-width: 480px) {
+  /* 
+   * Float Region Blocks - custom media query CSS example:
+   * 
+   * Float regions blocks is an Extension you can enable in the appearance
+   * settings for your theme. This feature allows you to automatically float
+   * blocks in regions, you can switch it on and off depending on your
+   * requirements. For design purposes you many want to remove the floats for
+   * devices where the entire theme is just one column - for example small
+   * mobile phones. The following CSS is inside the custom media query:
+   *
+   *   @media only screen and (max-width: 480px){}
+   *
+   * This will target devices with a maximum width of 480px - most small phones.
+   * In these smaller screen sizes we can remove the float and widths so all
+   * blocks stack instead of displaying horizonally. The selector used is an
+   * "attribute selector" which will match on any float block class. Use your
+   * inspector or Firebug to get the classes from the page output if you need
+   * more granular control over block alignment and stacking.
+   */
+  /* line 57, ../sass/responsive.custom.scss */
+  .region[class*="float-blocks"] .block {
+    float: none;
+    width: 100%;
+  }
+}
+/*
+ * Tablet sizes and up
+ */
+/* @media only screen and (min-width: 768px) {} */
+/*
+ * Desktops/laptops and up
+ */
+/* @media only screen and (min-width: 1025px) {} */
+
+/*# sourceMappingURL=responsive.custom.css.map */
+
+
+@media only screen and (max-width:320px) {
+/*
+ *   Important Information about this CSS File
+ *
+ * - Do not delete or rename this file, if you do not use it leave it blank (delete
+ *   everything) and the file will be skipped when you enable Production Mode in
+ *   the Global theme settings.
+ *
+ * - Read the _README file in this directory, it contains useful help and other information.
+ */
+/* Increase the default font size on small touch devices */
+/* line 16, ../sass/responsive.smalltouch.portrait.scss */
+body {
+  font-size: 100%;
+}
+
+/* =============================================================================
+ *   Mobile Menu Toggle
+ *   See your theme settings extensions for how to enable the menu toggle.
+ *   These are example styles for the menu toggle menu, you can use these in the
+ *   relevant responsive stylesheets as required. Modify to suit your design.
+ * ========================================================================== */
+/* line 26, ../sass/responsive.smalltouch.portrait.scss */
+.at-mt .at-menu-toggle {
+  /* The toggle link */
+  /* Menu items */
+}
+/* line 28, ../sass/responsive.smalltouch.portrait.scss */
+.at-mt .at-menu-toggle h2 {
+  margin-bottom: 5px;
+}
+/* line 31, ../sass/responsive.smalltouch.portrait.scss */
+.at-mt .at-menu-toggle h2 a {
+  display: block;
+  background: url("/sites/all/themes/tts2016/images/hamburger_icon.png") no-repeat;
+  background-position: left bottom;
+  width: 50px;
+  height: 50px;
+  text-indent: -9999px;
+}
+/* line 41, ../sass/responsive.smalltouch.portrait.scss */
+.at-mt .at-menu-toggle ul.menu {
+  float: left;
+}
+/* line 46, ../sass/responsive.smalltouch.portrait.scss */
+.at-mt .at-menu-toggle ul.menu li a {
+  background: #eee;
+  border-bottom: 1px solid #fff;
+}
+
+/* line 52, ../sass/responsive.smalltouch.portrait.scss */
+.region-header {
+  margin: auto;
+  width: auto;
+  float: none;
+  text-align: left;
+}
+
+/*
+ * Wrapper for a single comment
+ */
+/* line 63, ../sass/responsive.smalltouch.portrait.scss */
+.comment .submitted {
+  width: 30%;
+}
+
+/* line 67, ../sass/responsive.smalltouch.portrait.scss */
+.comment-content {
+  width: 60%;
+}
+
+/* line 71, ../sass/responsive.smalltouch.portrait.scss */
+.intro {
+  float: none;
+  width: 100%;
+}
+
+/* line 76, ../sass/responsive.smalltouch.portrait.scss */
+.view-display-id-slideshow_homepanel_block {
+  float: none;
+  width: 100%;
+}
+
+/* line 82, ../sass/responsive.smalltouch.portrait.scss */
+.view-display-id-lessons_home_block .views-row, .view-display-id-sttut_homepanel_block .views-row, .view-lesson-plans-panels .views-row {
+  width: 100%;
+  float: none;
+  margin-bottom: 20px;
+}
+
+/* line 92, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_lp_left {
+  float: none;
+  width: 100%;
+}
+/* line 96, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-lpright_entity_view {
+  float: none;
+  width: 100%;
+}
+/* line 101, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap {
+  width: 100%;
+  margin-right: inherit;
+  float: none;
+}
+/* line 106, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap .field {
+  margin-left: inherit;
+}
+/* line 110, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap .field-label {
+  margin-top: 0;
+  margin-bottom: .5em;
+}
+/* line 115, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap .field-items {
+  margin-bottom: .5em;
+}
+/* line 121, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-lp_lessonsinpractice_entity_view .views-row {
+  float: none;
+  width: 100%;
+  margin-bottom: 20px;
+}
+/* line 129, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-lp_lessonsinpractice_entity_view .views-row {
+  float: none;
+  width: 100%;
+  margin-bottom: 20px;
+}
+/* line 136, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_resources {
+  width: 100%;
+  float: none;
+}
+/* line 140, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_resources .view-header {
+  margin-right: 0;
+}
+/* line 144, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_resources .view-content {
+  margin-right: 0;
+}
+/* line 149, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_lp_contribresource {
+  width: 100%;
+  float: none;
+}
+
+/*
+ * Form elements
+ */
+/* line 161, ../sass/responsive.smalltouch.portrait.scss */
+.form-text {
+  width: 100%;
+}
+
+/*
+ * Lessons panel page
+ */
+/* line 171, ../sass/responsive.smalltouch.portrait.scss */
+.page-lessons .region-two-33-66-first .region-inner {
+  margin-right: 0;
+}
+
+/* line 177, ../sass/responsive.smalltouch.portrait.scss */
+.pane-block-11 {
+  width: 100%;
+  float: none;
+  padding-top: 20px;
+}
+
+/* line 183, ../sass/responsive.smalltouch.portrait.scss */
+.pane-block-2 {
+  width: 100%;
+  float: none;
+  padding-top: 20px;
+}
+
+/* line 189, ../sass/responsive.smalltouch.portrait.scss */
+.block-ngss-equip {
+  width: 100%;
+  float: none;
+  margin-top: 20px;
+  margin-right: 0;
+}
+/* line 195, ../sass/responsive.smalltouch.portrait.scss */
+.block-ngss-equip .ngss-image {
+  float: left;
+  width: inherit;
+  margin-right: 10px;
+}
+/* line 201, ../sass/responsive.smalltouch.portrait.scss */
+.block-ngss-equip .ngss-summary {
+  width: inherit;
+  float: none;
+  margin-top: 25px;
+}
+
+/* line 208, ../sass/responsive.smalltouch.portrait.scss */
+.block-think {
+  width: 100%;
+  float: none;
+  margin-top: 20px;
+}
+/* line 213, ../sass/responsive.smalltouch.portrait.scss */
+.block-think .think-image {
+  float: left;
+  width: inherit;
+  margin-right: 10px;
+}
+/* line 219, ../sass/responsive.smalltouch.portrait.scss */
+.block-think .think-summary {
+  float: none;
+  width: inherit;
+}
+
+/*
+ * Strategies panel page
+ */
+/* line 232, ../sass/responsive.smalltouch.portrait.scss */
+.page-strategies .intro-text-block {
+  width: 100%;
+  float: none;
+}
+/* line 237, ../sass/responsive.smalltouch.portrait.scss */
+.page-strategies .intro-action-block {
+  width: 100%;
+  float: none;
+}
+/* line 243, ../sass/responsive.smalltouch.portrait.scss */
+.page-strategies .view-strategies-for-inquiry .views-row, .page-strategies .view-lip-videos .views-row {
+  width: 100%;
+  float: none;
+  margin-bottom: 2em;
+}
+
+/*
+ * Teaching Strategies view all pages
+ */
+/* line 257, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .region.region-two-33-66-first {
+  width: inherit;
+}
+/* line 260, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .region.region-two-33-66-second {
+  width: inherit;
+}
+/* line 264, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .intro-text-block {
+  width: 100%;
+  float: none;
+}
+/* line 269, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .intro-action-block {
+  width: 100%;
+  float: none;
+}
+/* line 275, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .pane-views-53e9cd4c3a499d1fc52e1e73eafdbd62,
+.page-tsall .pane-views-8b42f5fd44b24bf5ca2c8a19a52faffb {
+  border: solid 1px #cfcfbe;
+  background-color: #f4f6f8;
+  padding: 12px;
+}
+/* line 281, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .pane-views-53e9cd4c3a499d1fc52e1e73eafdbd62 input[type=text],
+.page-tsall .pane-views-8b42f5fd44b24bf5ca2c8a19a52faffb input[type=text] {
+  width: 100%;
+}
+/* line 287, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .view-strategies-for-inquiry .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 291, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall .view-strategies-for-inquiry .views-field-field-si-desc {
+  width: 100%;
+}
+/* line 297, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall.page-tsall-lip .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 302, ../sass/responsive.smalltouch.portrait.scss */
+.page-tsall.page-tsall-lip .views-field-title {
+  width: 100%;
+}
+
+/*
+ * Strategies detail page
+ */
+/* line 315, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-strategies-for-inquiry.page-node .pane-strategies-for-inquiry {
+  float: none;
+  width: 100%;
+}
+
+/*
+ * Communities panel page
+ */
+/* line 327, ../sass/responsive.smalltouch.portrait.scss */
+.page-communities .intro-text-block {
+  width: 100%;
+  float: none;
+}
+/* line 331, ../sass/responsive.smalltouch.portrait.scss */
+.page-communities .intro-action-block {
+  width: 100%;
+  float: none;
+}
+/* line 335, ../sass/responsive.smalltouch.portrait.scss */
+.page-communities .jcarousel-skin-default .jcarousel-item {
+  min-height: 180px;
+}
+/* line 339, ../sass/responsive.smalltouch.portrait.scss */
+.page-communities .view-tts-og-extras-groups .views-row {
+  width: 100%;
+  float: none;
+  margin-right: 0;
+}
+
+/*
+ * EQuIP Reviewed Lessons panel page
+ */
+/* line 352, ../sass/responsive.smalltouch.portrait.scss */
+.page-ngss .col {
+  width: 100%;
+  float: none;
+}
+/* line 358, ../sass/responsive.smalltouch.portrait.scss */
+.page-ngss .view-ngss-lessons .views-row {
+  width: 100%;
+  float: none;
+  max-height: inherit;
+}
+/* line 363, ../sass/responsive.smalltouch.portrait.scss */
+.page-ngss .view-ngss-lessons .views-field-field-thumbnail {
+  line-height: 0;
+}
+/* line 366, ../sass/responsive.smalltouch.portrait.scss */
+.page-ngss .view-ngss-lessons .views-field-title {
+  width: auto;
+}
+/* line 369, ../sass/responsive.smalltouch.portrait.scss */
+.page-ngss .view-ngss-lessons .views-field-field-si-desc {
+  width: auto;
+}
+
+/*
+ * Think panel page
+ */
+/* line 381, ../sass/responsive.smalltouch.portrait.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .views-field-field-thumbnail {
+  float: none;
+  width: 100%;
+}
+/* line 386, ../sass/responsive.smalltouch.portrait.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .views-field-description h3 {
+  float: none;
+  width: 100%;
+}
+/* line 392, ../sass/responsive.smalltouch.portrait.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .unit_highlight .unit_video_desc {
+  float: none;
+  width: 100%;
+}
+/* line 396, ../sass/responsive.smalltouch.portrait.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .unit_highlight .unit_video {
+  float: none;
+  width: 100%;
+  margin-top: 20px;
+}
+/* line 405, ../sass/responsive.smalltouch.portrait.scss */
+.page-taxonomy.section-units .view-footer .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 409, ../sass/responsive.smalltouch.portrait.scss */
+.page-taxonomy.section-units .view-footer .views-field-title-field, .page-taxonomy.section-units .view-footer .views-field-field-si-desc {
+  width: 100%;
+}
+
+/*
+ * STEM Voices page
+ */
+/* line 420, ../sass/responsive.smalltouch.portrait.scss */
+.section-stem-voices .block-stemvoices-sv-bigbrains-block .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 427, ../sass/responsive.smalltouch.portrait.scss */
+.section-stem-voices .view-display-id-sv_technologista_block .views-row {
+  width: 100%;
+  float: none;
+  min-height: 150px;
+}
+/* line 433, ../sass/responsive.smalltouch.portrait.scss */
+.section-stem-voices .views-field-nothing {
+  width: 100%;
+}
+/* line 436, ../sass/responsive.smalltouch.portrait.scss */
+.section-stem-voices .views-field-field-sum-desc {
+  width: 100%;
+}
+
+/* =============================================================================
+ *   Kids Styling
+ * ========================================================================== */
+/* line 446, ../sass/responsive.smalltouch.portrait.scss */
+.page-kids-experiments .views-row-odd {
+  float: none;
+  width: 100%;
+  margin-right: 0;
+}
+/* line 451, ../sass/responsive.smalltouch.portrait.scss */
+.page-kids-experiments .views-row-even {
+  float: none;
+  width: 100%;
+}
+
+/* line 459, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-kidsexperiments .view-display-id-kidexp_left_entity_view {
+  float: none;
+  width: 100%;
+  margin-bottom: 30px;
+}
+/* line 465, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-kidsexperiments .view-display-id-kidexp_right_entity_view {
+  clear: both;
+  float: none;
+  width: 100%;
+  border-top: solid 10px #fff;
+  text-align: center;
+}
+/* line 474, ../sass/responsive.smalltouch.portrait.scss */
+.node-type-kidsexperiments .group-steps section {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/*# sourceMappingURL=responsive.smalltouch.portrait.css.map */
+
+}
+@media only screen and (min-width:321px) and (max-width:580px) {
+/*
+ *   Important Information about this CSS File
+ *
+ * - Do not delete or rename this file, if you do not use it leave it blank (delete
+ *   everything) and the file will be skipped when you enable Production Mode in
+ *   the Global theme settings.
+ *
+ * - Read the _README file in this directory, it contains useful help and other information.
+ */
+/* Increase the body font size on small touch devices */
+/* line 16, ../sass/responsive.smalltouch.landscape.scss */
+body {
+  font-size: 100%;
+}
+
+/* =============================================================================
+ *   Mobile Menu Toggle
+ *   See your theme settings extensions for how to enable the menu toggle.
+ *   These are example styles for the menu toggle menu, you can use these in the
+ *   relevant responsive stylesheets as required. Modify to suit your design.
+ * ========================================================================== */
+/* line 26, ../sass/responsive.smalltouch.landscape.scss */
+.at-mt .at-menu-toggle {
+  /* The toggle link */
+  /* Menu items */
+}
+/* line 28, ../sass/responsive.smalltouch.landscape.scss */
+.at-mt .at-menu-toggle h2 {
+  margin-bottom: 5px;
+}
+/* line 31, ../sass/responsive.smalltouch.landscape.scss */
+.at-mt .at-menu-toggle h2 a {
+  display: block;
+  background: url("/sites/all/themes/tts2016/images/hamburger_icon.png") no-repeat;
+  background-position: left bottom;
+  width: 50px;
+  height: 50px;
+  text-indent: -9999px;
+}
+/* line 41, ../sass/responsive.smalltouch.landscape.scss */
+.at-mt .at-menu-toggle ul.menu {
+  float: left;
+}
+/* line 46, ../sass/responsive.smalltouch.landscape.scss */
+.at-mt .at-menu-toggle ul.menu li a {
+  background: #eee;
+  border-bottom: 1px solid #fff;
+}
+
+/* line 52, ../sass/responsive.smalltouch.landscape.scss */
+.region-header {
+  margin: auto;
+  width: auto;
+  float: none;
+  text-align: left;
+}
+
+/*
+ * Wrapper for a single comment
+ */
+/* line 64, ../sass/responsive.smalltouch.landscape.scss */
+.comment .submitted {
+  width: 30%;
+}
+
+/* line 68, ../sass/responsive.smalltouch.landscape.scss */
+.comment-content {
+  width: 60%;
+}
+
+/* line 72, ../sass/responsive.smalltouch.landscape.scss */
+.intro {
+  float: none;
+  width: 100%;
+}
+
+/* line 77, ../sass/responsive.smalltouch.landscape.scss */
+.view-display-id-slideshow_homepanel_block {
+  float: none;
+  width: 100%;
+}
+
+/* line 83, ../sass/responsive.smalltouch.landscape.scss */
+.view-display-id-lessons_home_block .views-row, .view-display-id-sttut_homepanel_block .views-row, .view-lesson-plans-panels .views-row {
+  width: 100%;
+  float: none;
+  margin-bottom: 20px;
+}
+
+/* line 93, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_lp_left {
+  float: none;
+  width: 100%;
+}
+/* line 97, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .view-display-id-lpright_entity_view {
+  float: none;
+  width: 100%;
+}
+/* line 102, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .group-sum-img-wrap {
+  width: 100%;
+  margin-right: 50px;
+  float: none;
+}
+/* line 108, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap {
+  width: 100%;
+  margin-right: inherit;
+  float: none;
+}
+/* line 113, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap .field {
+  margin-left: inherit;
+}
+/* line 117, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap .field-label {
+  margin-top: 0;
+  margin-bottom: .5em;
+}
+/* line 122, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .group-sum-topic-wrap .field-items {
+  margin-bottom: .5em;
+}
+/* line 128, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .view-display-id-lp_lessonsinpractice_entity_view .views-row {
+  float: none;
+  width: 100%;
+  margin-bottom: 20px;
+}
+/* line 135, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_resources {
+  width: 100%;
+  float: none;
+}
+/* line 139, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_resources .view-header {
+  margin-right: 0;
+}
+/* line 143, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_resources .view-content {
+  margin-right: 0;
+}
+/* line 148, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-lesson-plans.page-node .view-display-id-entity_view_lp_contribresource {
+  width: 100%;
+  float: none;
+}
+
+/*
+ * Form elements
+ */
+/* line 160, ../sass/responsive.smalltouch.landscape.scss */
+.form-text {
+  width: 100%;
+}
+
+/*
+ * Lessons panel page
+ */
+/* line 170, ../sass/responsive.smalltouch.landscape.scss */
+.page-lessons .region-two-33-66-first .region-inner {
+  margin-right: 0;
+}
+
+/* line 176, ../sass/responsive.smalltouch.landscape.scss */
+.pane-block-11 {
+  width: 100%;
+  float: none;
+  padding-top: 20px;
+}
+
+/* line 182, ../sass/responsive.smalltouch.landscape.scss */
+.pane-block-2 {
+  width: 100%;
+  float: none;
+  padding-top: 20px;
+}
+
+/* line 188, ../sass/responsive.smalltouch.landscape.scss */
+.block-ngss-equip {
+  width: 100%;
+  float: none;
+  margin-top: 20px;
+  margin-right: 0;
+}
+/* line 194, ../sass/responsive.smalltouch.landscape.scss */
+.block-ngss-equip .ngss-image {
+  float: left;
+  width: inherit;
+  margin-right: 10px;
+}
+/* line 200, ../sass/responsive.smalltouch.landscape.scss */
+.block-ngss-equip .ngss-summary {
+  width: inherit;
+  float: none;
+  margin-top: 25px;
+}
+
+/* line 207, ../sass/responsive.smalltouch.landscape.scss */
+.block-think {
+  width: 100%;
+  float: none;
+  margin-top: 20px;
+}
+/* line 212, ../sass/responsive.smalltouch.landscape.scss */
+.block-think .think-image {
+  float: left;
+  width: inherit;
+  margin-right: 10px;
+}
+/* line 218, ../sass/responsive.smalltouch.landscape.scss */
+.block-think .think-summary {
+  float: none;
+  width: inherit;
+}
+
+/*
+ * Strategies panel page
+ */
+/* line 231, ../sass/responsive.smalltouch.landscape.scss */
+.page-strategies .intro-text-block {
+  width: 100%;
+  float: none;
+}
+/* line 236, ../sass/responsive.smalltouch.landscape.scss */
+.page-strategies .intro-action-block {
+  width: 100%;
+  float: none;
+}
+/* line 242, ../sass/responsive.smalltouch.landscape.scss */
+.page-strategies .view-strategies-for-inquiry .views-row, .page-strategies .view-lip-videos .views-row {
+  width: 100%;
+  float: none;
+  margin-bottom: 2em;
+}
+
+/*
+ * Teaching Strategies view all pages
+ */
+/* line 256, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .region.region-two-33-66-first {
+  width: inherit;
+}
+/* line 259, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .region.region-two-33-66-second {
+  width: inherit;
+}
+/* line 263, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .intro-text-block {
+  width: 100%;
+  float: none;
+}
+/* line 268, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .intro-action-block {
+  width: 100%;
+  float: none;
+}
+/* line 274, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .pane-views-53e9cd4c3a499d1fc52e1e73eafdbd62,
+.page-tsall .pane-views-8b42f5fd44b24bf5ca2c8a19a52faffb {
+  border: solid 1px #cfcfbe;
+  background-color: #f4f6f8;
+  padding: 12px;
+}
+/* line 280, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .pane-views-53e9cd4c3a499d1fc52e1e73eafdbd62 input[type=text],
+.page-tsall .pane-views-8b42f5fd44b24bf5ca2c8a19a52faffb input[type=text] {
+  width: 100%;
+}
+/* line 286, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .view-strategies-for-inquiry .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 290, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall .view-strategies-for-inquiry .views-field-field-si-desc {
+  width: 100%;
+}
+/* line 296, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall.page-tsall-lip .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 301, ../sass/responsive.smalltouch.landscape.scss */
+.page-tsall.page-tsall-lip .views-field-title {
+  width: 100%;
+}
+
+/*
+ * Strategies detail page
+ */
+/* line 314, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-strategies-for-inquiry.page-node .pane-strategies-for-inquiry {
+  float: none;
+  width: 100%;
+}
+
+/*
+ * Communities panel page
+ */
+/* line 326, ../sass/responsive.smalltouch.landscape.scss */
+.page-communities .intro-text-block {
+  width: 100%;
+  float: none;
+}
+/* line 330, ../sass/responsive.smalltouch.landscape.scss */
+.page-communities .intro-action-block {
+  width: 100%;
+  float: none;
+}
+/* line 334, ../sass/responsive.smalltouch.landscape.scss */
+.page-communities .jcarousel-skin-default .jcarousel-item {
+  min-height: 180px;
+}
+/* line 338, ../sass/responsive.smalltouch.landscape.scss */
+.page-communities .view-tts-og-extras-groups .views-row {
+  width: 100%;
+  float: none;
+  margin-right: 0;
+}
+
+/*
+ * EQuIP Reviewed Lessons panel page
+ */
+/* line 351, ../sass/responsive.smalltouch.landscape.scss */
+.page-ngss .col {
+  width: 100%;
+  float: none;
+}
+/* line 357, ../sass/responsive.smalltouch.landscape.scss */
+.page-ngss .view-ngss-lessons .views-row {
+  width: 100%;
+  float: none;
+  max-height: inherit;
+}
+/* line 362, ../sass/responsive.smalltouch.landscape.scss */
+.page-ngss .view-ngss-lessons .views-field-field-thumbnail {
+  line-height: 0;
+}
+/* line 365, ../sass/responsive.smalltouch.landscape.scss */
+.page-ngss .view-ngss-lessons .views-field-title {
+  width: auto;
+}
+/* line 368, ../sass/responsive.smalltouch.landscape.scss */
+.page-ngss .view-ngss-lessons .views-field-field-si-desc {
+  width: auto;
+}
+
+/*
+ * Think panel page
+ */
+/* line 380, ../sass/responsive.smalltouch.landscape.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .views-field-field-thumbnail {
+  float: none;
+  width: 100%;
+}
+/* line 385, ../sass/responsive.smalltouch.landscape.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .views-field-description h3 {
+  float: none;
+  width: 100%;
+}
+/* line 391, ../sass/responsive.smalltouch.landscape.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .unit_highlight .unit_video_desc {
+  float: none;
+  width: 100%;
+}
+/* line 395, ../sass/responsive.smalltouch.landscape.scss */
+.page-taxonomy.section-units .view-unit-taxonomy-view .unit_highlight .unit_video {
+  float: none;
+  width: 100%;
+  margin-top: 20px;
+}
+/* line 404, ../sass/responsive.smalltouch.landscape.scss */
+.page-taxonomy.section-units .view-footer .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 408, ../sass/responsive.smalltouch.landscape.scss */
+.page-taxonomy.section-units .view-footer .views-field-title-field, .page-taxonomy.section-units .view-footer .views-field-field-si-desc {
+  width: 100%;
+}
+
+/*
+ * STEM Voices page
+ */
+/* line 419, ../sass/responsive.smalltouch.landscape.scss */
+.section-stem-voices .block-stemvoices-sv-bigbrains-block .views-row {
+  width: 100%;
+  float: none;
+}
+/* line 426, ../sass/responsive.smalltouch.landscape.scss */
+.section-stem-voices .view-display-id-sv_technologista_block .views-row {
+  width: 100%;
+  float: none;
+  min-height: 150px;
+}
+/* line 432, ../sass/responsive.smalltouch.landscape.scss */
+.section-stem-voices .views-field-nothing {
+  width: 100%;
+}
+/* line 435, ../sass/responsive.smalltouch.landscape.scss */
+.section-stem-voices .views-field-field-sum-desc {
+  width: 100%;
+}
+
+/* =============================================================================
+ *   Kids Styling
+ * ========================================================================== */
+/* line 444, ../sass/responsive.smalltouch.landscape.scss */
+.page-kids-experiments .views-row-odd {
+  float: none;
+  width: 100%;
+  margin-right: 0;
+}
+/* line 449, ../sass/responsive.smalltouch.landscape.scss */
+.page-kids-experiments .views-row-even {
+  float: none;
+  width: 100%;
+}
+
+/* line 457, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-kidsexperiments .view-display-id-kidexp_left_entity_view {
+  float: none;
+  width: 100%;
+  margin-bottom: 30px;
+}
+/* line 463, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-kidsexperiments .view-display-id-kidexp_right_entity_view {
+  clear: both;
+  float: none;
+  width: 100%;
+  border-top: solid 10px #fff;
+  text-align: center;
+}
+/* line 472, ../sass/responsive.smalltouch.landscape.scss */
+.node-type-kidsexperiments .group-steps section {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/*# sourceMappingURL=responsive.smalltouch.landscape.css.map */
+
+}
+@media only screen and (min-width:581px) and (max-width:768px) {
+/*
+ *   Important Information about this CSS File
+ *
+ * - Do not delete or rename this file, if you do not use it leave it blank (delete
+ *   everything) and the file will be skipped when you enable Production Mode in
+ *   the Global theme settings.
+ *
+ * - Read the _README file in this directory, it contains useful help and other information.
+ */
+/* Increase the body font size on small devices */
+/* line 16, ../sass/responsive.tablet.portrait.scss */
+html {
+  font-size: 81.3%;
+}
+
+/* line 20, ../sass/responsive.tablet.portrait.scss */
+.at-mt .at-menu-toggle {
+  /* The toggle link */
+  /* Menu items */
+}
+/* line 23, ../sass/responsive.tablet.portrait.scss */
+.at-mt .at-menu-toggle ul.menu {
+  float: left;
+}
+/* line 28, ../sass/responsive.tablet.portrait.scss */
+.at-mt .at-menu-toggle ul.menu li a {
+  background: #eee;
+  border-bottom: 1px solid #fff;
+}
+
+/* line 35, ../sass/responsive.tablet.portrait.scss */
+.view-lesson-plans .views-row, .view-tstutblock .views-row {
+  width: 50%;
+}
+
+/*# sourceMappingURL=responsive.tablet.portrait.css.map */
+
+}
+@media only screen and (min-width:769px) and (max-width:1024px) {
+/*
+ *   Important Information about this CSS File
+ *
+ * - Do not delete or rename this file, if you do not use it leave it blank (delete 
+ *   everything) and the file will be skipped when you enable Production Mode in
+ *   the Global theme settings.
+ *
+ * - Read the _README file in this directory, it contains useful help and other information.
+ */
+/* line 16, ../sass/responsive.tablet.landscape.scss */
+.view-lesson-plans .views-row, .view-tstutblock .views-row {
+  width: 50%;
+}
+
+/* line 21, ../sass/responsive.tablet.landscape.scss */
+.at-mt .at-menu-toggle {
+  /* The toggle link */
+  /* Menu items */
+}
+/* line 24, ../sass/responsive.tablet.landscape.scss */
+.at-mt .at-menu-toggle ul.menu {
+  float: left;
+}
+/* line 29, ../sass/responsive.tablet.landscape.scss */
+.at-mt .at-menu-toggle ul.menu li a {
+  background: #eee;
+  border-bottom: 1px solid #fff;
+}
+
+/*# sourceMappingURL=responsive.tablet.landscape.css.map */
+
+}
+@media only screen and (min-width:1025px) {
+/*
+ *   Important Information about this CSS File
+ *
+ * - Do not delete or rename this file, if you do not use it leave it blank (delete
+ *   everything) and the file will be skipped when you enable Production Mode in
+ *   the Global theme settings.
+ *
+ * - Read the _README file in this directory, it contains useful help and other information.
+ */
+
+/*# sourceMappingURL=responsive.desktop.css.map */
+
+}

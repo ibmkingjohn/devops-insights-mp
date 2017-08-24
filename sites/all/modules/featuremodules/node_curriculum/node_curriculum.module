@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the node_curriculum feature.
+ */
+
+include_once 'node_curriculum.features.inc';

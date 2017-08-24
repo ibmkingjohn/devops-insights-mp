@@ -1,0 +1,5 @@
+name = Taxonomy Filter
+description = Exclude taxonomy terms that a user is not part off.
+version = "7.x"
+core = "7.x"
+package = hierarchical_select

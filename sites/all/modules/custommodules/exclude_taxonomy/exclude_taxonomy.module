@@ -1,0 +1,219 @@
+<?php
+/**
+*  Helper function for exclude_taxonomy
+*  @param $UserCurrentLoc -- current user's location tid
+*  @param $options -- filtered taxonomy tids. 
+*  @return array of filtered taxonomy  filtered by the location for all admins
+*  @author solomon modified by john king and others
+*/
+	function exclude_taxonomy_form_alter(&$form, &$form_state, $form_id){
+		# Filter Taxonomy Terms for Group Admin when creating new user, Calendar event and Activity
+		if ($form_id == 'calendar_event_node_form' || $form_id == 'user_register_form' || $form_id == 'user_profile_form' || $form_id == 'taxonomy_form_term' || $form_id == 'activity_assigned_bylocation' || $form_id=='feeds_import_form' || $form_id =='views_form_administerusers_views_admin_mgr_users_page') {
+		//if ($form_id == 'calendar_event_node_form' || $form_id == 'user_register_form' || $form_id == 'user_profile_form' || $form_id == 'taxonomy_form_term' || $form_id == 'activity_assigned_bylocation' || $form_id=='feeds_import_form') {
+			global $user;
+			$has_role = array_intersect(array('Group Admin', 'Staff Admin', 'Subsite Admin'), array_values($user->roles));
+			
+			if (empty($has_role) ? FALSE : TRUE) {
+				# vocabulary ID
+				$vid = 3;
+				# vocabulary Depth
+				$depth = 0;
+				$num_at_depth = 0;
+				$user_data = user_load($user->uid);
+				# Get current user location ID from field_taxonomy_tag field
+				$UserCurrentLoc = $user_data->field_taxonomy_tag['und'];
+				# //if User has a value
+				
+				if (isset($UserCurrentLoc))        {
+					# Filter and create Taxonomy terms array.
+					$CurUserLocationTID = array();
+					foreach($UserCurrentLoc as $termids)            {
+						foreach($termids as $termid)                {
+							$getnametid=taxonomy_term_load($termid);
+						}
+
+						$CurUserLocationTID[$getnametid->tid] = $getnametid->tid;
+						$childresults = sm_curriculum_taxonomy_get_children_all($termid, $vid);
+						foreach($childresults as $grandchildresults)                {
+							$CurUserLocationTID[$grandchildresults->tid] = $grandchildresults->tid;
+						}
+
+					}
+
+					#  The ID of the taxonomy vocabulary for which you'd like to create with nested list
+					$tree = taxonomy_get_tree($vid);
+					foreach ($tree as $term)            {
+						$diffdepth=0;
+						#  compare users location with the whole taxonomy tree
+						
+						if (in_array($term->tid,$CurUserLocationTID))                {
+							$childresults = taxonomy_get_children($term->tid, $vid = 3);
+							$ttotal = count($childresults);
+							
+							#if no children jwk 3/11/2014
+							if($ttotal == 0){
+								$options[$term->tid] = $term->name;
+							}
+							
+							if ($term->depth > $depth)                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+								$depth = $term->depth;
+								$num_at_depth = 0;
+							}
+
+							
+							if ($term->depth < $depth)                    {
+								$diffdepth= $depth -$term->depth;
+								while ($diffdepth > 0)                        {
+									$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+									$diffdepth -- ;
+								}
+
+								$depth = $term->depth;
+							}
+
+							
+							
+							if (($term->depth == $depth) && ($num_at_depth > 0))                    {
+								$options[$term->tid] = str_repeat("- ",$term->depth).$term->name;
+							}
+
+							$arg = arg(0).'/'.arg(1);
+							
+							if ($ttotal <= 0)                    {
+								$FilterTidUrl = url($arg.'/'.$term->tid, array('absolute' => TRUE));
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							} else                    {
+								# call function to get all child term id
+								$urlviewfinal = get_all_child($term->tid);
+								$FilterTidUrl = url($arg.'/'.$term->tid.$urlviewfinal, array('absolute' => TRUE));
+								# Generate url for each terms
+								$ViewfilterURL = rawurldecode($FilterTidUrl);
+							}
+
+							$num_at_depth ++;
+						}
+
+					} # end foreach get tree
+
+				} # end users location
+				
+				switch($form_id){
+    case 'calendar_event_node_form':
+    case 'activity_node_form':
+        # Get the default value (field_taxonomy_tag} of the current node.
+				if (arg(2) == 'edit') {
+						$nid = arg(1);
+						$node = node_load($nid);
+						$editnode = $node->field_taxonomy_tag['und'][0]['tid'];
+						$default_value = $editnode;
+					}
+				# check if the node has a default value ($default_value) if not set as the current user location.
+				    if (!isset($default_value)) {
+					$default_value = $UserCurrentLoc[0]['tid'];
+					}
+					
+					$form['field_taxonomy_tag']['und'][0]['tid'] =array('#title'=>'Select a Location or Class',
+						'#description'=>'Not required to select a lower location level*',
+						'#type'=>'select',
+						'#required'=>TRUE,
+						'#default_value' => $default_value,
+						'#options' => $options, );
+        break;
+    case 'user_register_form':
+    case 'user_profile_form':
+				# check if the node has a default value ($default_value) if not set as the current user location.
+				    if (arg(2) == 'edit') {
+						$nid = arg(1);
+						$node = user_load($nid);
+						$editnode = $node->field_taxonomy_tag['und'][0]['tid'];
+						$default_value = $editnode;
+					}
+				    if (!isset($default_value)) {
+					$default_value = $UserCurrentLoc[0]['tid'];
+					}
+				
+					if (arg(1) == "add" || 'people') {
+						$form['field_taxonomy_tag']['und'][0]['tid'] =array('#title'=>'Select a Location or Class',
+						'#description'=>'Not required to select a lower location level*',
+						'#type'=>'select',
+						'#required'=>TRUE,
+						'#default_value' => $default_value,
+						'#options' => $options, );
+					}
+        break;
+        case 'taxonomy_form_term':
+        # Get the default value (field_taxonomy_tag} of the current node.
+        if(arg(3) == 'forums'){ # creating a forum
+					 $form['#prefix'] = 
+     '<fieldset class="form-wrapper">
+     <legend><span class="fieldset-legend">Instructions</span></legend>
+     <div class="fieldset-wrapper">' . t('<p>You can create forums at the school level to generate discussion among multiple classrooms, or groups of students. To create a forum, enter a title, select the School that will use the forum and provide a description. Click Save to create your forum.</p>') . 
+     '</div></fieldset>';
+
+					
+					$form['field_taxonomy_tag']['und'][0]['tid'] =array(
+					'#title'=>'Select a School',
+						'#description'=>'',
+						'#type'=>'select',
+						'#required'=>TRUE,
+						'#default_value' => $default_value,
+						'#options' => $options, );
+        }
+        if (arg(3) == 'edit') {
+						$nid = arg(2);
+						$node = taxonomy_term_load($nid);
+						
+						$editnode = $node->field_taxonomy_tag['und'][0]['tid'];
+						$vid = $node->vid;
+						$default_value = $editnode;
+						
+					}
+				# check if the node has a default value ($default_value) if not set as the current user location.
+				    if (!isset($default_value)) {
+					$default_value = $UserCurrentLoc[0]['tid'];
+					}
+		if ($vid == '2'){
+					$form['field_taxonomy_tag']['und'][0]['tid'] =array('#title'=>'Select a School',
+						'#description'=>'',
+						'#type'=>'select',
+						'#required'=>TRUE,
+						'#default_value' => $default_value,
+						'#options' => $options, );
+						}
+				
+        break;
+        case 'feeds_import_form':
+        if (!isset($default_value)) {
+					$default_value = $UserCurrentLoc[0]['tid'];
+					}
+        $title = 'Select the school and/or class where your users are located. Be sure to select the proper location.';
+							if(strpos(arg(1), "mentor") !== false){
+								$title = 'Select the school where your mentors will be located. Be sure to select the proper location.';
+							}
+							$form['feeds']['FeedsCSVParser']['field_taxonomy_tag']['und'][0]['tid'] =array('#prefix'=>'<h3 style="color:blue">Step 3: Select Location</h3>',
+							'#title'=> $title,
+						'#description'=>'',
+						'#type'=>'select',
+						'#required'=>TRUE,
+						'#default_value' => $default_value,
+						'#suffix' => '<h3 style="color:blue">Step 4: Select File and Import</h3><p>Choose the CSV file from your local computer and click Import. The system will begin the import process and show a progress bar.</p>',
+						'#options' => $options, );
+
+        break;
+        
+    default:
+       
+} 	
+				
+					 
+
+				} #end has user role
+
+
+
+
+	}  #end function
+	
+}
+	?>

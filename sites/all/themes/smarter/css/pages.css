@@ -1,0 +1,1890 @@
+/**
+ * @file
+ * Page Styling
+ *
+ * Style the markup found in page.tpl.php. Also includes some styling of
+ * miscellaneous Drupal elements that appear in the $content variable, such as
+ * ul.links, .pager, .more-link, etc.
+ */
+/*
+ * HTML
+ */
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%; }
+
+/*
+ * Body
+ */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #55d1fd;
+  /* Old browsers */
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0b51a8), to(#55d1fd));
+  background-image: -moz-linear-gradient(top, #0b51a8 0%, #55d1fd 100%);
+  /* FF3.6+ */
+  background-image: -o-linear-gradient(#0b51a8, #55d1fd);
+  background-image: linear-gradient(#0b51a8, #55d1fd);
+  background-image: -ms-linear-gradient(top, #0b51a8 0%, #55d1fd 100%);
+  /* IE10+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0b51a8', endColorstr='#55d1fd',GradientType=0 );
+  /* IE6-9 */
+  background-repeat: no-repeat;
+  color: #012d5a; }
+  body a:link,
+  body a:visited {
+    color: #0066cc;
+    text-decoration: none; }
+  body a:hover,
+  body a:focus {
+    text-decoration: underline; }
+
+/*
+ * Over ride the background settings for the wysiwyg editors
+ */
+html.CSS1Compat body {
+  background: none; }
+
+html body.mceContentBody {
+  background: none;
+  filter: inherit !important;
+  font-size: 1em; }
+
+html body.cke_editable,
+html body.cke_panel_container,
+html body.cke_ltr {
+  background: none;
+  filter: inherit !important;
+  font-size: 1em; }
+
+#container {
+  min-height: 100%;
+  position: relative; }
+
+#page {
+  padding-bottom: 90px; }
+
+.ui-widget {
+  font-size: inherit; }
+
+/*
+ * The skip-link link will be completely hidden until a user tabs to the link.
+ * See the element-focusable rule in system.base.css.
+ */
+#skip-link {
+  margin: 0; }
+  #skip-link a,
+  #skip-link a:visited {
+    display: block;
+    width: 100%;
+    padding: 2px 0 3px 0;
+    text-align: center;
+    background-color: #666666;
+    color: white; }
+
+/*
+ * Header
+ */
+#header-bar {
+  background-color: white;
+  padding-bottom: 5px;
+  border-bottom: solid 1px #bbc1c8; }
+
+#header-content {
+  padding-top: 15px; }
+
+#logo {
+  /* Wrapping link for logo */
+  float: left;
+  /* LTR */
+  margin: 0;
+  padding: 0; }
+  #logo img {
+    vertical-align: bottom; }
+
+#name-and-slogan {
+  /* Wrapper for website name and slogan */
+  float: left; }
+
+#site-name {
+  /* The name of the website */
+  margin: 0 0 0 25px;
+  font-family: "Rokkitt", serif;
+  font-weight: 400;
+  font-size: 2.6em;
+  line-height: .7em; }
+  #site-name a:link,
+  #site-name a:visited {
+    color: #001b38;
+    text-decoration: none; }
+  #site-name a:hover,
+  #site-name a:focus {
+    text-decoration: underline; }
+
+.name-spacer {
+  height: 21px; }
+
+#site-slogan {
+  /* The slogan (or tagline) of a website */
+  margin: 0 0 0 25px;
+  color: #001b38;
+  font-size: 1em;
+  line-height: 1.6em;
+  text-transform: uppercase; }
+
+.region-header {
+  /* Wrapper for any blocks placed in the header region */
+  clear: both;
+  /* Clear the logo */ }
+
+#navigation-bar {
+  position: relative;
+  background-color: #151515;
+  height: 46px;
+  border-bottom: solid 1px #3295dd; }
+
+/*
+ * Main (container for everything else)
+ */
+#main {
+  padding-top: 2em; }
+
+/*
+ * Content
+ */
+.breadcrumb {
+  /* The path to the current page in the form of a list of links */
+  margin-bottom: 5px; }
+  .breadcrumb ol {
+    margin: 0;
+    padding: 0; }
+  .breadcrumb li {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    color: white; }
+    .breadcrumb li a {
+      color: black; }
+
+.no-sidebars h1#page-title,
+.one-sidebar h1#page-title {
+  /* Page title */
+  background: #9acefe;
+  /* Old browsers */
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#46494f), to(#11181c));
+  background: -moz-linear-gradient(#46494f, #11181c);
+  background: -o-linear-gradient(#46494f, #11181c);
+  background: linear-gradient(#46494f, #11181c);
+  background: -ms-linear-gradient(top, #46494f 0%, #11181c 100%);
+  /* IE10+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#46494f', endColorstr='#11181c',GradientType=0 );
+  /* IE6-9 */
+  background-repeat: no-repeat;
+  height: 34px;
+  font-family: "Rokkitt", serif;
+  font-weight: 100;
+  text-transform: uppercase;
+  color: white;
+  padding-left: 12px;
+  line-height: 1.75em;
+  border-top: solid 1px #a7a9ac;
+  -khtml-border-radius-topleft: 3px;
+  -khtml-border-radius-topright: 3px;
+  -moz-border-radius-topleft: 3px;
+  -moz-border-radius-topright: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  font-size: 1.5em; }
+.no-sidebars #content-wrapper,
+.one-sidebar #content-wrapper {
+  background-color: white;
+  border: solid 1px #d8dcd6;
+  margin-top: 0;
+  padding: 15px 15px 20px 15px;
+  margin-bottom: 1.5em;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); }
+
+h1.title,
+h2.node-title,
+h2.block-title,
+h2.title,
+h2.comment-form,
+h3.title {
+  /* Comment title */
+  margin: 0; }
+
+h2.title.center{
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  margin: 0; }
+
+tr.even {
+  /* Some tables have rows marked even or odd. */
+  border: none;
+  background-color: white; }
+
+tr.odd {
+  border: none; }
+
+td.active {
+  background: none; }
+
+div.messages {
+  /* Important messages (status, warning, and error) for the user. See also the declarations in messages.css. */
+  margin: -0.5em 0.8em 1.2em;
+  /* Drupal core uses "6px 0" margin */
+  padding: 5px 10px 5px 50px;
+  background-position: 8px 4px;
+  font-weight: bold; }
+  div.messages ul {
+    margin-top: 0;
+    margin-bottom: 0; }
+
+div.status {
+  /* Normal priority messages */ }
+
+div.warning,
+tr.warning {
+  /* Medium priority messages */
+  /* border: 1px solid #f0c020; */
+  /* Drupal core uses: 1px solid #f0c020 */ }
+
+div.error,
+tr.error {
+  /* High priority messages. See also the .error declaration below. */ }
+
+.error {
+  /* Errors that are separate from div.messages status messages. */
+  /* color: #e55; */
+  /* Drupal core uses a #e55 background */ }
+
+.warning {
+  /* Warnings that are separate from div.messages status messages. */
+  /* color: #e09010; */
+  /* Drupal core uses a #e09010 background */ }
+
+.tabs {
+  /* See also the tabs.css file. */ }
+
+.region-help {
+  /* Help text on a page */ }
+
+.more-help-link {
+  /* Link to more help */ }
+
+.region-content {
+  /* Wrapper for the actual page content */ }
+
+ul.inline {
+  /* List of links generated by theme_links() */
+  display: inline;
+  padding: 0; }
+  ul.inline li {
+    display: inline;
+    list-style-type: none;
+    padding: 0 1em 0 0;
+    /* LTR */ }
+
+span.field-label {
+  /* The inline field label used by the Fences module */
+  padding: 0 1em 0 0;
+  /* LTR */ }
+
+.item-list .pager {
+  /* A list of page numbers when more than 1 page of content is available */
+  padding: 0; }
+  .item-list .pager li {
+    /* Each page number in the pager list */
+    padding: 0 0.5em; }
+
+.feed-icon {
+  /* The link to the RSS or Atom feed for the current list of content */ }
+
+.more-link {
+  /* Aggregator, blog, and forum more link */ }
+
+.titlebar_link {
+  float: right; }
+
+.text-format-wrapper .form-item {
+  margin-bottom: 3em; }
+
+/*
+ * First sidebar (on left in LTR languages, on right in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-first
+ * (see the layout.css file.)
+ */
+/*
+ * Second sidebar (on right in LTR languages, on left in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-second
+ * (see the layout.css file.)
+ */
+/*
+ * Footer
+ */
+#footer-bar {
+  clear: both;
+  width: 100%;
+  background-color: white;
+  -webkit-box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.3); }
+
+#footer {
+  padding-top: 10px; }
+  #footer .logo {
+    float: left;
+    width: 20%; }
+  #footer .logo2 {
+    float: right;
+    width: 20%;
+    text-align: right; }
+  #footer #block-block-1 {
+    background: none;
+    border: none;
+    margin: inherit;
+    padding: inherit;
+    -webkit-box-shadow: inherit;
+    -moz-box-shadow: inherit;
+    box-shadow: inherit;
+    padding: 0; }
+  #footer .clear {
+    clear: both; }
+
+#footer-links {
+  float: left;
+  font-size: .85em;
+  width: 60%;
+  margin-top: 20px; }
+  #footer-links .links-wrapper {
+    margin: 0 auto;
+    text-align: center; }
+  #footer-links .links {
+    margin-left: 0; }
+  #footer-links li {
+    line-height: 4.5em; }
+
+/*
+ * Page bottom
+ */
+.region-bottom {
+  /* Wrapper for any blocks placed in the page bottom region */ }
+
+/*
+ * Popup Windows
+ */
+#mediaBrowser {
+  width: 700px !important;
+  height: 600px !important; }
+
+body.section-file,
+body.page-media-browser {
+  background-image: none;
+  background-color: white; }
+
+.ui-dialog {
+  width: auto !important;
+  border: solid 1px #d8dcd6;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3); }
+
+.ui-widget input {
+  font-family: inherit;
+  font-size: .85em; }
+
+#media-browser-tabset #branding {
+  padding: 0; }
+  #media-browser-tabset #branding h1 {
+    background: #9acefe;
+    /* Old browsers */
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#46494f), to(#11181c));
+    background: -moz-linear-gradient(#46494f, #11181c);
+    background: -o-linear-gradient(#46494f, #11181c);
+    background: linear-gradient(#46494f, #11181c);
+    background: -ms-linear-gradient(top, #46494f 0%, #11181c 100%);
+    /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#46494f', endColorstr='#11181c',GradientType=0 );
+    /* IE6-9 */
+    background-repeat: no-repeat;
+    height: 34px;
+    font-family: "Rokkitt", serif;
+    font-weight: 100;
+    text-transform: uppercase;
+    color: white;
+    padding-left: 12px;
+    line-height: 1.75em;
+    border-top: solid 1px #a7a9ac;
+    -khtml-border-radius-topleft: 3px;
+    -khtml-border-radius-topright: 3px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -webkit-border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    width: 98%;
+    font-size: 1.5em; }
+#media-browser-tabset #media-tabs-wrapper {
+  clear: both; }
+
+#media-browser-tabset.ui-widget-content {
+  border: none;
+  border-radius: inherit; }
+
+#edit-upload-upload-button,
+#edit-upload-remove-button {
+  background: #007dc4;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  /* W3C */
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 5px 7px;
+  margin-right: 5px;
+  margin-left: 5px; }
+
+.media-item {
+  width: inherit; }
+
+#colorbox img {
+  height: inherit; }
+
+/*
+ * Custom over rides for modules 
+ */
+#drupalchat-wrapper {
+  bottom: 63px;
+  margin: 0; }
+  #drupalchat-wrapper .options {
+    display: none; }
+
+/*
+ * Custom styles for specific pages
+ *
+ */
+/*
+ * User Profile View
+ */
+.page-user,
+.page-admin-people-create {
+  /* Profile display */ }
+  .page-user .tabs,
+  .page-user .breadcrumb,
+  .page-admin-people-create .tabs,
+  .page-admin-people-create .breadcrumb {
+    display: none; }
+  .page-user #edit-privatemsg legend,
+  .page-admin-people-create #edit-privatemsg legend {
+    display: none; }
+  .page-user .form-wrapper,
+  .page-admin-people-create .form-wrapper {
+    width: 650px;
+    margin: 0 auto; }
+  .page-user h3,
+  .page-admin-people-create h3 {
+    background-color: #eeeeee;
+    padding: 5px; }
+  .page-user fieldset,
+  .page-admin-people-create fieldset {
+    border: none;
+    margin: 0;
+    padding: 0; }
+  .page-user .form-item label,
+  .page-admin-people-create .form-item label {
+    font-weight: bold; }
+  .page-user #edit-contact,
+  .page-user #edit-comment-notify-settings,
+  .page-admin-people-create #edit-contact,
+  .page-admin-people-create #edit-comment-notify-settings {
+    display: none; }
+  .page-user #edit-picture legend,
+  .page-admin-people-create #edit-picture legend {
+    color: #333333;
+    font-weight: bold;
+    line-height: 1.75em;
+    margin-right: 1em; }
+  .page-user .user-picture,
+  .page-admin-people-create .user-picture {
+    float: none;
+    margin: 0; }
+  .page-user .field-name-field-user-acct-type,
+  .page-admin-people-create .field-name-field-user-acct-type {
+    display: none; }
+  .page-user .field-group-htabs-wrapper,
+  .page-admin-people-create .field-group-htabs-wrapper {
+    margin-top: 10px; }
+  .page-user .horizontal-tabs,
+  .page-admin-people-create .horizontal-tabs {
+    border: none; }
+  .page-user .filter-wrapper,
+  .page-admin-people-create .filter-wrapper {
+    padding: 0; }
+  .page-user .form-item-status,
+  .page-admin-people-create .form-item-status {
+    display: none; }
+  .page-user .profile h3.field-label,
+  .page-admin-people-create .profile h3.field-label {
+    border: none;
+    font-size: 1em; }
+  .page-user .view-header,
+  .page-admin-people-create .view-header {
+    margin-bottom: 15px; }
+  .page-user .profile-section,
+  .page-admin-people-create .profile-section {
+    clear: both;
+    padding-top: 10px; }
+  .page-user .profile-group,
+  .page-admin-people-create .profile-group {
+    width: 90%;
+    margin: 0 auto; }
+    .page-user .profile-group h3,
+    .page-admin-people-create .profile-group h3 {
+      background: none;
+      margin: 0;
+      padding: 0;
+      font-size: 1em; }
+    .page-user .profile-group ul,
+    .page-admin-people-create .profile-group ul {
+      margin: 0; }
+    .page-user .profile-group p,
+    .page-admin-people-create .profile-group p {
+      margin: 0; }
+    .page-user .profile-group .field,
+    .page-admin-people-create .profile-group .field {
+      margin-bottom: 20px; }
+  .page-user .views-field-picture img,
+  .page-admin-people-create .views-field-picture img {
+    float: left;
+    border: solid 3px #e9e8df;
+    -khtml-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border: 3px;
+    border-radius: 3px; }
+  .page-user .views-field-field-user-status,
+  .page-admin-people-create .views-field-field-user-status {
+    position: relative;
+    float: left;
+    width: 135px;
+    min-height: 70px;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfeff), to(#daf1fd));
+    background: -moz-linear-gradient(#fcfeff, #daf1fd);
+    background: -o-linear-gradient(#fcfeff, #daf1fd);
+    background: linear-gradient(#fcfeff, #daf1fd);
+    background-color: #f6fcff;
+    padding: 12px 15px;
+    border: solid 2px #d1d3d4;
+    -khtml-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border: 4px;
+    border-radius: 4px;
+    line-height: normal;
+    margin-left: 10px;
+    -webkit-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.3); }
+    .page-user .views-field-field-user-status p,
+    .page-admin-people-create .views-field-field-user-status p {
+      margin: 0;
+      font-size: 1em; }
+  .page-user .views-field-field-user-status:before,
+  .page-admin-people-create .views-field-field-user-status:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    /* controls vertical position */
+    bottom: auto;
+    left: -10px;
+    /* value = - border-left-width - border-right-width */
+    border-style: solid;
+    border-width: 5px 10px 5px 0;
+    border-color: transparent #d1d3d4;
+    /* reduce the damage in FF3.0 */
+    display: block;
+    width: 0; }
+  .page-user .profile-edit-link,
+  .page-admin-people-create .profile-edit-link {
+    float: left;
+    margin-left: 20px; }
+  .page-user .profile_email_link,
+  .page-admin-people-create .profile_email_link {
+    margin-left: 20px; }
+  .page-user .view-user-relationships-view .views-field-picture,
+  .page-admin-people-create .view-user-relationships-view .views-field-picture {
+    float: left;
+    margin-right: 10px; }
+  .page-user fieldset,
+  .page-admin-people-create fieldset {
+    width: 90%;
+    margin: 20px auto 0 auto; }
+  .page-user .field-type-taxonomy-term-reference ul.links li,
+  .page-admin-people-create .field-type-taxonomy-term-reference ul.links li {
+    float: none; }
+  .page-user .field-type-taxonomy-term-reference ul.shs-hierarchy li,
+  .page-admin-people-create .field-type-taxonomy-term-reference ul.shs-hierarchy li {
+    display: inline; }
+
+.page-user.role-Mentor .group_administrative {
+  display: none; }
+
+.page-user.role-Mentee .group_mentee,
+.page-user.role-Mentee .group_mentor_mc,
+.page-user.role-Mentee .group_mentor_edu_bk,
+.page-user.role-Mentee .group_administrative {
+  display: none; }
+
+.page-node-add-mentor-request-explanation #edit-field-mentor-reference {
+  display: none; }
+
+.page-node-add-mentor-request-rejection #edit-field-referenced-mentor-request {
+  display: none; }
+
+/*
+ * Mentors
+ * Page when selecting the Mentors tab in main nav
+ */
+.page-apachesolruser .form-submit {
+  margin-top: 1.7em; }
+
+.page-menteementorselect .sidebar .block,
+.page-gamentees .sidebar .block,
+.page-gamentors .sidebar .block {
+  background-color: white;
+  -khtml-border-radius-topleft: 3px;
+  -khtml-border-radius-topright: 3px;
+  -moz-border-radius-topleft: 3px;
+  -moz-border-radius-topright: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px; }
+  .page-menteementorselect .sidebar .block h2.block-title,
+  .page-gamentees .sidebar .block h2.block-title,
+  .page-gamentors .sidebar .block h2.block-title {
+    font-size: 1em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    line-height: 1em;
+    height: auto; }
+  .page-menteementorselect .sidebar .block .item-list,
+  .page-gamentees .sidebar .block .item-list,
+  .page-gamentors .sidebar .block .item-list {
+    font-size: .95em;
+    padding-bottom: 10px; }
+.page-menteementorselect .sidebar .views-exposed-widget,
+.page-gamentees .sidebar .views-exposed-widget,
+.page-gamentors .sidebar .views-exposed-widget {
+  padding: 0; }
+  .page-menteementorselect .sidebar .views-exposed-widget label,
+  .page-gamentees .sidebar .views-exposed-widget label,
+  .page-gamentors .sidebar .views-exposed-widget label {
+    background: #9acefe;
+    /* Old browsers */
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#46494f), to(#11181c));
+    background: -moz-linear-gradient(#46494f, #11181c);
+    background: -o-linear-gradient(#46494f, #11181c);
+    background: linear-gradient(#46494f, #11181c);
+    background: -ms-linear-gradient(top, #46494f 0%, #11181c 100%);
+    /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#46494f', endColorstr='#11181c',GradientType=0 );
+    /* IE6-9 */
+    background-repeat: no-repeat;
+    height: 34px;
+    font-family: "Rokkitt", serif;
+    font-weight: 100;
+    text-transform: uppercase;
+    color: white;
+    padding-left: 12px;
+    line-height: 1.75em;
+    border-top: solid 1px #a7a9ac;
+    -khtml-border-radius-topleft: 3px;
+    -khtml-border-radius-topright: 3px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -webkit-border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    line-height: 1em;
+    height: auto; }
+  .page-menteementorselect .sidebar .views-exposed-widget .form-type-textfield,
+  .page-gamentees .sidebar .views-exposed-widget .form-type-textfield,
+  .page-gamentors .sidebar .views-exposed-widget .form-type-textfield {
+    padding: 10px; }
+  .page-menteementorselect .sidebar .views-exposed-widget #edit-search-api-views-fulltext,
+  .page-gamentees .sidebar .views-exposed-widget #edit-search-api-views-fulltext,
+  .page-gamentors .sidebar .views-exposed-widget #edit-search-api-views-fulltext {
+    width: 90%; }
+  .page-menteementorselect .sidebar .views-exposed-widget .description,
+  .page-gamentees .sidebar .views-exposed-widget .description,
+  .page-gamentors .sidebar .views-exposed-widget .description {
+    width: 90%;
+    font-size: .9em;
+    padding-left: 12px;
+    line-height: 1em;
+    margin-bottom: 10px; }
+  .page-menteementorselect .sidebar .views-exposed-widget .form-submit,
+  .page-gamentees .sidebar .views-exposed-widget .form-submit,
+  .page-gamentors .sidebar .views-exposed-widget .form-submit {
+    margin: 0 0 10px 10px;
+    padding: 4px 8px; }
+.page-menteementorselect .sidebar ul,
+.page-gamentees .sidebar ul,
+.page-gamentors .sidebar ul {
+  margin: 5px 5px 0 0;
+  padding-left: 25px; }
+.page-menteementorselect .view-header,
+.page-gamentees .view-header,
+.page-gamentors .view-header {
+  margin-bottom: 10px; }
+.page-menteementorselect table .views-field-name,
+.page-gamentees table .views-field-name,
+.page-gamentors table .views-field-name {
+  width: 15%; }
+.page-menteementorselect table .views-field-field-taxonomy-tag,
+.page-gamentees table .views-field-field-taxonomy-tag,
+.page-gamentors table .views-field-field-taxonomy-tag {
+  width: 11%; }
+.page-menteementorselect table .views-field-field-school-subjects,
+.page-gamentees table .views-field-field-school-subjects,
+.page-gamentors table .views-field-field-school-subjects {
+  width: 20%; }
+.page-menteementorselect table .views-field-field-job-field-specialty,
+.page-gamentees table .views-field-field-job-field-specialty,
+.page-gamentors table .views-field-field-job-field-specialty {
+  width: 30%; }
+.page-menteementorselect table .views-field-php,
+.page-gamentees table .views-field-php,
+.page-gamentors table .views-field-php {
+  width: 14%; }
+.page-menteementorselect table .views-field-edit-url,
+.page-gamentees table .views-field-edit-url,
+.page-gamentors table .views-field-edit-url {
+  width: 5%; }
+
+/*
+ * Forums & Blogs
+ * 
+ */
+.page-forum .tabs,
+.node-type-forum .tabs,
+.page-node-add-forum .tabs,
+.page-blog .tabs,
+.node-type-blog .tabs,
+.page-node-add-blog .tabs,
+.page-my-forums .tabs {
+  display: none; }
+.page-forum .forum-tools,
+.node-type-forum .forum-tools,
+.page-node-add-forum .forum-tools,
+.page-blog .forum-tools,
+.node-type-blog .forum-tools,
+.page-node-add-blog .forum-tools,
+.page-my-forums .forum-tools {
+  display: none; }
+.page-forum .forum-topic-legend div,
+.node-type-forum .forum-topic-legend div,
+.page-node-add-forum .forum-topic-legend div,
+.page-blog .forum-topic-legend div,
+.node-type-blog .forum-topic-legend div,
+.page-node-add-blog .forum-topic-legend div,
+.page-my-forums .forum-topic-legend div {
+  display: none; }
+.page-forum .views-field-topic-icon,
+.page-forum .feed-icon,
+.node-type-forum .views-field-topic-icon,
+.node-type-forum .feed-icon,
+.page-node-add-forum .views-field-topic-icon,
+.page-node-add-forum .feed-icon,
+.page-blog .views-field-topic-icon,
+.page-blog .feed-icon,
+.node-type-blog .views-field-topic-icon,
+.node-type-blog .feed-icon,
+.page-node-add-blog .views-field-topic-icon,
+.page-node-add-blog .feed-icon,
+.page-my-forums .views-field-topic-icon,
+.page-my-forums .feed-icon {
+  display: none; }
+.page-forum #forum-sort,
+.node-type-forum #forum-sort,
+.page-node-add-forum #forum-sort,
+.page-blog #forum-sort,
+.node-type-blog #forum-sort,
+.page-node-add-blog #forum-sort,
+.page-my-forums #forum-sort {
+  margin-top: 10px; }
+.page-forum .views-field-title,
+.node-type-forum .views-field-title,
+.page-node-add-forum .views-field-title,
+.page-blog .views-field-title,
+.node-type-blog .views-field-title,
+.page-node-add-blog .views-field-title,
+.page-my-forums .views-field-title {
+  padding-left: 5px; }
+.page-forum .forum-node-create-links-top,
+.node-type-forum .forum-node-create-links-top,
+.page-node-add-forum .forum-node-create-links-top,
+.page-blog .forum-node-create-links-top,
+.node-type-blog .forum-node-create-links-top,
+.page-node-add-blog .forum-node-create-links-top,
+.page-my-forums .forum-node-create-links-top {
+  margin-bottom: 15px; }
+.page-forum p,
+.node-type-forum p,
+.page-node-add-forum p,
+.page-blog p,
+.node-type-blog p,
+.page-node-add-blog p,
+.page-my-forums p {
+  margin: .8em 0; }
+.page-forum .forum-post-panel-sub,
+.node-type-forum .forum-post-panel-sub,
+.page-node-add-forum .forum-post-panel-sub,
+.page-blog .forum-post-panel-sub,
+.node-type-blog .forum-post-panel-sub,
+.page-node-add-blog .forum-post-panel-sub,
+.page-my-forums .forum-post-panel-sub {
+  width: 175px; }
+.page-forum .forum-post-panel-main,
+.node-type-forum .forum-post-panel-main,
+.page-node-add-forum .forum-post-panel-main,
+.page-blog .forum-post-panel-main,
+.node-type-blog .forum-post-panel-main,
+.page-node-add-blog .forum-post-panel-main,
+.page-my-forums .forum-post-panel-main {
+  margin-left: 175px; }
+.page-forum .forum-table tr.sticky,
+.node-type-forum .forum-table tr.sticky,
+.page-node-add-forum .forum-table tr.sticky,
+.page-blog .forum-table tr.sticky,
+.node-type-blog .forum-table tr.sticky,
+.page-node-add-blog .forum-table tr.sticky,
+.page-my-forums .forum-table tr.sticky {
+  background-color: inherit; }
+.page-forum .forum-table tr.even,
+.page-forum .forum-table tr.odd,
+.node-type-forum .forum-table tr.even,
+.node-type-forum .forum-table tr.odd,
+.page-node-add-forum .forum-table tr.even,
+.page-node-add-forum .forum-table tr.odd,
+.page-blog .forum-table tr.even,
+.page-blog .forum-table tr.odd,
+.node-type-blog .forum-table tr.even,
+.node-type-blog .forum-table tr.odd,
+.page-node-add-blog .forum-table tr.even,
+.page-node-add-blog .forum-table tr.odd,
+.page-my-forums .forum-table tr.even,
+.page-my-forums .forum-table tr.odd {
+  background: inherit; }
+.page-forum .forum-table tr.odd,
+.node-type-forum .forum-table tr.odd,
+.page-node-add-forum .forum-table tr.odd,
+.page-blog .forum-table tr.odd,
+.node-type-blog .forum-table tr.odd,
+.page-node-add-blog .forum-table tr.odd,
+.page-my-forums .forum-table tr.odd {
+  background-color: #eeeeee; }
+.page-forum .field-name-field-helpful-forum,
+.node-type-forum .field-name-field-helpful-forum,
+.page-node-add-forum .field-name-field-helpful-forum,
+.page-blog .field-name-field-helpful-forum,
+.node-type-blog .field-name-field-helpful-forum,
+.page-node-add-blog .field-name-field-helpful-forum,
+.page-my-forums .field-name-field-helpful-forum {
+  float: right;
+  margin-right: 15px; }
+.page-forum .field-name-body,
+.node-type-forum .field-name-body,
+.page-node-add-forum .field-name-body,
+.page-blog .field-name-body,
+.node-type-blog .field-name-body,
+.page-node-add-blog .field-name-body,
+.page-my-forums .field-name-body {
+  clear: right; }
+.page-forum .block-custom-search-blocks,
+.node-type-forum .block-custom-search-blocks,
+.page-node-add-forum .block-custom-search-blocks,
+.page-blog .block-custom-search-blocks,
+.node-type-blog .block-custom-search-blocks,
+.page-node-add-blog .block-custom-search-blocks,
+.page-my-forums .block-custom-search-blocks {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none; }
+
+.page-blog article {
+  border-bottom: solid 1px #909499;
+  padding-bottom: 10px; }
+.page-blog .action-links {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+  .page-blog .action-links a {
+    background: #007dc4;
+    /* Old browsers */
+    background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+    /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+    /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+    /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+    /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+    /* IE10+ */
+    background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+    /* W3C */
+    background-repeat: no-repeat;
+    border: none;
+    -khtml-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: white;
+    font-size: .85em;
+    text-transform: capitalize;
+    padding: 5px 7px;
+    margin-right: 5px; }
+  .page-blog .action-links a:hover,
+  .page-blog .action-links a:focus {
+    text-decoration: none; }
+
+.page-node-add-forum .node-form,
+.node-type-forum.page-node-edit .node-form,
+.page-node-add-blog .node-form {
+  width: 650px;
+  margin: 1.5em auto; }
+/*.page-node-add-forum #edit-taxonomy-forums,
+.node-type-forum.page-node-edit #edit-taxonomy-forums,
+.page-node-add-blog #edit-taxonomy-forums {
+  display: none; }
+  */
+.page-node-add-forum #edit-field-blog-body-und-0-format,
+.node-type-forum.page-node-edit #edit-field-blog-body-und-0-format,
+.page-node-add-blog #edit-field-blog-body-und-0-format {
+  display: none; }
+
+.page-forum.role-Mentee .forum-node-create-links {
+  display: none; }
+
+.node-type-blog .comment-wrapper {
+  background-color: #eeeeee;
+  padding: 5px 15px; }
+  .node-type-blog .comment-wrapper h2.title {
+    font-size: 1.2em; }
+.node-type-blog .field-name-field-blog-location-class {
+  display: none; }
+
+.view-blog-posts .views-field-title {
+  font-size: 1.3em; }
+
+/*
+ * Calendars
+ * 
+ */
+.page-node-add-calendar-event .node-form {
+  width: 650px;
+  margin: 1.5em auto; }
+.page-node-add-calendar-event #edit-field-event-detail-und-0-format {
+  display: none; }
+
+.page-calendar .view-header {
+  text-align: center;
+  margin-bottom: 10px; }
+
+.page-cm-calendar .fc-event-title {
+  color: white; }
+
+.view-event-calendar .view-header {
+  margin-top: 10px; }
+
+/*
+ * Award pages
+ */
+.page-node-add-endorsement form {
+  width: 650px;
+  margin: 1.5em auto; }
+.page-node-add-endorsement .form-item-field-endorsement-badge-und {
+  clear: both;
+  width: 65%;
+  line-height: 64px; }
+.page-node-add-endorsement .views-field-field-term-icon {
+  float: right; }
+.page-node-add-endorsement input.form-radio {
+  vertical-align: baseline; }
+
+/*
+ * Search
+ */
+.page-search-node .tabs {
+  display: none; }
+
+/*
+ * Administration pages
+ */
+.page-groupadmin-activities .view-header,
+.page-mentee-subtree .view-header,
+.page-mentor-subtree .view-header,
+.page-match-approval-confirm .view-header,
+.page-activity-attachments .view-header,
+.node-type-act-assignment-resource .view-header,
+.page-import .view-header,
+.page-batch .view-header,
+.page-admin-content-avatars .view-header {
+  margin-bottom: 15px; }
+
+.page-match-approval-confirm form {
+  width: 650px;
+  margin: 1.5em auto; }
+
+.page-activity-attachments-for-review .views-row-odd .node-unpublished {
+  background-color: #eeeeee; }
+.page-activity-attachments-for-review .views-row-even .node-unpublished {
+  background-color: white; }
+.page-activity-attachments-for-review .node-unpublished h2 {
+  font-size: 1.2em;
+  font-weight: normal;
+  line-height: normal; }
+.page-activity-attachments-for-review .node-unpublished p {
+  margin: 0; }
+
+.page-admin-content-avatars .tabs {
+  display: none; }
+.page-admin-content-avatars .form-submit {
+  padding: 3px 6px; }
+
+.node-type-act-assignment-resource .node-unpublished {
+  background-color: white; }
+
+.page-import #edit-submit {
+  margin-top: 15px; }
+
+.page-reports #content-wrapper {
+  overflow-x: scroll; }
+.page-reports .view-content {
+  clear: both;
+  width: 300%; }
+.page-reports table {
+  width: auto; }
+  .page-reports table th, .page-reports table td {
+    padding: 0 5px; }
+.page-reports .views-field-field-uncensored-body,
+.page-reports .views-field-field-mentee-career-uncensored {
+  width: 400px;
+  display: block;
+  word-wrap: break-word; }
+.page-reports .state {
+  display: block; }
+
+.page-curriculum-activity {
+  background: white; }
+  .page-curriculum-activity #admin-menu {
+    display: none; }
+
+.views-label.curricula-vbo{
+  display: inline;
+  margin-left: 5px;
+}
+
+.field-content.curricula-vbo{
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.field-content.curricula-vbo .form-type-radio{
+  margin: 0;
+}
+
+
+.all-curricula-desc{
+  margin: 10px 0;
+}
+
+.add-activity-button-curriculum{
+  margin-bottom:10px;
+  display: inline-block;
+}
+
+.curriculum-post-date{
+  margin-top: 15px;
+  display: inline-block;
+}
+
+.view-id-correspondence_report_bjb .report-activity-response-field{
+  max-width: 550px;
+}
+
+/**
+* change vbo radio buttons into regular buttons
+*/
+.curricula-vbo input[type=radio],
+.views-field-field-actassign-body-editable input[type=checkbox],
+.views-field-field-letschat-body-editable input[type=checkbox]{
+    /* position: relative;*/
+    display: none;
+    /*width: 95%;
+    height: 30px;
+    margin-bottom: 10px;*/
+ }
+
+/**curricula-vbo input[type=radio]:after {*/
+/* button style for vbo as well as activity page "publish" button */
+.use-curriculum-label,
+.views-field-field-actassign-body-editable .form-type-checkbox label,
+.views-field-field-letschat-body-editable .form-type-checkbox label{
+  display: block;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  content: 'Use This Curriculum';
+  text-align: center;
+  z-index: 999;
+  background: #007dc4;
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e));
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%);
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%);
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white !important;
+  font-size: .85em;
+  text-transform: capitalize;
+  font-weight: normal !important;
+  padding: 5px 7px;
+  margin-right: 5px;
+  cursor:pointer;
+}
+
+.views-field-field-letschat-body-editable .form-type-checkbox{
+  position: absolute;
+  left: 150px;
+  bottom: 59px;
+}
+
+.views-field-field-actassign-body-editable .form-type-checkbox{
+  position: absolute;
+  left: 130px;
+  margin-top: 15px;
+}
+
+.view-display-id-curricula_page #edit-select, 
+.view-display-id-curricula_my_created [id^=edit-select],
+.view-display-id-curricula_filtered_page #edit-select,
+.view-display-id-curriculum_new_page [id^=edit-select]{
+  display:none;
+}
+
+.view-display-id-master_curriculum_page .ui-accordion-content-active .views-row{
+  margin: 0 !important;
+}
+
+.view-display-id-curriculabyme_page .views-field-status{
+  margin-bottom: 5px;
+}
+
+.hidden{
+  display:none;
+}
+
+.ui-accordion-content-active{
+  height: inherit !important;
+}
+
+.attach.form-submit, .comment-reply-btn{
+  background: #007dc4 !important;
+  background: -moz-linear-gradient(top, #007dc4 0%, #01649e 100%) !important;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #007dc4), color-stop(100%, #01649e)) !important;
+  background: -webkit-linear-gradient(top, #007dc4 0%, #01649e 100%) !important;
+  background: -o-linear-gradient(top, #007dc4 0%, #01649e 100%) !important;
+  background: -ms-linear-gradient(top, #007dc4 0%, #01649e 100%) !important;
+  background: linear-gradient(to bottom, #007dc4 0%, #01649e 100%) !important;
+  background-repeat: no-repeat;
+  border: none;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  font-size: .85em;
+  text-transform: capitalize;
+  padding: 3px 6px;
+  margin-right: 5px;
+}
+
+.comment-reply-btn{
+  width: 50px;
+}
+
+.form-item-field-master-curriculum-und .entityconnect-add{
+  float: none;
+  position: absolute;
+  left: 28%;
+  margin-top: 15px;
+}
+
+.add-activity-btn{
+  display: inline-block;
+  float: left;
+  margin-bottom: 15px;
+}
+
+.curric-activities{
+  display:block;
+}
+
+.vbo-fieldset-select-all {
+  display:none;
+}
+
+.fc-event-title{
+  color: white !important;
+}
+
+.back-to-forum-link{
+  color: white !important;
+}
+
+.max-mentors-note{
+  font-weight:bold;
+  color:red;
+}
+
+/* matching page styles */
+#edit-field-mentor-match, #edit-field-mentee-match{
+  position:relative;
+  display: inline-block;
+  width: 50%;
+}
+
+#edit_field_mentee_match_und_chzn, #edit_field_mentor_match_und_chzn{
+  width: 95% !important;
+}
+
+#edit_field_mentee_match_und_chzn .chzn-drop, #edit_field_mentor_match_und_chzn .chzn-drop{
+  position:static;
+}
+
+#edit_field_mentee_match_und_chzn .chzn-results{
+  max-height: 270px;
+}
+
+/**
+* hide activity order button 
+*/
+#edit-field-activity-order{
+  display: none;
+}
+
+/*
+bjb added padding to checkbox on activity view
+
+.vbo-views-form thead .views-field.views-field-views-bulk-operations{
+  padding-left: 28px;
+  padding-right: 0;
+}
+*/
+
+/*
+bjb added this to increase the size of the editable area of the ckeditor
+*/
+.cke_contents{
+  height: 300px !important;
+}
+
+/*
+jwk added this to hide relations field group on add location page as well as table weight link in views
+*/
+#edit-relations,
+.tabledrag-toggle-weight-wrapper
+ {
+  display:none;
+}
+
+
+.comment-content .field-name-comment-body{
+  margin-bottom: 20px;
+}
+
+.author-name,
+#forum .username,
+#comments .username,
+#comment-forum .username,
+.view-blog-posts .username,
+.node-blog .username
+/*.role-Mentee .username, 
+.role-Mentor .username */{
+	 pointer-events: none;
+       cursor: default;
+       text-decoration:none;
+       color:#000;
+}
+
+/*bjb added this for comment deletion flag style */
+.node-type-activity-assignment .flag-flag-as-deleted{
+  right: 10px !important;
+}
+
+.pane-dashboard-activities-views{
+  height: 266px;
+  overflow-y: scroll;
+}
+
+.panel-pane.pane-views.pane-dashboard-lets-chat.letschatdraft {
+    height: 220px;
+    overflow-y: visible;  
+}
+
+.pane-dashboard-lets-chat{
+  height: 178px;
+  overflow-y: scroll;
+}
+
+.pane-dashboard-lets-chat h2{
+  width: 100%;
+}
+
+/*bjb dashboard menu tabs */
+
+#block-menu-menu-mentormenteematchtabs, #block-menu-menu-mentormenteematchtabs ul {
+  margin: 0;
+  padding: 0;
+}
+
+.role-Mentor #block-menu-menu-mentormenteematchtabs .menu .first.leaf{
+  width:auto;
+}
+
+#block-menu-menu-mentormenteematchtabs .menu .first .view-dashboard-users{
+  margin-bottom: -9px;
+}
+
+.role-Mentor #block-menu-menu-mentormenteematchtabs .menu .leaf,
+.role-Mentee #block-menu-menu-mentormenteematchtabs .menu .last.leaf{
+  width:76%;
+}
+
+.role-Mentor #block-menu-menu-mentormenteematchtabs .menu .last.leaf,
+.role-Mentee #block-menu-menu-mentormenteematchtabs .menu .leaf{
+  width:auto;
+}
+
+
+
+#block-menu-menu-mentormenteematchtabs li{
+  display: inline-block;
+}
+
+#block-menu-menu-mentormenteematchtabs .views-field-picture, #block-menu-menu-mentormenteematchtabs .views-field-name{
+  display: block;
+}
+
+#block-menu-menu-mentormenteematchtabs .views-field-name{
+  text-align: center;
+  border-right: 1px solid #a3a3a3;
+  width: 120px; 
+}
+
+.view-display-id-mentormentee_menu_page .views-field-name,
+.view-display-id-menteementor_dash_page .views-field-name{
+  height: 25px;
+}
+
+#block-menu-menu-mentormenteematchtabs .views-field-picture{
+  padding: 5px 5px 0 5px;
+  width: 110px;
+  border-right: 1px solid #a3a3a3;
+  text-align: center;
+}
+
+#block-menu-menu-mentormenteematchtabs .views-field-picture a img{
+  float:none;
+}
+
+#block-menu-menu-mentormenteematchtabs .user-picture img{
+  border: solid 3px #e9e8df;
+}
+
+.view-display-id-dash_loggedinuser_page{
+  background-color: #D7D7D7;
+  border-radius: 5px;
+}
+
+.view-display-id-dash_loggedinuser_page .views-field-picture{
+  margin-right: 140px;
+}
+
+.view-display-id-dash_loggedinuser_page .views-field-name{
+  width: 109px;
+  padding-top: 5px;
+}
+
+.role-Mentee .view-display-id-dash_loggedinuser_page .views-field-name{
+  padding-top: 0 !important;
+}
+
+.view-display-id-dash_loggedinuser_page .views-field-field-check-in{
+  float: right;
+  margin: 5px 5px 0px 0px;
+  width: 120px;
+  height: 120px;
+}
+
+.view-display-id-dash_loggedinuser_page .views-field-edit-node{
+  /*position: absolute;
+  top: 95px;
+  left: 139px;*/
+  text-align: center;
+  border-right: 1px solid #a3a3a3;
+  width: 120px;
+}
+
+.view-display-id-dash_loggedinuser_page .views-field-php{
+  float: right;
+  clear: both;
+  margin: 8px 5px 0 0;
+}
+
+.view-id-dashboard_user_relationships_browser.view-display-id-mentormentee_menu_page, 
+.view-id-dashboard_user_relationships_browser.view-display-id-menteementor_dash_page{
+  padding: 0;
+}
+
+.view-display-id-mentormentee_menu_page .views-row,
+.view-display-id-menteementor_dash_page .views-row{
+  width: 250px;
+  background-color: #D7D7D7;
+  display: inline-block;
+  margin-right: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+li.first .dash-tab-active{
+  border-bottom-right-radius: 0px !important;
+  border-bottom-left-radius: 0px !important; 
+  margin-bottom: -14px !important;
+  padding-bottom: 8px;
+}
+
+.dash-tab-active{
+  border-bottom: none;
+  background-color: white !important;
+}
+
+.view-display-id-mentormentee_menu_page .views-field-field-check-in,
+.view-display-id-menteementor_dash_page .views-field-field-check-in{
+  float: right;
+  margin: 10px 10px 0 10px;
+  width: 100px;
+}
+
+.view-display-id-mentormentee_menu_page .views-field-name,
+.view-display-id-menteementor_dash_page .views-field-name{
+  width: 111px;
+}
+
+.view-display-id-mentormentee_dash_page .views-field-picture{
+  width: 170px;
+}
+
+.mentor_dash_av{
+  float: left;
+  text-align: center;
+  margin: 5px;
+  width: 140px;
+}
+
+@media (max-width:1170px){
+  #block-menu-menu-mentormenteematchtabs .menu .leaf{
+    width:inherit;
+    margin-top: 15px;
+  }
+
+  .view-display-id-mentormentee_menu_page .views-field-field-check-in{
+    display: none;
+  }
+
+  .role-Mentor #block-menu-menu-mentormenteematchtabs .menu .leaf,
+  .role-Mentee #block-menu-menu-mentormenteematchtabs .menu .last.leaf{
+    width:auto;
+  }
+  
+  .view-display-id-mentormentee_menu_page .views-row{
+    width: 110px;
+  }
+
+  .view-display-id-mentormentee_menu_page .views-field-name,
+  .view-display-id-mentormentee_menu_page .views-field-picture{
+    width: auto !important;
+    border: none !important;
+  }
+}
+
+@media (max-width:1140px){
+  li.first .dash-tab-active{
+    border-radius: 5px !important;
+    margin-bottom: -9px !important;
+  }
+}
+
+/*
+* hide empty regions for mentor
+*/ 
+.role-Mentor .mentee_dash_row, 
+.role-Staff .mentee_dash_row, 
+.role-Group .mentee_dash_row,
+.role-Subsite .mentee_dash_row,
+.role-administrator .mentee_dash_row{
+  display: none;
+}
+
+/*
+* Matching styles
+*/
+.match-instructions{
+  text-align: center;
+  font-weight: bold;
+}
+
+.manual-match .views-reset-button{
+  display: none;
+}
+
+.mentee-match-list li, .mentor-match-list li{
+  list-style-type: none;
+}
+
+.mentee-match-list, .mentor-match-list{
+  padding: 10px 0;
+  background-color: #eee;
+  display: none;
+}
+
+.mentee-match-list ul, .mentor-match-list ul{
+  margin: 0;
+}
+
+.select-mentee-icon, .select-mentor-icon{
+  color: #0066cc;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.make-match-submit{
+  display: none;
+}
+
+.make-match-submit, .auto-match-submit, .auto-match-submit-disabled, .ready-checkbox{
+  text-align: right;
+}
+
+.ready-checkbox{
+  margin-bottom: 5px;
+}
+
+/*.auto-match-submit{
+  display: none;
+}*/
+
+.make-match-submit #match-finalize, .auto-match-submit #automatch-finalize, .auto-match-submit-disabled #automatch-finalize-disabled{
+  font-size: 1.1em;
+}
+
+.auto-match-submit #automatch-finalize{
+  display: inline-block;
+  padding: 3px 7px;
+}
+
+#automatch-finalize-disabled{
+    background: #BBB;
+    background: -moz-linear-gradient(top, #BBB 0%, #969696 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #BBB), color-stop(100%, #969696));
+    background: -webkit-linear-gradient(top, #BBB 0%, #969696 100%);
+    background: -o-linear-gradient(top, #BBB 0%, #969696 100%);
+    background: -ms-linear-gradient(top, #BBB 0%, #969696 100%);
+    background: linear-gradient(to bottom, #BBB 0%, #969696 100%);
+}
+
+.mentor-match-limit{
+  display: none;
+}
+
+#error-box{
+  display: none;
+  color: red;
+  border: 2px solid #ccc;
+  padding: 10px;
+}
+
+.matching-spinner{
+  text-align: center;
+}
+
+.view-id-administerusers_views.view-display-id-ga_menteematching th{
+  padding: 12px 0;
+}
+
+.view-id-administerusers_views.view-display-id-mentor_match_list .views-field-php-1{
+  width: 50px;
+}
+
+.view-id-administerusers_views.view-display-id-mentor_match_list th{
+  padding-right: 10px;
+}
+
+.match-review-lists .remove{
+  border: 1px solid #CDCDCD;
+  background-color: white;
+  display: inline-block;
+  padding: 2px 3px;
+  color: rgb(150, 150, 150);
+  line-height: 100%;
+}
+
+.manual-matching-left, .manual-matching-right{
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}
+
+.manual-matching-right .gray-connector{
+  width: 60px;
+  position: absolute;
+  background-color: #eee;
+  height: 30px;
+  left: -30px;
+  top: 6px;
+  display: none;
+}
+
+.manual-matching-right{
+  position: relative;
+}
+
+.manual-match-list-left .panels-flexible-region-inside, .manual-matching-left .panels-flexible-region-inside{
+  padding-right: 1.5em;
+}
+
+.manual-match-list-right .panels-flexible-region-inside, .manual-matching-right .panels-flexible-region-inside{
+  padding-left: 1.5em;
+}
+
+.page-create-match .form-item .description{
+  display: none;
+}
+
+/*contact us form style */
+.node-custom-contact-us #button-field-dummy-form--2{
+  float:left;
+}
+
+/* 
+* activity page styles 
+*/
+.dash_block.activity_assignment_page{
+  width: 49%;
+  float: left;
+}
+
+.activity_block{
+  width: 50%;
+  float: right;
+}
+
+.responsedraft-header{
+  color: red;
+}
+
+/* activity response styles*/
+.view-display-id-actassign_response_entity_view table, 
+.view-id-endorsement_dashboard table, 
+.view-id-lets_chat_reply table {
+  border-collapse: separate;
+  border-spacing: 0 1em;
+}
+
+.view-display-id-actassign_response_entity_view  .views-field.views-field-name 
+.view-id-endorsement_dashboard .views-field.views-field-name, 
+.view-id-lets_chat_reply .views-field.views-field-name {
+  vertical-align: top;
+}
+
+/* lets chat styles */
+.field-name-field-conversation .field-label{
+  display: none;
+}
+
+.view-display-id-letschat_reply_entity_view{
+  padding: 0 40px;
+}
+
+.views-field-field-letschat-body{
+  padding-left: 20px;
+}
+
+/* Mentor reject button column */
+.mentor_reject_button{
+  width: 100px;
+}
+
+/*admin dash styles*/
+.admin-dash table td{
+  padding: 7px;
+}
+
+.admin-dash table .last td{
+  padding: 2px;
+}
+
+.admin-dash h3{
+  margin-top: .5em;
+  margin-bottom: .5em;
+  margin-left: 7px;
+}
+
+.admin-dash-right table{
+  margin: 0 0 8px 0;
+}
+
+.how-to-video-admin{
+  float: right;
+}
+
+.how-to-video-admin .rteright{
+  margin-top: 0.6em;
+}
+
+/*matching menu styles*/
+.accordion-menu-name-matching-menu ul{
+  margin: 0 0 0 15px !important;
+  padding: 0 !important;
+}
+
+
+/*user login */
+#user-login-block-container{
+  padding: 0px 0px 0px 20px;
+  width: 23%;
+  display: inline-block;
+  float: right;
+  margin-right: 35px;
+}
+
+#user-login-block-form-fields .form-item{
+  margin: 1.5em 0;
+  text-align: inherit;
+}
+
+#user-login-block-form-fields input.form-text{
+  height: 31px;
+  font-size: 1.25em;
+  width: 94%;
+  padding-left: 10px;
+  color: #696969;
+}
+
+#user-login-block-form-fields label{
+  display: none;
+}
+
+#user-login #edit-actions, #user-login .links{
+  padding-left: 0 !important;
+}
+
+.page-user-login .form-item, .page-user.anonymous-form .form-item{
+  width: 100% !important;
+}
+
+#user-login .form-item-name{
+  margin-top: 0;
+}
+
+.page-user-login #page, .page-user.anonymous-form #page{
+  padding-bottom: 0;
+}
+
+.page-user-login #container, .page-user.anonymous-form #container{
+  background-color: #1A7CBB !important;
+  background-image: none !important;
+}
+
+.page-user-login #content, .page-user.anonymous-form #content{
+  width: 90% !important;
+  /*margin-left: 0 !important;
+  margin-right: 0 !important;*/ 
+}
+
+.page-user-login #content-wrapper, .page-user.anonymous-form #content-wrapper{
+  background-color: white;
+  border: none;
+  margin-top: 0px;
+  padding: 0;
+  margin-bottom: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+#user-login-welcome-message{
+  display: inline-block;
+  width: 63%;
+  padding: 0px 10px 0 10px;
+  /*background-color: #E8E8E8;*/
+}
+
+#user-login h1{
+  font-size: 1.5em;
+  border-bottom: 2px solid rgb(110, 191, 130);
+}
+
+#user-login .logoimage{
+  background-color: #1a7cbb;
+  max-height: 128px;
+}
+
+.page-user-login #footer-bar, .page-user.anonymous-form #footer-bar{
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}

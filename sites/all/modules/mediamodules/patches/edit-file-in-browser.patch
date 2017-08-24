@@ -1,0 +1,196 @@
+diff --git a/js/media.browser.edit.js b/js/media.browser.edit.js
+new file mode 100644
+index 0000000..a5ed231
+--- /dev/null
++++ b/js/media.browser.edit.js
+@@ -0,0 +1,34 @@
++/**
++ * @file media.browser.edit.js
++ * Special behavior when displaying the file edit form in the media browser iframe.
++ */
++
++(function ($) {
++  Drupal.behaviors.mediaBrowserEdit = {
++    attach: function (context) {
++      var $iframe = $('iframe.media-modal-frame', top.document);
++
++      // Adjust the iframe height.
++      var height = $iframe.height();
++      var content_height = $('body').height();
++      if (content_height > height) {
++        var window_height = $(top.window).height();
++        var margin_top = parseInt($iframe.parent().css('top'));
++        height = Math.min(content_height, window_height - margin_top - 50);
++        $iframe.animate({height: height + 'px'});
++      }
++
++      // Enable iframe scrolling and remove padding.
++      $iframe
++        .attr('scrolling', 'auto')
++        .css({'padding': 0, 'margin': 0});
++
++      // Add document padding.
++      $('#media-browser-page-wrapper')
++        .css({
++          'padding': '1em 1em 0 1em',
++          'margin-bottom': '1em',
++        });
++    }
++  };
++})(jQuery);
+diff --git a/js/media.format_form.js b/js/media.format_form.js
+index 446cb54..3d47cb7 100644
+--- a/js/media.format_form.js
++++ b/js/media.format_form.js
+@@ -23,7 +23,7 @@ Drupal.behaviors.mediaFormatForm = {
+ 
+     $('<a class="button fake-ok">' + Drupal.t('Submit') + '</a>').appendTo($('#media-format-form')).bind('click', Drupal.media.formatForm.submit);
+     $('<a class="button fake-cancel">' + Drupal.t('Cancel') + '</a>').appendTo($('#media-format-form')).bind('click', Drupal.media.formatForm.submit);
+-    if (Drupal.settings.media_format_form.autosubmit) {
++    if (Drupal.settings.media_format_form != undefined && Drupal.settings.media_format_form.autosubmit) {
+       $('.button.fake-ok').click();
+     }
+   }
+diff --git a/js/media.popups.js b/js/media.popups.js
+index 9a615c5..e0b5d11 100644
+--- a/js/media.popups.js
++++ b/js/media.popups.js
+@@ -100,6 +100,8 @@ Drupal.media.popups.mediaBrowser = function (onSelect, globalOptions, pluginOpti
+ 
+ Drupal.media.popups.mediaBrowser.mediaBrowserOnLoad = function (e) {
+   var options = e.data;
++  if (this.contentWindow.Drupal.media == undefined) return;
++
+   if (this.contentWindow.Drupal.media.browser.selectedMedia.length > 0) {
+     var ok = $(this).dialog('option', 'buttons')['OK'];
+     ok.call(this);
+diff --git a/js/plugins/media.views.js b/js/plugins/media.views.js
+index aec2323..95b673b 100644
+--- a/js/plugins/media.views.js
++++ b/js/plugins/media.views.js
+@@ -32,6 +32,12 @@ Drupal.behaviors.mediaViews = {
+       for (index in Drupal.settings.media.files) {
+         if (Drupal.settings.media.files[index].fid == fid) {
+           selectedFiles.push(Drupal.settings.media.files[index]);
++
++          // If multiple tabs contains the same file, it will be present in the
++          // files-array multiple times, so we break out early so we don't have
++          // it in the selectedFiles array multiple times.
++          // This would interfer with multi-selection, so...
++          break;
+         }
+       }
+       Drupal.media.browser.selectMedia(selectedFiles);
+diff --git a/media.module b/media.module
+index 276dc10..ec1512e 100644
+--- a/media.module
++++ b/media.module
+@@ -451,6 +451,26 @@ function media_file_operations_info() {
+ }
+ 
+ /**
++ * Return a URL for editing an files.
++ *
++ * Works with an array of fids or a single fid.
++ *
++ * @param mixed $fids
++ *   An array of file IDs or a single file ID.
++ */
++function media_file_edit_url($fids) {
++  if (!is_array($fids)) {
++    $fids = array($fids);
++  }
++
++  if (count($fids) > 1) {
++    return 'admin/content/file/edit-multiple/' . implode(' ', $fids);
++  } else {
++    return 'file/' . reset($fids) . '/edit';
++  }
++}
++
++/**
+  * Callback for the edit operation.
+  *
+  * Redirects the user to the edit multiple files page.
+@@ -463,14 +483,7 @@ function media_file_operations_info() {
+ function media_file_operation_edit_multiple($fids) {
+   // The thumbnail browser returns TRUE/FALSE for each item, so use array keys.
+   $fids = array_keys(array_filter($fids));
+-  // Note that we add a destination here to prevent normal form redirects.
+-  if (count($fids) > 1) {
+-    drupal_goto('admin/content/file/edit-multiple/' . implode(' ', $fids), array('query' => drupal_get_destination()));
+-  }
+-  else {
+-    $fid = current($fids);
+-    drupal_goto('file/' . current($fids) . '/edit', array('query' => drupal_get_destination()));
+-  }
++  drupal_goto(media_file_edit_url($fids), array('query' => drupal_get_destination()));
+ }
+ 
+ /**
+@@ -535,7 +548,7 @@ function media_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  * Implements hook_form_FORM_ID_alter().
+  */
+ function media_form_file_entity_edit_alter(&$form, &$form_state) {
+-  // Make adjustments to the media edit form when used in a modal.
++  // Make adjustments to the file edit form when used in a CTools modal.
+   if (!empty($form_state['ajax'])) {
+     // Remove the preview and the delete button.
+     $form['preview']['#access'] = FALSE;
+@@ -546,6 +559,14 @@ function media_form_file_entity_edit_alter(&$form, &$form_state) {
+     $form['actions']['cancel']['#attributes']['class'][] = 'button-no';
+     $form['actions']['cancel']['#attributes']['class'][] = 'ctools-close-modal';
+   }
++
++  // Make adjustments to the file edit form when used in the media modal.
++  $params = drupal_get_query_parameters();
++  if (!empty($params['render']) && $params['render'] == 'media-popup') {
++    $form['#attached']['js'][] = drupal_get_path('module', 'media') . '/js/media.browser.edit.js';
++    $form['actions']['cancel']['#access'] = FALSE;
++    $form['actions']['delete']['#access'] = FALSE;
++  }
+ }
+ 
+ /**
+@@ -567,14 +588,39 @@ function media_form_alter(&$form, &$form_state, $form_id) {
+   }
+ }
+ 
++/**
++ * Submit handler; direction form submissions in the media browser.
++ */
+ function media_browser_form_submit($form, &$form_state) {
++  $url = NULL;
++  $parameters = array();
++
++  // Single upload
+   if (!empty($form_state['file'])) {
+     $file = $form_state['file'];
+-    $form_state['redirect'] = array('media/browser', array('query' => array('render' => 'media-popup', 'fid' => $file->fid)));
++    $url = 'media/browser';
++    $parameters = array('query' => array('render' => 'media-popup', 'fid' => $file->fid));
+   }
++
++  // Multi upload
+   if (!empty($form_state['files'])) {
+     $files = $form_state['files'];
+-    $form_state['redirect'] = array('media/browser', array('query' => array('render' => 'media-popup', 'fid' => array_keys($files))));
++    $url = 'media/browser';
++    $parameters = array('query' => array('render' => 'media-popup', 'fid' => array_keys($files)));
++  }
++
++  // If $url is set, we had some sort of upload, so redirect
++  if (!empty($url)) {
++    // We the user has access to edit media, we change the redirect to the file-edit url
++    // first, then secondly to the destionation decided above.
++    if (media_access('edit')) {
++      $destination = $url . '?' . drupal_http_build_query($parameters['query']);
++      $url = media_file_edit_url($parameters['query']['fid']);
++      $parameters = array('query' => array('render' => 'media-popup', 'destination' => $destination));
++    }
++
++    // Redirect the form.
++    $form_state['redirect'] = array($url, $parameters);
+   }
+ }
+ 

@@ -1,0 +1,11 @@
+name = Simple Password Reset
+description = When resetting a password, skip the unnecessary and confusing one-time login form.
+package = User interface
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2015-04-13
+version = "7.x-1.5+2-dev"
+core = "7.x"
+project = "simple_pass_reset"
+datestamp = "1428958985"
+

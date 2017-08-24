@@ -1,0 +1,9 @@
+name = Custom Views Handler for Text Area and Field
+description = This module provide restrict access to Global: Custom text field or Global: Text area
+dependencies[] = token
+dependencies[] = views
+package = IBM MentorPlace core
+core = 7.x
+files[] = views/custom_handler_area_text.inc
+files[] = views/custom_handler_area_text_custom.inc
+files[] = views/custom_handler_field_custom.inc

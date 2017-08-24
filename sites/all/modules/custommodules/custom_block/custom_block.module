@@ -1,0 +1,382 @@
+<?php
+	/**
+* @file
+* Module code for custom_block.
+* Solomon 4/17/2013
+* NUMBER OF CUSTOM BLOCK = 5
+*/
+
+	global $user;
+    # Function to gather the block info
+	function custom_block_block_info()
+    {
+        # Percentage of activities mentee completed (shows on mentee's dashboard)
+        $blocks['activitiesComplete'] = array('info' => t('Progress Bar - Percentage of activities mentee complete (CB)'),'cache' => DRUPAL_NO_CACHE,);
+        # Create user relationship block for each user role under profile view
+        $blocks['MymenteeMentorblock'] = array('info' => t(' User Relationship - User relationship block for each user roles (CB)'),'cache' => DRUPAL_NO_CACHE,);
+        # Location Hierarchy Taxonomy Tree block  (Machine name: user_hierarchy)
+        $blocks['taxonomytreeview'] = array('info' => t('Location Hierarchy Taxonomy Tree - Show the current location and hierarchy user is belong to (CB)'),'cache' => DRUPAL_NO_CACHE,);
+        return $blocks;
+    }
+    # Function to gather the block view
+	function custom_block_block_view($delta='')
+    {
+        global $user;
+        $has_role = array_intersect(array('administrator','Group Admin', 'Staff Admin', 'Subsite Admin', 'Mentor'), array_values($user->roles));
+        $block = array();
+        switch ($delta)
+        {
+            # Percentage of activities mentee completed view hooks
+            case 'activitiesComplete':
+                $block['subject'] = t('Activities Complete');
+                $block['content'] = activitiesComplete();
+                break;
+            # Create user relationship block view hooks
+            case 'MymenteeMentorblock':
+                $block['subject'] = t('User Relationship Block');
+                $block['content'] = MymenteeMentorblock();
+                break;
+            # Location Hierarchy Taxonomy Tree block view hooks
+            case 'taxonomytreeview':
+                $block['subject'] = t('Location Hierarchy Filter');
+                $block['content'] = taxonomytreeview();
+                break;
+    }
+
+    return $block;
+}
+
+# Block function() -> Percentage of activities mentee completed
+function activitiesComplete()
+{
+    global $user;
+    # add custom css
+    drupal_add_css(drupal_get_path('module', 'custom_block') . '/css/custom_style.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    # View Curriculum (Get the count out off)
+    $viewCurr=views_get_view('jwk_user_activities_views');
+    #  REPLACE 'name of view' with the machine name of the view that contains the mentor list.
+    
+    if (is_object($viewCurr))
+    {
+        $display_id_Curr = 'available_activities_page';
+        #  REPLACE 'name of display' with the real display name.
+        $viewCurr->set_display($display_id_Curr);
+        $viewCurr->execute();
+        $resultsCurr = $viewCurr->result;
+        # Out of value
+        # Out of value
+        $outOff = count($resultsCurr);
+    }
+
+    # view Activities in progress
+    $viewProgress=views_get_view('jwk_user_activities_views');
+    #  REPLACE 'name of view' with the machine name of the view that contains the mentor list.
+    
+    if (is_object($viewProgress))
+    {
+        $display_id_Progress = 'user_activity_entity_view';
+        #  REPLACE 'name of display' with the real display name.
+        $viewProgress->set_display($display_id_Progress);
+        $item = $viewProgress->get_item($display_id_Progress, 'filter', 'field_completion_status_value');
+        $item['value'] = array('value'=>'In Progress','Complete');
+        $viewProgress->set_item($display_id_Progress, 'filter', 'field_completion_status_value', $item);
+        $viewProgress->execute();
+        $resultsProg = $viewProgress->result;
+    }
+
+    # Completed Activity
+    $completed = 0;
+    # In Progress Activity
+    $Inprogress = 0;
+    #  we have results?
+    
+    if (isset($resultsProg))
+    {
+        foreach ($resultsProg as $resultProg)
+        {
+            $anid = array();
+            $anid=$resultProg->nid;
+            $node = node_load($anid);
+            $object = entity_metadata_wrapper('node', $node);
+            $statusField = $object->field_completion_status->value();
+            
+            if ($statusField == 'Complete')
+            {
+                $completed++;
+            }
+
+            
+            if ($statusField == 'In Progress')
+            {
+                $Inprogress++;
+            }
+
+        }
+
+        #  Formula to calculate  for progress bar percentage
+        	$formulacheck = $completed + $outOff;
+		
+	# Avoid Division by zero and check if $completed less or equal to $outoff value
+		if (($completed <= $outOff && $formulacheck > 0 )) {
+            $pctValue = ($completed / $outOff) * 100;
+        }
+	# otherwise return 0 for percentage value
+		else {
+			$pctValue = 0;
+		}
+        
+        if (isset($pctValue))
+        {
+            
+            if (is_numeric($pctValue) && $pctValue <= 100 )
+            {
+                $style = "width: ".round($pctValue)."%; display: block";
+            }
+
+            $output = '<div id="column1-wrap"><div id="column1">Total: <b>'.$outOff.'</b></div></div><div id="column2">In progress: <b>'.$Inprogress.'</b></div><div id="column3">Completed: <b>'.$completed.'</b></div><div id="clear"></div>';
+            $output .=  '<div id="progress-bar-wrapper"><div id="progress-wrapper">';
+            $output .= '<span class="insidetext">'.round($pctValue).'% Activities Complete</span><div id="progress-value" style="';
+            $output .= $style;
+            $output .= '"></div></div></div>';
+        }
+
+    }
+
+
+    return $output;
+}
+
+/*  JWK Do we need this 422015 */
+# Block function() -> Create user relationship block
+function MymenteeMentorblock()
+{
+    global $user;
+    # :: Get current profile user's user roles - Solomon
+    $user_profile =  '';
+    $CurrentProfile = user_load(arg(1));
+    $CurrentProfileRoles = $CurrentProfile->roles;
+    $CurrentProfileStatus = $CurrentProfile->status;
+    $CurrentProfileLocation = $CurrentProfile->field_taxonomy_tag;
+    # :: Get current user's user roles
+    $CurrentUser = user_load($user->uid);
+    $CurrentUserRoles = $CurrentUser->roles;
+    $CurrentUserLocation = $CurrentUser->field_taxonomy_tag;
+    $account = menu_get_object('user');
+    #  :: Disable the block for mentee - Solomon 4/25/2013
+    
+    if (!in_array('Mentee', $CurrentUserRoles))
+    {
+        PrintMymenteeMentor($user_profile);
+    }
+
+}
+
+/*  JWK do we need this? 422015 */
+# Block function() -> Generate user relationship block according to user role
+function PrintMymenteeMentor($user_profile)
+{
+    global $user;
+    # :: Get current profile user's user roles - Solomon
+    $CurrentProfile = user_load(arg(1));
+    $CurrentProfileRoles = $CurrentProfile->roles;
+    $CurrentProfileStatus = $CurrentProfile->status;
+    $CurrentProfileLocation = $CurrentProfile->field_taxonomy_tag;
+	
+    # :: Get current user's user roles
+    $CurrentUser = user_load($user->uid);
+    $CurrentUserRoles = $CurrentUser->roles;
+    $CurrentUserLocation = $CurrentUser->field_taxonomy_tag;
+    $account = menu_get_object('user');
+	
+    #  Find out user role of the current profile.
+    $userRole = $CurrentProfile->field_user_acct_type['und'][0]['taxonomy_term']->name;
+	
+    echo '<div class="profile-section">';
+    switch ($userRole)
+    {
+        case "Mentee" :
+            #  Show under Mentee Profile
+            echo '<h3>My Mentor(s)</h3>';
+            print views_embed_view('user_relationships_view','user_relations_entity_view');
+            break;
+        case "Mentor" :
+            #  Show under Mentor Profile
+            echo '<h3>My Mentee(s)</h3>';
+            print views_embed_view('user_relationships_view','user_relations_mentor_entity_view');
+            break;
+        case "Group Admin" :
+            #  Show under Group Admin Profile
+            break;
+        case "Site Admin" :
+            #  Show under Site Admin Profile
+            break;
+}
+
+echo '<div class="profile-group">';
+echo '</div>';
+echo '</div>';
+}
+
+function get_all_child($termidc)
+{
+    # collect all children term tid for $termidc
+    $urlview ='';
+    $childresultseach = sm_curriculum_taxonomy_get_children_all($termidc, $vid = 3);
+    foreach($childresultseach as $grandchildresultseach)
+    {
+        
+        if(isset($grandchildresultseach))
+        {
+         //  $urlview = ''; 
+           $urlview .= '+'.$grandchildresultseach->tid;
+        }
+        else
+        {
+	       $urlview .= ''; 
+        }
+
+    }
+
+    return $urlview;
+}
+
+# Block function() -> Location Hierarchy Taxonomy Tree
+function taxonomytreeview()
+{
+    # add Jquery 1.6 JS action script
+    //drupal_add_js(drupal_get_path('module', 'custom_block') . '/js/jquery.js');  jwk
+    # add expanding and collapsing tree JS action script
+    drupal_add_js(drupal_get_path('module', 'custom_block') . '/js/scripts.js');
+    global $user, $base_url;
+    # vocabulary ID
+    $vid = 3;
+    # vocabulary Depth
+    $depth = 0;
+    $num_at_depth = 0;
+    $user_data = user_load($user->uid);
+    # Get current user location ID from field_taxonomy_tag field
+    $UserCurrentLoc = $user_data->field_taxonomy_tag['und'];
+    # //if User has a value
+    
+    if (isset($UserCurrentLoc))
+    {
+        # Filter and create Taxonomy terms array.
+        $CurUserLocationTID = array();
+        foreach($UserCurrentLoc as $termids)
+        {
+            foreach($termids as $termid)
+            {
+                $getnametid=taxonomy_term_load($termid);
+            }
+
+            $CurUserLocationTID[$getnametid->tid] = $getnametid->tid;
+            $childresults = sm_curriculum_taxonomy_get_children_all($termid, $vid);
+            foreach($childresults as $grandchildresults)
+            {
+                $CurUserLocationTID[$grandchildresults->tid] = $grandchildresults->tid;
+            }
+
+        }
+
+        #  The ID of the taxonomy vocabulary for which you'd like to create with nested list
+        $tree = taxonomy_get_tree($vid);
+       // $output = "<div class=\"tree\">\n";  jwk
+        //$output .= "<ul>\n<li>"; jwk
+        if(arg(0) == "create_match" || arg(0) == "auto_match" || arg(0) == "unmatch" || arg(0) == "dashboard"){
+            $filter_from_url = arg(1);
+        }
+        else if(arg(2) == "matching"){
+            $filter_from_url = arg(3);
+        }else{
+            $filter_from_url = arg(2);
+        }
+        $filter_from_url = str_replace(" ", "+", $filter_from_url);
+        $loc_filter_string = explode("+", $filter_from_url);
+        $loc_filter = taxonomy_term_load($loc_filter_string[0]);
+        $output = "";
+        if(is_object($loc_filter)){
+            $output .= "<h4>Filtered by: ".$loc_filter->name."</h4>";
+        }
+        $output .= "<div id='listContainer'>\n";
+        foreach ($tree as $term)
+        {
+            $diffdepth=0;
+            #  compare users location with the whole taxonomy tree
+            
+            if (in_array($term->tid,$CurUserLocationTID))
+            {
+                $childresults = taxonomy_get_children($term->tid, $vid = 3);
+                $ttotal = count($childresults);
+                
+                if ($term->depth > $depth)
+                {
+                  //  $output .= "\n<ul>\n<li>";  jwk
+                   $output .= "\n<ul id='expList'>\n<li>";
+                    $depth = $term->depth;
+                    $num_at_depth = 0;
+                }
+
+                
+                if ($term->depth < $depth)
+                {
+                    $diffdepth= $depth -$term->depth;
+                    while ($diffdepth > 0)
+                    {
+                        $output .= "</li>\n</ul>\n";
+                        $diffdepth -- ;
+                    }
+
+                    $depth = $term->depth;
+                }
+
+                
+                if (($term->depth == $depth) && ($num_at_depth > 0))
+                {
+                    $output .= "</li>\n<li>";
+                }
+
+                if(arg(0) != "create_match" && arg(0) != "auto_match" && arg(0) != "unmatch" && arg(0) != "dashboard"){
+                    $arg = arg(0).'/'.arg(1);
+                }else{
+                    $arg = arg(0);
+                }
+
+                if(arg(0) == 'node' && arg(1) == 'add'){
+                    $arg .= '/'.arg(2);
+                }
+                
+                if ($ttotal <= 0)
+                {
+                    $FilterTidUrl = url($arg.'/'.$term->tid, array('absolute' => TRUE));
+                    $ViewfilterURL = rawurldecode($FilterTidUrl);
+                   // $output .= '<a>'.$term->name.'</a>';
+                   $output .= $term->name;
+                    $output .= '<a href="'.$ViewfilterURL.'"> >>Filter by</a>';
+                }
+                else
+                {
+                    # call function to get all child term id
+                    if(arg(0) == "auto_match"){
+                       $FilterTidUrl = url($arg.'/'.$term->tid, array('absolute' => TRUE)); 
+                    }else{
+                        $urlviewfinal = get_all_child($term->tid);
+                        $FilterTidUrl = url($arg.'/'.$term->tid.$urlviewfinal, array('absolute' => TRUE));
+                    }                
+                    # Generate url for each terms
+                    $ViewfilterURL = rawurldecode($FilterTidUrl);
+                  //  $output .= '<a>'.$term->name.' ('.$ttotal.')</a> ';
+                  $output .= $term->name.' ('.$ttotal.')';
+                    $output .= '<a href="'.$ViewfilterURL.'"> >>Filter by</a>';
+                }
+
+                $num_at_depth ++;
+            }
+
+        }
+
+        $output .= "</li>\n</ul>\n";
+        $output .= "</div>\n";
+        return $output;
+    }
+
+}

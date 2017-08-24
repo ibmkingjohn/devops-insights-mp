@@ -1,0 +1,65 @@
+/* VERSION 1 SEPTEMBER 30 2013 */
+/* GENERAL */
+#activitywrapper {width: auto; height:auto;}
+#activitywrapper p {font-family:Arial, Helvetica, sans-serif; font-size:20px; line-height:150%; color:#000;padding:0 50px;}
+#activitywrapper .center {text-align:center;}
+#activitywrapper a:link {color:#000;}      /* unvisited link */
+#activitywrapper a:hover {color:#aaa;}  /* mouse over link */
+#activitywrapper .floatright {float:right}
+
+/* WIDGET CLASS */
+#activitywrapper .widget {width: 760px; text-align:left; border: 1px solid #ddd;margin:30px auto; box-shadow: 10px 10px 5px #ddd; padding-bottom: 0px;}
+
+/* WIDGET BODY CLASS */
+#activitywrapper .widgetbody {padding:25px 50px 50px 50px;}
+	
+/* HEADER BAR */
+#activitywrapper .barcirc {float:left; margin-left:3px; margin-top:2px;border-radius:50%; border-radius: 50px; width:50px; height: 50px; line-height:50px; text-align:center; color:#fff; font-size:24px; font-weight:bold; font-family:arial;}
+#activitywrapper .bar {float:left; width:705px; height:10px;  border-top-right-radius:5px; border-bottom-right-radius:5px;margin-left:-1px;margin-top:20px; margin-bottom:15px;}
+#activitywrapper .greenbar {background:#62b32e;}
+#activitywrapper .purplebar {background:#7a4aaa;}
+#activitywrapper .orangebar {background:#FF6600;}
+#activitywrapper .redbar {background:#ea3732;}
+
+
+/* HEADER STYLES */
+#activitywrapper h1 {font-family: Arial, Helvetica, sans-serif; font-size: 34px; font-weight: bold; text-align:center; color: #000;line-height:100%;}
+#activitywrapper h1.orange {color: #FF6600;}
+#activitywrapper h2 {font-size: 24px; font-family: arial; color: #000000; font-weight:bold; line-height: .8em; text-align: left; margin: 5px; padding: 5px; padding-left: 25px; padding-top:15px;}
+#activitywrapper h2.green{color:#33AA00;}
+
+/* VIDEOS */
+#activitywrapper .videotext {color:#FF6600; font-family: calibri; font-size: 24px; font-style:italic; font-weight:bold; text-align:center; line-height:150%; padding:20px 50px 0px 50px;margin-bottom:10px;}
+#activitywrapper iframe {width:550px;height:370px;margin-top:20px;}
+
+/* QUOTES */
+#activitywrapper .quote {font-family: calibri; font-size: 26px; font-weight: bold; font-style: italic; color: #000; margin-top:0px; padding-top:0px; line-height:150%;}
+#activitywrapper .quotename {font-size: 16px; font-family:Arial, Helvetica, Sans-serif; font-weight:bold; color:#000; line-height:100%; font-style:normal;padding-top:0px;margin:0px;}
+#activitywrapper .quotetitle {font-size: 16px; font-family:Arial, Helvetica, Sans-serif; font-weight: normal; color:#000; line-height:120%;font-style:normal;margin-top:10px; }
+#activitywrapper .quoteimg {float:left; padding-right: 30px; margin-top:0px;}
+#activitywrapper div.quote {padding: 25px; margin-bottom: 10px; height:relative;float:none;align:center; width:auto;}
+
+
+/* BULLET LIST */
+#activitywrapper .listheader {font-size:24px;font-weight:bold; margin:0px;padding:0px;}
+#activitywrapper ul li  {font-size:20px; margin-bottom:30px; line-height:150%; font-family:arial;}
+#activitywrapper ol li  {font-size:20px; margin-bottom:30px; line-height:150%; font-family:arial;}
+
+/* TWO COLUMN DIVISIONS */
+#activitywrapper .twocolumndiv {float:left; width:100%; margin-top:20px;}
+#activitywrapper .columnone {float:left; width:45%; padding:10px;}
+#activitywrapper .columntwo {float:left;width:45%;padding:10px;}
+
+
+/* FLICKR ATTRIBUTION */
+#activitywrapper .flickr {font-size:10px; color:#aaa; text-align:center;}
+
+/* COPYRIGHT */
+#activitywrapper .copyright {font-size:14px; color:#aaa; text-align:center; padding-top: 50px; }
+
+/* activity images center */
+img.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
